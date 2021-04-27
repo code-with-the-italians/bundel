@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="service_name">I SPY YOUR NOTIFICATIONS MWAHAHAH</string>
+  <string name="button_notifications_access_prompt">Give us access</string>
+  <string name="app_name">Bundel</string>
+  <string name="notifications_permission_explanation">In order for the app to work, it requires access to the notifications.</string>
+</resources>
