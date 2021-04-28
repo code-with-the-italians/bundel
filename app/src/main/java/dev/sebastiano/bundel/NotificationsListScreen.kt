@@ -14,13 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 @Composable
 internal fun NotificationsListScreen(
@@ -43,31 +37,6 @@ internal fun NotificationsListScreen(
                     Text(notification, Modifier.padding(8.dp))
                 }
             }
-        }
-    }
-}
-
-internal class NotificationsListViewModel : ViewModel() {
-
-    private val _state = MutableStateFlow(State(emptyList(), false))
-    val state: Flow<State> = _state
-
-    fun startObserving() {
-        viewModelScope.launch {
-            BundelNotificationListenerService.notificationsFlow.collect { notifications ->
-                _state.value = State(notifications, isConnected = true)
-            }
-        }
-    }
-
-    data class State(
-        val notifications: List<String>,
-        val isConnected: Boolean
-    ) {
-
-        companion object {
-
-            val EMPTY = State(emptyList(), isConnected = false)
         }
     }
 }
