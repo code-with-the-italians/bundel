@@ -1,8 +1,7 @@
-package dev.sebastiano.bundel
+package dev.sebastiano.bundel.notifications
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import dev.sebastiano.bundel.notifications.text
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
@@ -18,7 +17,7 @@ class BundelNotificationListenerService : NotificationListenerService() {
 
     override fun onListenerConnected() {
         isConnected = true
-        _notificationsFlow.value = activeNotifications.map { it.text }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
         Timber.i("Notifications listener connected")
     }
 
@@ -29,17 +28,17 @@ class BundelNotificationListenerService : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         Timber.i("Notification posted by ${sbn.packageName}")
-        _notificationsFlow.value = activeNotifications.map { it.text }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Timber.i("Notification removed by ${sbn.packageName}")
-        _notificationsFlow.value = activeNotifications.map { it.text }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
     }
 
     companion object {
 
-        private val _notificationsFlow = MutableStateFlow(emptyList<String>())
-        val notificationsFlow: Flow<List<String>> = _notificationsFlow
+        private val _notificationsFlow = MutableStateFlow(emptyList<Notification>())
+        val notificationsFlow: Flow<List<Notification>> = _notificationsFlow
     }
 }

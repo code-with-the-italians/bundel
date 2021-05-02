@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.sebastiano.bundel.notifications.Notification
 
 @Preview
 @Composable
@@ -37,12 +36,16 @@ fun NotificationsListEmptyLightPreview() {
 @Composable
 fun NotificationsListLightPreview() {
     BundelTheme {
-        NotificationsListScreen(notifications = listOf("Hi mum", "Hi Ivan", "Banana"))
+        NotificationsListScreen(
+            notifications = listOf(
+                Notification(timestamp = 12345678L, text = "Hello Ivan")
+            )
+        )
     }
 }
 
 @Composable
-internal fun NotificationsListScreen(notifications: List<String>) {
+internal fun NotificationsListScreen(notifications: List<Notification>) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { NotificationsListTopAppBar() },
@@ -53,7 +56,9 @@ internal fun NotificationsListScreen(notifications: List<String>) {
             }
         } else {
             Column(
-                Modifier.fillMaxSize().alpha(.5f),
+                Modifier
+                    .fillMaxSize()
+                    .alpha(.5f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -66,19 +71,19 @@ internal fun NotificationsListScreen(notifications: List<String>) {
 }
 
 @Composable
-private fun NotificationsList(notifications: List<String>) {
+private fun NotificationsList(notifications: List<Notification>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Text(text = "Notifications", style = MaterialTheme.typography.h3, modifier = Modifier.padding(8.dp))
         }
-        items(notifications.filter { it.isNotEmpty() }) { notification ->
+        items(notifications) { notification ->
             Card(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .padding(top = 8.dp)
             ) {
-                Text(notification, Modifier.padding(8.dp))
+                Text(notification.text ?: "[N/A]", Modifier.padding(8.dp))
             }
         }
     }
@@ -87,6 +92,6 @@ private fun NotificationsList(notifications: List<String>) {
 @Composable
 private fun NotificationsListTopAppBar() {
     TopAppBar(title = {
-        Text(stringResource(id = R.string.app_name), style = bundelTypography.h4)
+        Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4)
     })
 }

@@ -56,7 +56,7 @@ private val inter = FontFamily(
     )
 )
 
-val bundelTypography = Typography(
+private val bundelTypography = Typography(
     h1 = TextStyle(
         fontFamily = podkova,
         fontWeight = FontWeight.Light,
