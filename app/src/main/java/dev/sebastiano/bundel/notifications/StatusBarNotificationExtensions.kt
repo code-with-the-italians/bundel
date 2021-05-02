@@ -23,13 +23,13 @@ private fun StatusBarNotification.extractIcons() = Notification.Icons(
 )
 
 internal val StatusBarNotification.text: String?
-    get() = notification.extras.getString(AndroidAppNotification.EXTRA_TEXT)
+    get() = notification.extras.get(AndroidAppNotification.EXTRA_TEXT)?.toString()
 
 internal val StatusBarNotification.title: String?
-    get() = notification.extras.getString(AndroidAppNotification.EXTRA_TITLE)
+    get() = notification.extras.get(AndroidAppNotification.EXTRA_TITLE)?.toString()
 
 internal val StatusBarNotification.titleBig: String?
-    get() = notification.extras.getString(AndroidAppNotification.EXTRA_TITLE_BIG)
+    get() = notification.extras.get(AndroidAppNotification.EXTRA_TITLE_BIG)?.toString()
 
 internal val StatusBarNotification.subText: String?
-    get() = notification.extras.getString(AndroidAppNotification.EXTRA_SUB_TEXT)
+    get() = notification.extras.get(AndroidAppNotification.EXTRA_SUB_TEXT)?.toString()
