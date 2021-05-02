@@ -10,36 +10,31 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
 private fun OnboardingScreenNeedsPermissionPreview() {
-    OnboardingScreen(onSettingsIntentClick = { }, onDismissClicked = { })
+    OnboardingScreen(true, onSettingsIntentClick = { }, onDismissClicked = { })
 }
 
 @Preview(name = "Onboarding screen (dismiss only)", showSystemUi = true)
 @Composable
 private fun OnboardingScreenDismissOnlyPreview() {
-    OnboardingScreen(onSettingsIntentClick = { }, onDismissClicked = { })
+    OnboardingScreen(false, onSettingsIntentClick = { }, onDismissClicked = { })
 }
 
 @Composable
 internal fun OnboardingScreen(
-    viewModel: OnboardingViewModel = viewModel(),
+    needsPermission: Boolean,
     onSettingsIntentClick: () -> Unit,
     onDismissClicked: () -> Unit
 ) {
-    val state by viewModel.state.collectAsState(initial = OnboardingViewModel.State(false))
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -49,7 +44,7 @@ internal fun OnboardingScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        if (state.needsPermission) {
+        if (needsPermission) {
             RequestNotificationsAccess(onSettingsIntentClick)
         } else {
             Button(onClick = onDismissClicked) {

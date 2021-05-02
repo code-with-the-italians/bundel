@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
     buildToolsVersion = "30.0.3"
 
     defaultConfig {
@@ -30,6 +30,11 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true",
+            "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+        )
     }
 
     composeOptions {
@@ -48,7 +53,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.0.0-beta05")
     implementation("androidx.compose.ui:ui-tooling:1.0.0-beta05")
     implementation("androidx.compose.ui:ui:1.0.0-beta05")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.3.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.4.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
     implementation("com.jakewharton.timber:timber:4.7.1")
