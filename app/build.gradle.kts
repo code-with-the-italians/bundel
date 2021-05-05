@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.lint.AndroidLintTask
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
@@ -88,9 +89,35 @@ dependencies {
 }
 
 tasks {
-
     withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"
+    }
+
+    @Suppress("UNUSED_VARIABLE")
+    val collectSarifReports by registering(Sync::class) {
+        val detektRelease by getting(Detekt::class)
+        val androidLintRelease = named<AndroidLintTask>("lintRelease")
+
+        dependsOn(detekt, detektRelease, androidLintRelease)
+        from(detektRelease.sarifReportFile) {
+            rename { "detekt-release.sarif" }
+        }
+        from(detekt.get().sarifReportFile) {
+            rename { "detekt.sarif" }
+        }
+        from(androidLintRelease.get().sarifReportOutputFile) {
+            rename { "android-lint.sarif" }
+        }
+
+        into("$buildDir/reports/sarif")
+    }
+
+    register("staticAnalysis") {
+        val detektRelease by getting(Detekt::class)
+        val androidLintRelease = named<AndroidLintTask>("lintRelease")
+
+        dependsOn(detekt, detektRelease, androidLintRelease, lintKotlin)
+        finalizedBy(collectSarifReports)
     }
 }
