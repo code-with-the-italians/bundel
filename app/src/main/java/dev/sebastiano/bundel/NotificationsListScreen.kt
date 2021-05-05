@@ -144,7 +144,9 @@ private fun Icon.asImageBitmap(): ImageBitmap? =
 
 @Composable
 private fun NotificationsListTopAppBar() {
-    TopAppBar(title = {
-        Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4)
-    })
+    TopAppBar(
+        title = {
+            Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4)
+        }
+    )
 }

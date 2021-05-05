@@ -3,6 +3,8 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("io.gitlab.arturbosch.detekt")
+    id("org.jmailen.kotlinter")
 }
 
 val composeVersion = "1.0.0-beta05"
@@ -47,6 +49,17 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = composeVersion
+    }
+}
+
+detekt {
+    input = files("src/main/java", "src/main/kotlin")
+    config = rootProject.files("build-config/detekt.yml")
+    buildUponDefaultConfig = true
+    reports {
+        sarif {
+            enabled = true
+        }
     }
 }
 

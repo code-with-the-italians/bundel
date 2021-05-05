@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
-private fun OnboardingScreenNeedsPermissionPreview() {
+internal fun OnboardingScreenNeedsPermissionPreview() {
     BundelTheme {
         OnboardingScreen(true, onSettingsIntentClick = { }, onDismissClicked = { })
     }
@@ -27,7 +27,7 @@ private fun OnboardingScreenNeedsPermissionPreview() {
 
 @Preview(name = "Onboarding screen (dismiss only)", showSystemUi = true)
 @Composable
-private fun OnboardingScreenDismissOnlyPreview() {
+internal fun OnboardingScreenDismissOnlyPreview() {
     BundelTheme {
         OnboardingScreen(false, onSettingsIntentClick = { }, onDismissClicked = { })
     }

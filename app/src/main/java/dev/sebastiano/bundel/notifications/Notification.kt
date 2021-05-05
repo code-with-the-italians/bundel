@@ -13,9 +13,13 @@ data class Notification(
 
     val isNotEmpty: Boolean =
         timestamp >= 0 &&
-            (text?.isNotBlank() == true || title?.isNotBlank() == true ||
-                subText?.isNotBlank() == true || titleBig?.isNotBlank() == true ||
-                icons.isNotEmpty)
+            (
+                text?.isNotBlank() == true ||
+                    title?.isNotBlank() == true ||
+                    subText?.isNotBlank() == true ||
+                    titleBig?.isNotBlank() == true ||
+                    icons.isNotEmpty
+                )
 
     data class Icons(
         val small: Icon? = null,

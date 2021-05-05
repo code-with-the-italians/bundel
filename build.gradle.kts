@@ -1,3 +1,8 @@
+plugins {
+    id("io.gitlab.arturbosch.detekt") version "1.16.0" apply false
+    id("org.jmailen.kotlinter") version "3.4.4" apply false
+}
+
 buildscript {
     val hiltVersion by extra("2.35.1")
 
