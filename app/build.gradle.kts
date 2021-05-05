@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -83,4 +85,12 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
 
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+}
+
+tasks {
+
+    withType<Detekt> {
+        // Required for type resolution
+        jvmTarget = "1.8"
+    }
 }
