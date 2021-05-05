@@ -5,7 +5,7 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-val composeVersion by extra { "1.0.0-beta05" }
+val composeVersion = "1.0.0-beta05"
 
 android {
     compileSdk = 30
@@ -23,6 +23,12 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    lint {
+        lintConfig = rootProject.file("build-config/lint.xml")
+        isWarningsAsErrors = true
+        sarifReport = true
     }
 
     compileOptions {

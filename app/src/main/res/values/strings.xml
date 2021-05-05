@@ -5,7 +5,7 @@
   <string name="app_name">Bundel</string>
   <string name="notifications_permission_explanation">In order for the app to work, it requires access to the notifications.</string>
   <string name="sad_face">😢</string>
-  <string name="notifications_empty_text">Nothing yet...</string>
+  <string name="notifications_empty_text">Nothing yet…</string>
   <string name="notification_icon_content_description">Icon</string>
   <string name="notification_no_icon_content_description">No icon</string>
   <string name="notification_missing_value">[N/A]</string>
