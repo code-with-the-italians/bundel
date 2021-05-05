@@ -41,7 +41,7 @@ import dev.sebastiano.bundel.notifications.Notification
 @Composable
 fun NotificationsListEmptyLightPreview() {
     BundelTheme {
-        NotificationsListScreen(notifications = listOf())
+        NotificationsListScreen(notifications = emptyList())
     }
 }
 
