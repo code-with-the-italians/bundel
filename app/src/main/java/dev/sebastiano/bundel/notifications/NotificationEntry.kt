@@ -1,19 +1,24 @@
 package dev.sebastiano.bundel.notifications
 
+import android.app.PendingIntent
 import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
 
 data class NotificationEntry(
     val timestamp: Long,
     val showTimestamp: Boolean = false,
+    val isGroup: Boolean = false,
     val text: String? = null,
     val title: String? = null,
     val subText: String? = null,
     val titleBig: String? = null,
     val icons: Icons = Icons(),
     val appInfo: SenderAppInfo,
+    val interactions: Interactions = Interactions(),
     val originalNotification: StatusBarNotification? = null
 ) {
+
+    fun isClickable() = interactions.main != null
 
     val isNotEmpty: Boolean =
         timestamp >= 0 &&
@@ -39,4 +44,17 @@ data class NotificationEntry(
         val name: String,
         val icon: Icon? = null
     )
+
+    data class Interactions(
+        val main: PendingIntent? = null,
+        val dismiss: PendingIntent? = null,
+        val actions: List<ActionItem> = emptyList()
+    ) {
+
+        data class ActionItem(
+            val text: CharSequence,
+            val icon: Icon? = null,
+            val pendingIntent: PendingIntent? = null
+        )
+    }
 }

@@ -103,7 +103,7 @@ internal fun NotificationsListScreen(notificationEntries: List<NotificationEntry
 @Composable
 private fun NotificationsList(notificationEntries: List<NotificationEntry>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(notificationEntries) { notification ->
+        items(notificationEntries.filterNot { it.isGroup }) { notification ->
             NotificationItem(notification)
         }
     }

@@ -13,12 +13,14 @@ internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
 internal fun StatusBarNotification.toNotification(context: Context) = NotificationEntry(
     timestamp = notification.`when`,
     showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
+    isGroup = notification.run { groupKey != null && (flags and Notification.FLAG_GROUP_SUMMARY) != 0 },
     text = text,
     title = title,
     subText = subText,
     titleBig = titleBig,
     icons = extractIcons(),
     appInfo = extractAppInfo(context.packageManager),
+    interactions = extractInteractions(),
     originalNotification = this
 )
 
@@ -36,6 +38,13 @@ private fun StatusBarNotification.extractAppInfo(packageManager: PackageManager)
         icon = Icon.createWithResource(packageName, applicationInfo.icon)
     )
 }
+
+private fun StatusBarNotification.extractInteractions() = NotificationEntry.Interactions(
+    main = notification.contentIntent,
+    dismiss = notification.deleteIntent,
+    actions = notification.actions?.map { NotificationEntry.Interactions.ActionItem(it.title, it.getIcon(), it.actionIntent) }
+        ?: emptyList()
+)
 
 internal val StatusBarNotification.text: String?
     get() = notification.extras.get(Notification.EXTRA_TEXT)?.toString()
