@@ -10,7 +10,7 @@ plugins {
     id("org.jmailen.kotlinter")
 }
 
-val composeVersion = "1.0.0-beta05"
+val composeVersion = "1.0.0-beta06"
 
 android {
     compileSdk = 30
