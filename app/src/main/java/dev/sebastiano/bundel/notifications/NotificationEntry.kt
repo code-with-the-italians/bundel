@@ -1,14 +1,17 @@
 package dev.sebastiano.bundel.notifications
 
 import android.graphics.drawable.Icon
+import android.service.notification.StatusBarNotification
 
-data class Notification(
+data class NotificationEntry(
     val timestamp: Long,
     val text: String? = null,
     val title: String? = null,
     val subText: String? = null,
     val titleBig: String? = null,
-    val icons: Icons = Icons()
+    val icons: Icons = Icons(),
+    val senderAppInfo: SenderAppInfo,
+    val originalNotification: StatusBarNotification? = null
 ) {
 
     val isNotEmpty: Boolean =
@@ -29,4 +32,10 @@ data class Notification(
 
         val isNotEmpty: Boolean = small != null || large != null || extraLarge != null
     }
+
+    data class SenderAppInfo(
+        val packageName: String,
+        val name: String,
+        val icon: Icon? = null
+    )
 }

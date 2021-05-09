@@ -2,34 +2,47 @@ package dev.sebastiano.bundel.notifications
 
 import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
-import android.app.Notification as AndroidAppNotification
+import android.app.Notification
+import android.content.Context
+import android.content.pm.PackageManager
 
-internal fun StatusBarNotification.toNotificationOrNull() =
-    toNotification().takeIf { it.isNotEmpty }
+internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
+    toNotification(context).takeIf { it.isNotEmpty }
 
-internal fun StatusBarNotification.toNotification() = Notification(
+internal fun StatusBarNotification.toNotification(context: Context) = NotificationEntry(
     timestamp = notification.`when`,
     text = text,
     title = title,
     subText = subText,
     titleBig = titleBig,
-    icons = extractIcons()
+    icons = extractIcons(),
+    senderAppInfo = extractAppInfo(context.packageManager),
+    originalNotification = this
 )
 
-private fun StatusBarNotification.extractIcons() = Notification.Icons(
+private fun StatusBarNotification.extractIcons() = NotificationEntry.Icons(
     small = notification.smallIcon,
     large = notification.getLargeIcon(),
-    extraLarge = notification.extras.getParcelable(AndroidAppNotification.EXTRA_LARGE_ICON_BIG) as Icon?
+    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG) as Icon?
 )
 
+private fun StatusBarNotification.extractAppInfo(packageManager: PackageManager): NotificationEntry.SenderAppInfo {
+    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+    return NotificationEntry.SenderAppInfo(
+        packageName = packageName,
+        name = applicationInfo.name,
+        icon = Icon.createWithResource(packageName, applicationInfo.icon)
+    )
+}
+
 internal val StatusBarNotification.text: String?
-    get() = notification.extras.get(AndroidAppNotification.EXTRA_TEXT)?.toString()
+    get() = notification.extras.get(Notification.EXTRA_TEXT)?.toString()
 
 internal val StatusBarNotification.title: String?
-    get() = notification.extras.get(AndroidAppNotification.EXTRA_TITLE)?.toString()
+    get() = notification.extras.get(Notification.EXTRA_TITLE)?.toString()
 
 internal val StatusBarNotification.titleBig: String?
-    get() = notification.extras.get(AndroidAppNotification.EXTRA_TITLE_BIG)?.toString()
+    get() = notification.extras.get(Notification.EXTRA_TITLE_BIG)?.toString()
 
 internal val StatusBarNotification.subText: String?
-    get() = notification.extras.get(AndroidAppNotification.EXTRA_SUB_TEXT)?.toString()
+    get() = notification.extras.get(Notification.EXTRA_SUB_TEXT)?.toString()

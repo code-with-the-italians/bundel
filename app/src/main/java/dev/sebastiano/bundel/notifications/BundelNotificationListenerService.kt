@@ -17,7 +17,7 @@ class BundelNotificationListenerService : NotificationListenerService() {
 
     override fun onListenerConnected() {
         isConnected = true
-        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
         Timber.i("Notifications listener connected")
     }
 
@@ -28,17 +28,17 @@ class BundelNotificationListenerService : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         Timber.i("Notification posted by ${sbn.packageName}")
-        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Timber.i("Notification removed by ${sbn.packageName}")
-        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull() }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
     }
 
     companion object {
 
-        private val _notificationsFlow = MutableStateFlow(emptyList<Notification>())
-        val notificationsFlow: Flow<List<Notification>> = _notificationsFlow
+        private val _notificationsFlow = MutableStateFlow(emptyList<NotificationEntry>())
+        val notificationsFlow: Flow<List<NotificationEntry>> = _notificationsFlow
     }
 }
