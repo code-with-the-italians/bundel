@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -35,13 +36,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
-import dev.sebastiano.bundel.notifications.Notification
+import dev.sebastiano.bundel.notifications.NotificationEntry
 
 @Preview
 @Composable
 fun NotificationsListEmptyLightPreview() {
     BundelTheme {
-        NotificationsListScreen(notifications = emptyList())
+        NotificationsListScreen(notificationEntries = emptyList())
+    }
+}
+
+@Preview
+@Composable
+fun NotificationsListEmptyDarkPreview() {
+    BundelTheme(darkModeOverride = true) {
+        NotificationsListScreen(notificationEntries = emptyList())
     }
 }
 
@@ -50,22 +59,42 @@ fun NotificationsListEmptyLightPreview() {
 fun NotificationsListLightPreview() {
     BundelTheme {
         NotificationsListScreen(
-            notifications = listOf(
-                Notification(timestamp = 12345678L, text = "Hello Ivan")
+            notificationEntries = listOf(
+                NotificationEntry(
+                    timestamp = 12345678L,
+                    text = "Hello Ivan",
+                    senderAppInfo = NotificationEntry.SenderAppInfo("com.yeah", "Yeah!")
+                )
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun NotificationsListDarkPreview() {
+    BundelTheme(darkModeOverride = true) {
+        NotificationsListScreen(
+            notificationEntries = listOf(
+                NotificationEntry(
+                    timestamp = 12345678L,
+                    text = "Hello Ivan",
+                    senderAppInfo = NotificationEntry.SenderAppInfo("com.yeah", "Yeah!")
+                )
             )
         )
     }
 }
 
 @Composable
-internal fun NotificationsListScreen(notifications: List<Notification>) {
+internal fun NotificationsListScreen(notificationEntries: List<NotificationEntry>) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { NotificationsListTopAppBar() },
     ) {
-        if (notifications.isNotEmpty()) {
+        if (notificationEntries.isNotEmpty()) {
             Column(Modifier.fillMaxSize()) {
-                NotificationsList(notifications)
+                NotificationsList(notificationEntries)
             }
         } else {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
@@ -77,7 +106,7 @@ internal fun NotificationsListScreen(notifications: List<Notification>) {
                 ) {
                     Text(stringResource(R.string.sad_face), fontSize = 72.sp)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = stringResource(R.string.notifications_empty_text))
+                    Text(text = stringResource(R.string.notifications_empty_text), style = MaterialTheme.typography.caption)
                 }
             }
         }
@@ -85,9 +114,9 @@ internal fun NotificationsListScreen(notifications: List<Notification>) {
 }
 
 @Composable
-private fun NotificationsList(notifications: List<Notification>) {
+private fun NotificationsList(notificationEntries: List<NotificationEntry>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(notifications) { notification ->
+        items(notificationEntries) { notification ->
             Card(
                 Modifier
                     .fillMaxWidth()
@@ -100,7 +129,7 @@ private fun NotificationsList(notifications: List<Notification>) {
                             .fillMaxWidth()
                             .padding(8.dp)
                     ) {
-                        val icon = (notification.icons.small ?: notification.icons.large ?: notification.icons.extraLarge)
+                        val icon = (notification.icons.large ?: notification.icons.small)
                             ?.asImageBitmap()
                         if (icon != null) {
                             Image(icon, stringResource(R.string.notification_icon_content_description), modifier = Modifier.size(48.dp))
@@ -108,11 +137,13 @@ private fun NotificationsList(notifications: List<Notification>) {
                             Image(
                                 Icons.Rounded.BrokenImage,
                                 stringResource(R.string.notification_no_icon_content_description),
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(48.dp),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
                             )
                         }
                         Text(notification.text ?: stringResource(R.string.notification_missing_value), Modifier.padding(8.dp))
                     }
+
                     Row(
                         Modifier
                             .fillMaxWidth()

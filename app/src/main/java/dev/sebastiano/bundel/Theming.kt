@@ -1,8 +1,10 @@
 package dev.sebastiano.bundel
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
+import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -14,19 +16,33 @@ import androidx.compose.ui.unit.sp
 
 private val bundel_black = Color(0xFF000000)
 private val bundel_white = Color(0xFFFFFFFF)
+private val bundel_background_gray = Color(0xFFE5E5E5)
+private val bundel_light_gray = Color(0xFFAAAAAA)
 private val bundel_green = Color(0xFF4CE062)
 private val bundel_green_dark = Color(0xFF1E8F3E)
 private val bundel_purple = Color(0xFF4F1D91)
+private val bundel_dark_background_gray = Color(0xFF101010)
+private val bundel_dark_green = Color(0xFF33783D)
+private val bundel_dark_green_dark = Color(0xFF224D28)
+private val bundel_dark_purple = Color(0xFF33135D)
 
 internal val bundelLightColors = lightColors(
     primary = bundel_green,
     secondary = bundel_purple,
     surface = bundel_white,
     onSurface = bundel_black,
-    primaryVariant = bundel_green_dark
+    primaryVariant = bundel_green_dark,
+    background = bundel_background_gray
 )
 
-// TODO create bundelDarkColors
+internal val bundelDarkColors = darkColors(
+    primary = bundel_dark_green,
+    secondary = bundel_dark_purple,
+    surface = bundel_black,
+    onSurface = bundel_light_gray,
+    primaryVariant = bundel_dark_green_dark,
+    background = bundel_dark_background_gray
+)
 
 private val podkovaBold = Font(R.font.podkova_bold, weight = FontWeight.Bold)
 private val podkovaExtraBold = Font(R.font.podkova_extrabold, weight = FontWeight.ExtraBold)
@@ -125,9 +141,15 @@ private val bundelTypography = Typography(
 )
 
 @Composable
-internal fun BundelTheme(content: @Composable () -> Unit) {
-    val colors = if (isSystemInDarkTheme()) bundelLightColors else bundelLightColors
-    MaterialTheme(colors, bundelTypography) {
+internal fun BundelTheme(
+    darkModeOverride: Boolean? = null,
+    content: @Composable () -> Unit
+) {
+    MaterialTheme(bundelColors(darkModeOverride), bundelTypography) {
         content()
     }
 }
+
+@Composable
+internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =
+    if (darkModeOverride ?: isSystemInDarkTheme()) bundelDarkColors else bundelLightColors
