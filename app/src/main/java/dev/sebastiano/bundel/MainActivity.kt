@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun NotificationsListScreen() {
         val notifications by remember(lifecycle) { BundelNotificationListenerService.notificationsFlow.flowWithLifecycle(lifecycle) }
             .collectAsState(emptyList())
-        NotificationsListScreen(notifications)
+        dev.sebastiano.bundel.notificationslist.NotificationsListScreen(notifications)
     }
 
     private fun showNotificationsPreferences() {

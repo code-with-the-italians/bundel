@@ -3,6 +3,7 @@ package dev.sebastiano.bundel.notifications
 import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
 import android.app.Notification
+import android.app.Notification.EXTRA_SHOW_WHEN
 import android.content.Context
 import android.content.pm.PackageManager
 
@@ -11,12 +12,13 @@ internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
 
 internal fun StatusBarNotification.toNotification(context: Context) = NotificationEntry(
     timestamp = notification.`when`,
+    showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
     text = text,
     title = title,
     subText = subText,
     titleBig = titleBig,
     icons = extractIcons(),
-    senderAppInfo = extractAppInfo(context.packageManager),
+    appInfo = extractAppInfo(context.packageManager),
     originalNotification = this
 )
 
@@ -30,7 +32,7 @@ private fun StatusBarNotification.extractAppInfo(packageManager: PackageManager)
     val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
     return NotificationEntry.SenderAppInfo(
         packageName = packageName,
-        name = applicationInfo.name,
+        name = packageManager.getResourcesForApplication(applicationInfo).getString(applicationInfo.labelRes),
         icon = Icon.createWithResource(packageName, applicationInfo.icon)
     )
 }

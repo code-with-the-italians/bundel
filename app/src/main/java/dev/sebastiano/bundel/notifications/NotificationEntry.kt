@@ -5,12 +5,13 @@ import android.service.notification.StatusBarNotification
 
 data class NotificationEntry(
     val timestamp: Long,
+    val showTimestamp: Boolean = false,
     val text: String? = null,
     val title: String? = null,
     val subText: String? = null,
     val titleBig: String? = null,
     val icons: Icons = Icons(),
-    val senderAppInfo: SenderAppInfo,
+    val appInfo: SenderAppInfo,
     val originalNotification: StatusBarNotification? = null
 ) {
 
