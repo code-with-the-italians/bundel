@@ -1,11 +1,11 @@
 package dev.sebastiano.bundel.notifications
 
-import android.graphics.drawable.Icon
-import android.service.notification.StatusBarNotification
 import android.app.Notification
 import android.app.Notification.EXTRA_SHOW_WHEN
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.Icon
+import android.service.notification.StatusBarNotification
 
 internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
     toNotification(context).takeIf { it.isNotEmpty }
@@ -13,7 +13,7 @@ internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
 internal fun StatusBarNotification.toNotification(context: Context) = NotificationEntry(
     timestamp = notification.`when`,
     showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
-    isGroup = notification.run { groupKey != null && (flags and Notification.FLAG_GROUP_SUMMARY) != 0 },
+    isGroup = notification.run { groupKey != null && flags and Notification.FLAG_GROUP_SUMMARY != 0 },
     text = text,
     title = title,
     subText = subText,

@@ -8,6 +8,5 @@
     <string name="notifications_empty_text">Nothing yet…</string>
     <string name="notification_icon_content_description">Icon</string>
     <string name="notification_no_icon_content_description">No icon</string>
-    <string name="notification_missing_value">[N/A]</string>
     <string name="app_icon_content_description">%s icon</string>
 </resources>

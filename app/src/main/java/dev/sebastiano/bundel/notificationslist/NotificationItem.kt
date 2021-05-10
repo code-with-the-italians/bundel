@@ -84,7 +84,7 @@ internal fun NotificationItem(notification: NotificationEntry) {
             .fillMaxWidth()
             .padding(horizontal = singlePadding())
             .padding(top = singlePadding())
-            .clickable(notification) { notification.interactions.main!!.send() }
+            .clickable(notification) { checkNotNull(notification.interactions.main).send() }
     ) {
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(notification)
@@ -146,7 +146,7 @@ private fun NotificationContent(notification: NotificationEntry) {
             )
         }
         Column {
-            notification.title?.let {
+            if (notification.title != null) {
                 Text(
                     text = notification.title.trim(),
                     style = MaterialTheme.typography.body1,
@@ -155,7 +155,7 @@ private fun NotificationContent(notification: NotificationEntry) {
                 )
             }
 
-            notification.text?.let {
+            if (notification.text != null) {
                 Text(
                     text = notification.text.trim(),
                     style = MaterialTheme.typography.body2,
