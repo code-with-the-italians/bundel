@@ -94,30 +94,30 @@ tasks {
         jvmTarget = "1.8"
     }
 
+    val staticAnalysis by registering {
+        val detektRelease by getting(Detekt::class)
+        val androidLintRelease = named<AndroidLintTask>("lintRelease")
+
+        dependsOn(detekt, detektRelease, androidLintRelease, lintKotlin)
+    }
+
     @Suppress("UNUSED_VARIABLE")
     val collectSarifReports by registering(Sync::class) {
         val detektRelease by getting(Detekt::class)
         val androidLintRelease = named<AndroidLintTask>("lintRelease")
 
-        dependsOn(detekt, detektRelease, androidLintRelease)
+        mustRunAfter(detekt, detektRelease, androidLintRelease, lintKotlin, staticAnalysis)
+
         from(detektRelease.sarifReportFile) {
             rename { "detekt-release.sarif" }
         }
         from(detekt.get().sarifReportFile) {
             rename { "detekt.sarif" }
         }
-        from(androidLintRelease.get().sarifReportOutputFile) {
+        from(androidLintRelease.get().sarifReportOutputFile.get().asFile) {
             rename { "android-lint.sarif" }
         }
 
         into("$buildDir/reports/sarif")
-    }
-
-    register("staticAnalysis") {
-        val detektRelease by getting(Detekt::class)
-        val androidLintRelease = named<AndroidLintTask>("lintRelease")
-
-        dependsOn(detekt, detektRelease, androidLintRelease, lintKotlin)
-        finalizedBy(collectSarifReports)
     }
 }
