@@ -101,8 +101,7 @@ tasks {
         dependsOn(detekt, detektRelease, androidLintRelease, lintKotlin)
     }
 
-    @Suppress("UNUSED_VARIABLE")
-    val collectSarifReports by registering(Sync::class) {
+    register<Sync>("collectSarifReports") {
         val detektRelease by getting(Detekt::class)
         val androidLintRelease = named<AndroidLintTask>("lintRelease")
 
