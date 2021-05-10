@@ -119,5 +119,10 @@ tasks {
         }
 
         into("$buildDir/reports/sarif")
+
+        doLast {
+            logger.info("Copied ${inputs.files.files.filter { it.exists() }} into ${outputs.files.files}")
+            logger.info("Output dir contents:\n${outputs.files.files.first().listFiles()?.joinToString()}")
+        }
     }
 }
