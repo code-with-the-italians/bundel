@@ -8,9 +8,9 @@ import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
 
 internal fun StatusBarNotification.toNotificationOrNull(context: Context) =
-    toNotification(context).takeIf { it.isNotEmpty }
+    toNotificationEntry(context).takeIf { it.isNotEmpty }
 
-internal fun StatusBarNotification.toNotification(context: Context) = NotificationEntry(
+internal fun StatusBarNotification.toNotificationEntry(context: Context) = NotificationEntry(
     timestamp = notification.`when`,
     showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
     isGroup = notification.run { groupKey != null && flags and Notification.FLAG_GROUP_SUMMARY != 0 },

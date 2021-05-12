@@ -18,6 +18,8 @@ data class NotificationEntry(
     val originalNotification: StatusBarNotification? = null
 ) {
 
+    val uniqueId = "${appInfo.packageName}_${originalNotification?.id ?: "no-id"}_$timestamp"
+
     fun isClickable() = interactions.main != null
 
     val isNotEmpty: Boolean =

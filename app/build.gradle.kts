@@ -68,6 +68,7 @@ detekt {
 
 dependencies {
     val hiltVersion = "2.35.1"
+    val roomVersion = "2.4.0-alpha02"
 
     implementation("androidx.activity:activity-compose:1.3.0-alpha07")
     implementation("androidx.appcompat:appcompat:1.2.0")
@@ -82,9 +83,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("com.jakewharton.timber:timber:4.7.1")
 
+    kapt("androidx.room:room-compiler:$roomVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 }
 
