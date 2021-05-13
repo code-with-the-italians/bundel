@@ -27,6 +27,7 @@ class NotificationsCache @Inject constructor(
         cont.resume(file.readAsStatusBarNotification())
     }
 
+    @Suppress("OptionalUnit") // We need to explicitly return Unit, here
     suspend fun storeStatusBarNotification(notification: StatusBarNotification, notificationId: String): Unit = suspendCoroutine { cont ->
         val file = cachedFileFor(notificationId)
         if (file.exists()) {
