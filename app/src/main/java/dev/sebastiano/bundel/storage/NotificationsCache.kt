@@ -1,12 +1,12 @@
 package dev.sebastiano.bundel.storage
 
 import android.app.Application
-import android.os.Parcelable
-import java.io.File
 import android.os.Parcel
+import android.os.Parcelable
 import android.os.Parcelable.Creator
 import android.service.notification.StatusBarNotification
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 // Some code thanks to Omar Miatello <3

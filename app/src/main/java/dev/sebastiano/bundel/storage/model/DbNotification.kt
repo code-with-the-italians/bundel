@@ -1,7 +1,5 @@
 package dev.sebastiano.bundel.storage.model
 
-import android.os.Parcelable
-import android.service.notification.StatusBarNotification
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

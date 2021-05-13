@@ -38,14 +38,14 @@ internal class RobertoRepository @Inject constructor(
             database.robertooo()
                 .getNotifications()
         }
-            //.conflate() TODO?
+            // .conflate() TODO?
             .map { dbNotifications ->
                 val idsToPrune = mutableListOf<String>()
                 val notifications = withContext(Dispatchers.IO) {
                     dbNotifications.mapNotNull { dbNotification ->
                         try {
                             cache.getStatusBarNotification(dbNotification.notificationId)
-                        } catch (e: IllegalArgumentException) {
+                        } catch (ignored: IllegalArgumentException) {
                             idsToPrune += dbNotification.notificationId
                             null
                         }
