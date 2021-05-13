@@ -23,7 +23,7 @@ internal abstract class RobertoDao {
     @Query("DELETE FROM notifications WHERE timestamp < :olderThan")
     abstract suspend fun clearNotifications(olderThan: Long)
 
-    @Query("DELETE FROM notifications WHERE notificationId = :notificationId")
+    @Query("DELETE FROM notifications WHERE notification_id = :notificationId")
     abstract suspend fun deleteNotificationById(notificationId: String)
 
     @Transaction

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "notifications")
 internal data class DbNotification(
-    @PrimaryKey val notificationId: String,
+    @ColumnInfo(name = "notification_id") @PrimaryKey val notificationId: String,
     val timestamp: Long,
     @ColumnInfo(name = "app_package") val appPackageName: String
 )
