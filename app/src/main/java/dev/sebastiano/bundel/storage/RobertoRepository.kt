@@ -1,18 +1,17 @@
 package dev.sebastiano.bundel.storage
 
-import android.app.Application
+import dev.sebastiano.bundel.BundelApplication
 import dev.sebastiano.bundel.notifications.NotificationEntry
 import dev.sebastiano.bundel.notifications.toNotificationEntry
 import dev.sebastiano.bundel.storage.model.DbNotification
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class RobertoRepository @Inject constructor(
-    private val application: Application,
+    private val application: BundelApplication,
     private val database: RobertoDatabase,
     private val cache: NotificationsCache
 ) {
@@ -33,12 +32,9 @@ internal class RobertoRepository @Inject constructor(
         }
     }
 
-    suspend fun getNotifications() = coroutineScope {
-        withContext(Dispatchers.IO) {
-            database.robertooo()
-                .getNotifications()
-        }
-            // .conflate() TODO?
+    fun getNotifications() =
+        database.robertooo()
+            .getNotifications()
             .map { dbNotifications ->
                 val idsToPrune = mutableListOf<String>()
                 val notifications = withContext(Dispatchers.IO) {
@@ -53,12 +49,11 @@ internal class RobertoRepository @Inject constructor(
                 }
 
                 if (idsToPrune.isNotEmpty()) {
-                    launch { deleteNotifications(idsToPrune) }
+                    application.launch { deleteNotifications(idsToPrune) }
                 }
 
                 notifications
             }
-    }
 
     suspend fun deleteNotification(notificationId: String) {
         withContext(Dispatchers.IO) {

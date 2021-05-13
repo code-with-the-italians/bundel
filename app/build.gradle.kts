@@ -83,8 +83,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
-    implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("androidx.room:room-runtime:$roomVersion")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("com.jakewharton.timber:timber:4.7.1")
 

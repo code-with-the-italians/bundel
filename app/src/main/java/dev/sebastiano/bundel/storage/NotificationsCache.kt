@@ -8,6 +8,8 @@ import android.service.notification.StatusBarNotification
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 // Some code thanks to Omar Miatello <3
 // Licensed under Apache 2.0 license
@@ -18,21 +20,21 @@ class NotificationsCache @Inject constructor(
 
     // TODO memcache shit cause I/O is slow
 
-    fun getStatusBarNotification(notificationId: String): StatusBarNotification {
+    suspend fun getStatusBarNotification(notificationId: String): StatusBarNotification = suspendCoroutine { cont ->
         val file = cachedFileFor(notificationId)
         require(file.exists()) { "No entry found for notification ID $notificationId" }
 
-        return file.readAsStatusBarNotification()
+        cont.resume(file.readAsStatusBarNotification())
     }
 
-    fun storeStatusBarNotification(notification: StatusBarNotification, notificationId: String) {
+    suspend fun storeStatusBarNotification(notification: StatusBarNotification, notificationId: String): Unit = suspendCoroutine { cont ->
         val file = cachedFileFor(notificationId)
         if (file.exists()) {
             Timber.v("No need to save notification with ID '$notificationId' as it exists already")
-            return
+        } else {
+            notification.writeToFile(file)
         }
-
-        notification.writeToFile(file)
+        cont.resume(Unit)
     }
 
     private fun cachedFileFor(notificationId: String) = File(application.cacheDir, notificationId)
