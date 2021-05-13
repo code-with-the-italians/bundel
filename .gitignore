@@ -34,6 +34,7 @@ local.properties
 !/.idea/inspectionProfiles/
 !/.idea/scopes/
 !/.idea/codeStyles
+!/.idea/runConfigurations
 !/.idea/.name
 !/.idea/encodings.xml
 !/.idea/copyright/
