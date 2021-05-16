@@ -27,17 +27,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.storage.ImagesStorage
 import dev.sebastiano.bundel.util.asImageBitmap
+import dev.sebastiano.bundel.util.rememberIconPainter
+import java.io.File
 import android.graphics.drawable.Icon as GraphicsIcon
 
 @Composable
@@ -96,10 +101,45 @@ internal fun NotificationItem(activeNotification: ActiveNotification) {
     ) {
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(activeNotification.persistableNotification)
-            NotificationContent(activeNotification)
+            NotificationContent(
+                notification = activeNotification.persistableNotification,
+                iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
+                interactions = activeNotification.interactions
+            )
         }
     }
 }
+
+@Composable
+internal fun NotificationItem(
+    persistableNotification: PersistableNotification,
+    imagesStorage: ImagesStorage
+) {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = singlePadding())
+            .padding(top = singlePadding())
+    ) {
+        Column(Modifier.padding(singlePadding())) {
+            NotificationMetadata(persistableNotification)
+
+            val iconPainter = rememberCoilPainter(
+                request = getIconRequest(imagesStorage, persistableNotification)
+            )
+            NotificationContent(persistableNotification, iconPainter, interactions = null)
+        }
+    }
+}
+
+@Composable
+private fun getIconRequest(
+    imagesStorage: ImagesStorage,
+    persistableNotification: PersistableNotification
+) =
+    File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.LARGE))
+        .takeIf { it.exists() }
+        ?: File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.SMALL))
 
 private fun Modifier.clickable(actionableNotification: ActiveNotification, onClick: (ActiveNotification) -> Unit) =
     if (actionableNotification.isClickable()) clickable { onClick(actionableNotification) } else this
@@ -140,12 +180,14 @@ private fun Timestamp(notification: PersistableNotification) {
 }
 
 @Composable
-private fun NotificationContent(notification: ActiveNotification) {
+private fun NotificationContent(
+    notification: PersistableNotification,
+    iconPainter: Painter?,
+    interactions: ActiveNotification.Interactions?
+) {
     Row(Modifier.fillMaxWidth()) {
-        val icon = (notification.icons.large ?: notification.icons.small)
-            ?.asImageBitmap()
-        if (icon != null) {
-            Image(icon, stringResource(R.string.notification_icon_content_description), modifier = Modifier.size(iconSize()))
+        if (iconPainter != null) { // TODO reevaluate nullability
+            Image(iconPainter, stringResource(R.string.notification_icon_content_description), modifier = Modifier.size(iconSize()))
         } else {
             Image(
                 Icons.Rounded.BrokenImage,
@@ -155,36 +197,36 @@ private fun NotificationContent(notification: ActiveNotification) {
             )
         }
         Column {
-            if (notification.persistableNotification.title != null) {
+            if (notification.title != null) {
                 Text(
-                    text = notification.persistableNotification.title.trim(),
+                    text = notification.title.trim(),
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(start = singlePadding())
                 )
             }
 
-            if (notification.persistableNotification.text != null) {
+            if (notification.text != null) {
                 Text(
-                    text = notification.persistableNotification.text.trim(),
+                    text = notification.text.trim(),
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(start = singlePadding())
                 )
             }
 
-            NotificationActions(notification)
+            if (interactions != null) NotificationActions(interactions)
         }
     }
 }
 
 @Composable
-private fun NotificationActions(actionableNotification: ActiveNotification) {
-    if (actionableNotification.interactions.actions.isEmpty()) return
+private fun NotificationActions(interactions: ActiveNotification.Interactions) {
+    if (interactions.actions.isEmpty()) return
 
     Spacer(modifier = Modifier.height(singlePadding()))
     val scrollState = rememberScrollState()
     Row(Modifier.horizontalScroll(scrollState)) {
-        val items = actionableNotification.interactions.actions.take(3)
+        val items = interactions.actions.take(3)
         for ((index, action) in items.withIndex()) {
             TextButton(onClick = { action.pendingIntent?.send() }) {
                 Text(action.text.trim().toString())

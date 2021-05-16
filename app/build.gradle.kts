@@ -87,6 +87,8 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation("io.coil-kt:coil:1.2.1")
+    implementation("com.google.accompanist:accompanist-coil:0.9.1")
 
     kapt("androidx.room:room-compiler:$roomVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")

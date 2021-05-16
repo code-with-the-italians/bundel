@@ -17,13 +17,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.sebastiano.bundel.history.NotificationsHistoryScreen
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
+import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
+import dev.sebastiano.bundel.onboarding.OnboardingScreen
+import dev.sebastiano.bundel.storage.RobertoRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -31,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     private val needsNotificationsPermission = lifecycle.eventsAsFlow()
         .filter { it == Lifecycle.Event.ON_START }
         .map { needsNotificationsPermission(this) }
+
+    @Inject
+    internal lateinit var repository: RobertoRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +54,15 @@ class MainActivity : AppCompatActivity() {
                             onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) }
                         )
                     }
-                    composable(NavigationRoutes.NOTIFICATIONS_LIST) { NotificationsListScreen() }
+                    composable(NavigationRoutes.NOTIFICATIONS_LIST) {
+                        NotificationsListScreen(
+                            onHistoryClicked = { navController.navigate(NavigationRoutes.HISTORY) }
+                        )
+                    }
+                    composable(NavigationRoutes.HISTORY) {
+                        val items by repository.getNotifications().collectAsState(initial = emptyList())
+                        NotificationsHistoryScreen(items)
+                    }
                 }
             }
         }
@@ -58,14 +74,16 @@ class MainActivity : AppCompatActivity() {
         onDismissClicked: () -> Unit
     ) {
         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
-        dev.sebastiano.bundel.onboarding.OnboardingScreen(needsNotificationsPermission, onSettingsIntentClick, onDismissClicked)
+        OnboardingScreen(needsNotificationsPermission, onSettingsIntentClick, onDismissClicked)
     }
 
     @Composable
-    private fun NotificationsListScreen() {
+    private fun NotificationsListScreen(
+        onHistoryClicked: () -> Unit
+    ) {
         val notifications by remember(lifecycle) { BundelNotificationListenerService.NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
             .collectAsState(emptyList())
-        dev.sebastiano.bundel.notificationslist.NotificationsListScreen(notifications)
+        NotificationsListScreen(notifications, onHistoryClicked)
     }
 
     private fun showNotificationsPreferences() {
@@ -76,6 +94,7 @@ class MainActivity : AppCompatActivity() {
 
         const val ONBOARDING = "onboarding"
         const val NOTIFICATIONS_LIST = "notifications_list"
+        const val HISTORY = "history"
     }
 }
 

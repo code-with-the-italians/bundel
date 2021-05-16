@@ -52,7 +52,10 @@ internal class DiskImagesStorage(
         }
     }
 
-    override fun getIconFile(notificationUniqueId: String, iconSize: NotificationIconSize): File {
+    override fun getIconPath(notificationUniqueId: String, iconSize: NotificationIconSize): String =
+        getIconFile(notificationUniqueId, iconSize).path
+
+    private fun getIconFile(notificationUniqueId: String, iconSize: NotificationIconSize): File {
         val extension = getCachedImageFormat().extension
         return File(cacheFolder, "${notificationUniqueId}_icon_${iconSize.cacheKey}.$extension")
     }
@@ -85,7 +88,9 @@ internal class DiskImagesStorage(
         }
     }
 
-    override fun getAppIconFile(packageName: String): File {
+    override fun getAppIconPath(packageName: String): String = getAppIconFile(packageName).path
+
+    private fun getAppIconFile(packageName: String): File {
         val extension = getCachedImageFormat().extension
         return File(cacheFolder, "app_${packageName}_icon.$extension")
     }

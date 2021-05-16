@@ -9,4 +9,5 @@
     <string name="notification_icon_content_description">Icon</string>
     <string name="notification_no_icon_content_description">No icon</string>
     <string name="app_icon_content_description">%s icon</string>
+    <string name="menu_history">Notifications history</string>
 </resources>
