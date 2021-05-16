@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         onDismissClicked: () -> Unit
     ) {
         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
-        OnboardingScreen(needsNotificationsPermission, onSettingsIntentClick, onDismissClicked)
+        dev.sebastiano.bundel.onboarding.OnboardingScreen(needsNotificationsPermission, onSettingsIntentClick, onDismissClicked)
     }
 
     @Composable
