@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun NotificationsListScreen() {
-        val notifications by remember(lifecycle) { BundelNotificationListenerService.notificationsFlow.flowWithLifecycle(lifecycle) }
+        val notifications by remember(lifecycle) { BundelNotificationListenerService.NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
             .collectAsState(emptyList())
         dev.sebastiano.bundel.notificationslist.NotificationsListScreen(notifications)
     }

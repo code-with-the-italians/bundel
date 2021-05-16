@@ -35,7 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.notifications.NotificationEntry
+import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.util.asImageBitmap
 import android.graphics.drawable.Icon as GraphicsIcon
 
@@ -45,20 +46,27 @@ private fun iconSize() = 48.dp
 @Composable
 private fun singlePadding() = 8.dp
 
-private fun previewNotification(context: Context) = NotificationEntry(
-    timestamp = 12345678L,
-    showTimestamp = true,
-    interactions = NotificationEntry.Interactions(
-        actions = listOf(
-            NotificationEntry.Interactions.ActionItem(text = "Mai una gioia"),
-            NotificationEntry.Interactions.ActionItem(text = "Mai una gioia"),
-            NotificationEntry.Interactions.ActionItem(text = "Mai una gioia"),
-            NotificationEntry.Interactions.ActionItem(text = "Mai una gioia"),
-        )
+private fun previewNotification(context: Context) = ActiveNotification(
+    persistableNotification = PersistableNotification(
+        timestamp = 12345678L,
+        showTimestamp = true,
+        text = "Hello I'm Ivan and I'm here to complain about things.",
+        title = "Ivan Morgillo",
+        appInfo = PersistableNotification.SenderAppInfo(
+            "com.yeah",
+            "Yeah! messenger",
+            GraphicsIcon.createWithResource(context, R.drawable.ic_whatever_24dp)
+        ),
+        id = 1234,
     ),
-    title = "Ivan Morgillo",
-    text = "Hello I'm Ivan and I'm not here to complain about things.",
-    appInfo = NotificationEntry.SenderAppInfo("com.yeah", "Yeah! messenger", GraphicsIcon.createWithResource(context, R.drawable.ic_whatever_24dp))
+    interactions = ActiveNotification.Interactions(
+        actions = listOf(
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+        )
+    )
 )
 
 @Preview
@@ -78,26 +86,26 @@ private fun NotificationItemDarkPreview() {
 }
 
 @Composable
-internal fun NotificationItem(notification: NotificationEntry) {
+internal fun NotificationItem(activeNotification: ActiveNotification) {
     Card(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = singlePadding())
             .padding(top = singlePadding())
-            .clickable(notification) { checkNotNull(notification.interactions.main).send() }
+            .clickable(activeNotification) { checkNotNull(activeNotification.interactions.main).send() }
     ) {
         Column(Modifier.padding(singlePadding())) {
-            NotificationMetadata(notification)
-            NotificationContent(notification)
+            NotificationMetadata(activeNotification.persistableNotification)
+            NotificationContent(activeNotification)
         }
     }
 }
 
-private fun Modifier.clickable(notification: NotificationEntry, onClick: (NotificationEntry) -> Unit) =
-    if (notification.isClickable()) clickable { onClick(notification) } else this
+private fun Modifier.clickable(actionableNotification: ActiveNotification, onClick: (ActiveNotification) -> Unit) =
+    if (actionableNotification.isClickable()) clickable { onClick(actionableNotification) } else this
 
 @Composable
-fun NotificationMetadata(notification: NotificationEntry) {
+private fun NotificationMetadata(notification: PersistableNotification) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -105,19 +113,20 @@ fun NotificationMetadata(notification: NotificationEntry) {
         verticalAlignment = Alignment.Bottom
     ) {
         val appIcon = notification.appInfo.icon?.asImageBitmap()
+        val appName = notification.appInfo.name ?: notification.appInfo.packageName
         if (appIcon != null) {
-            Image(appIcon, stringResource(id = R.string.app_icon_content_description, notification.appInfo.name), Modifier.size(16.dp))
+            Image(appIcon, stringResource(id = R.string.app_icon_content_description, appName), Modifier.size(16.dp))
             Spacer(modifier = Modifier.size(singlePadding()))
         }
         CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.caption) {
-            Text(notification.appInfo.name, Modifier.weight(1F, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(appName, Modifier.weight(1F, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (notification.showTimestamp) Timestamp(notification)
         }
     }
 }
 
 @Composable
-private fun Timestamp(notification: NotificationEntry) {
+private fun Timestamp(notification: PersistableNotification) {
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(text = " · ")
         Text(
@@ -131,7 +140,7 @@ private fun Timestamp(notification: NotificationEntry) {
 }
 
 @Composable
-private fun NotificationContent(notification: NotificationEntry) {
+private fun NotificationContent(notification: ActiveNotification) {
     Row(Modifier.fillMaxWidth()) {
         val icon = (notification.icons.large ?: notification.icons.small)
             ?.asImageBitmap()
@@ -146,18 +155,18 @@ private fun NotificationContent(notification: NotificationEntry) {
             )
         }
         Column {
-            if (notification.title != null) {
+            if (notification.persistableNotification.title != null) {
                 Text(
-                    text = notification.title.trim(),
+                    text = notification.persistableNotification.title.trim(),
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(start = singlePadding())
                 )
             }
 
-            if (notification.text != null) {
+            if (notification.persistableNotification.text != null) {
                 Text(
-                    text = notification.text.trim(),
+                    text = notification.persistableNotification.text.trim(),
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier.padding(start = singlePadding())
                 )
@@ -169,13 +178,13 @@ private fun NotificationContent(notification: NotificationEntry) {
 }
 
 @Composable
-fun NotificationActions(notification: NotificationEntry) {
-    if (notification.interactions.actions.isEmpty()) return
+private fun NotificationActions(actionableNotification: ActiveNotification) {
+    if (actionableNotification.interactions.actions.isEmpty()) return
 
     Spacer(modifier = Modifier.height(singlePadding()))
     val scrollState = rememberScrollState()
     Row(Modifier.horizontalScroll(scrollState)) {
-        val items = notification.interactions.actions.take(3)
+        val items = actionableNotification.interactions.actions.take(3)
         for ((index, action) in items.withIndex()) {
             TextButton(onClick = { action.pendingIntent?.send() }) {
                 Text(action.text.trim().toString())

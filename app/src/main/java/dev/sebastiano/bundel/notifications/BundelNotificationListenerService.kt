@@ -25,11 +25,11 @@ internal class BundelNotificationListenerService : NotificationListenerService()
 
     override fun onListenerConnected() {
         isConnected = true
-        val notifications = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
+        val notifications = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
         _notificationsFlow.value = notifications
         runBlocking {
             for (notification in notifications) {
-                repository.saveNotification(notification)
+                repository.saveNotification(notification.persistableNotification)
             }
         }
         Timber.i("Notifications listener connected")
@@ -43,23 +43,23 @@ internal class BundelNotificationListenerService : NotificationListenerService()
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         Timber.i("Notification posted by ${sbn.packageName}")
         runBlocking {
-            repository.saveNotification(sbn.toNotificationEntry(this@BundelNotificationListenerService))
+            repository.saveNotification(sbn.toActiveNotification(this@BundelNotificationListenerService).persistableNotification)
         }
-        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Timber.i("Notification removed by ${sbn.packageName}")
         runBlocking {
-            val notification = sbn.toNotificationEntry(this@BundelNotificationListenerService)
-            repository.deleteNotification(notification.uniqueId)
+            val notification = sbn.toActiveNotification(this@BundelNotificationListenerService)
+            repository.deleteNotification(notification.persistableNotification.uniqueId)
         }
-        _notificationsFlow.value = activeNotifications.mapNotNull { it.toNotificationOrNull(this) }
+        _notificationsFlow.value = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
     }
 
     companion object {
 
-        private val _notificationsFlow = MutableStateFlow(emptyList<NotificationEntry>())
-        val notificationsFlow: Flow<List<NotificationEntry>> = _notificationsFlow
+        private val _notificationsFlow = MutableStateFlow(emptyList<ActiveNotification>())
+        val NOTIFICATIONS_FLOW: Flow<List<ActiveNotification>> = _notificationsFlow
     }
 }

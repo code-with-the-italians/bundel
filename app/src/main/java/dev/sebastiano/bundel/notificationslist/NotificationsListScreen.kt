@@ -23,13 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.notifications.NotificationEntry
+import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.notifications.PersistableNotification
 
 @Preview
 @Composable
 fun NotificationsListEmptyLightPreview() {
     BundelTheme {
-        NotificationsListScreen(notificationEntries = emptyList())
+        NotificationsListScreen(actionableNotifications = emptyList())
     }
 }
 
@@ -37,22 +38,25 @@ fun NotificationsListEmptyLightPreview() {
 @Composable
 fun NotificationsListEmptyDarkPreview() {
     BundelTheme(darkModeOverride = true) {
-        NotificationsListScreen(notificationEntries = emptyList())
+        NotificationsListScreen(actionableNotifications = emptyList())
     }
 }
+
+private val activeNotification = ActiveNotification(
+    persistableNotification = PersistableNotification(
+        timestamp = 12345678L,
+        text = "Hello Ivan",
+        appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!"),
+        id = 123
+    )
+)
 
 @Preview
 @Composable
 fun NotificationsListLightPreview() {
     BundelTheme {
         NotificationsListScreen(
-            notificationEntries = listOf(
-                NotificationEntry(
-                    timestamp = 12345678L,
-                    text = "Hello Ivan",
-                    appInfo = NotificationEntry.SenderAppInfo("com.yeah", "Yeah!")
-                )
-            )
+            actionableNotifications = listOf(activeNotification)
         )
     }
 }
@@ -62,26 +66,20 @@ fun NotificationsListLightPreview() {
 fun NotificationsListDarkPreview() {
     BundelTheme(darkModeOverride = true) {
         NotificationsListScreen(
-            notificationEntries = listOf(
-                NotificationEntry(
-                    timestamp = 12345678L,
-                    text = "Hello Ivan",
-                    appInfo = NotificationEntry.SenderAppInfo("com.yeah", "Yeah!")
-                )
-            )
+            actionableNotifications = listOf(activeNotification)
         )
     }
 }
 
 @Composable
-internal fun NotificationsListScreen(notificationEntries: List<NotificationEntry>) {
+internal fun NotificationsListScreen(actionableNotifications: List<ActiveNotification>) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { NotificationsListTopAppBar() },
     ) {
-        if (notificationEntries.isNotEmpty()) {
+        if (actionableNotifications.isNotEmpty()) {
             Column(Modifier.fillMaxSize()) {
-                NotificationsList(notificationEntries)
+                NotificationsList(actionableNotifications)
             }
         } else {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
@@ -101,9 +99,9 @@ internal fun NotificationsListScreen(notificationEntries: List<NotificationEntry
 }
 
 @Composable
-private fun NotificationsList(notificationEntries: List<NotificationEntry>) {
+private fun NotificationsList(actionableNotifications: List<ActiveNotification>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(notificationEntries.filterNot { it.isGroup }) { notification ->
+        items(actionableNotifications.filterNot { it.persistableNotification.isGroup }) { notification ->
             NotificationItem(notification)
         }
     }
