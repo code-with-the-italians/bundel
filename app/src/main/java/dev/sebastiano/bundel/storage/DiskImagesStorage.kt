@@ -83,7 +83,7 @@ internal class DiskImagesStorage(
         val extension = getCachedImageFormat().extension
         withContext(Dispatchers.IO) {
             cacheFolder.listFiles()
-                ?.filter { it.extension == extension}
+                ?.filter { it.extension == extension }
                 ?.forEach { it.delete() }
         }
     }
