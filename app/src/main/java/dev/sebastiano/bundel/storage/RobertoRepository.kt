@@ -1,22 +1,18 @@
 package dev.sebastiano.bundel.storage
 
-import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.storage.model.DbNotification
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class RobertoRepository @Inject constructor(
-    private val database: RobertoDatabase
+    private val database: RobertoDatabase,
+    private val imagesStorage: ImagesStorage
 ) {
 
-    suspend fun saveNotification(persistableNotification: PersistableNotification) {
-        withContext(Dispatchers.IO) {
-            database.robertooo().insertNotification(
-                DbNotification.from(persistableNotification)
-            )
-        }
+    suspend fun saveNotification(activeNotification: ActiveNotification) {
+        database.robertooo().insertNotification(DbNotification.from(activeNotification.persistableNotification))
+        imagesStorage.saveIconsFrom(activeNotification)
     }
 
     fun getNotifications() =
@@ -24,15 +20,20 @@ internal class RobertoRepository @Inject constructor(
             .getNotifications()
             .map { dbNotifications -> dbNotifications.map { it.toPersistableNotification() } }
 
-    suspend fun deleteNotification(notificationId: String) {
-        withContext(Dispatchers.IO) {
-            database.robertooo().deleteNotificationById(notificationId)
+    suspend fun deleteNotification(notificationUniqueId: String) {
+        database.robertooo().deleteNotificationById(notificationUniqueId)
+        cleanupIconsFor(notificationUniqueId)
+    }
+
+    suspend fun deleteNotifications(notificationUniqueIds: List<String>) {
+        database.robertooo().deleteNotificationsById(notificationUniqueIds)
+        for (notificationUniqueId in notificationUniqueIds) {
+            cleanupIconsFor(notificationUniqueId)
         }
     }
 
-    private suspend fun deleteNotifications(notificationIds: List<String>) {
-        withContext(Dispatchers.IO) {
-            database.robertooo().deleteNotificationsById(notificationIds)
-        }
+    private suspend fun cleanupIconsFor(notificationUniqueId: String) {
+        imagesStorage.deleteIconsFor(notificationUniqueId)
+        // TODO clean up app icons when no more notifications use them
     }
 }

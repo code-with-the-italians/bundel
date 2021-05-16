@@ -29,7 +29,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         _notificationsFlow.value = notifications
         runBlocking {
             for (notification in notifications) {
-                repository.saveNotification(notification.persistableNotification)
+                repository.saveNotification(notification)
             }
         }
         Timber.i("Notifications listener connected")
@@ -43,7 +43,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         Timber.i("Notification posted by ${sbn.packageName}")
         runBlocking {
-            repository.saveNotification(sbn.toActiveNotification(this@BundelNotificationListenerService).persistableNotification)
+            repository.saveNotification(sbn.toActiveNotification(this@BundelNotificationListenerService))
         }
         _notificationsFlow.value = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
     }
