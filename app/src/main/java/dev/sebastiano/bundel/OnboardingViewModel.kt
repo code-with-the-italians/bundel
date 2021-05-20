@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sebastiano.bundel.storage.PreferenceStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val preferenceStorage: PreferenceStorage
+//    private val preferenceStorage: PreferenceStorage // UNCOMMENT THIS TO EXPERIENCE VM CREATION CRASH
 ) : ViewModel() {
 
     val crashlyticsState = MutableStateFlow(false)
@@ -23,7 +22,7 @@ class OnboardingViewModel @Inject constructor(
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(enabled)
 
         viewModelScope.launch {
-            preferenceStorage.storeCrashlytics(enabled)
+            //          preferenceStorage.storeCrashlytics(enabled)
             crashlyticsState.emit(enabled)
         }
     }
