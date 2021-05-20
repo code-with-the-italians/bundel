@@ -16,7 +16,5 @@ internal class ApplicationModule {
     fun provideBundelApplication(application: Application): BundelApplication = application as BundelApplication
 
     @Provides
-    fun providePreferenceStorage(application: Application): PreferenceStorage {
-        return PreferenceStorageSP(application)
-    }
+    fun providePreferenceStorage(application: Application): PreferenceStorage = PreferenceStorageSP(application)
 }
