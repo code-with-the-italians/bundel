@@ -8,6 +8,8 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("io.gitlab.arturbosch.detekt")
     id("org.jmailen.kotlinter")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 val composeVersion = "1.0.0-beta06"
@@ -89,6 +91,10 @@ dependencies {
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("io.coil-kt:coil:1.2.1")
     implementation("com.google.accompanist:accompanist-coil:0.9.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:28.0.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     kapt("androidx.room:room-compiler:$roomVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")

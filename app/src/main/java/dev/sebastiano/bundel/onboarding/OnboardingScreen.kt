@@ -1,13 +1,17 @@
 package dev.sebastiano.bundel.onboarding
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +27,13 @@ import dev.sebastiano.bundel.R
 @Composable
 internal fun OnboardingScreenNeedsPermissionPreview() {
     BundelTheme {
-        OnboardingScreen(true, onSettingsIntentClick = { }, onDismissClicked = { })
+        OnboardingScreen(
+            true,
+            onSettingsIntentClick = { },
+            onDismissClicked = { },
+            false,
+            {}
+        )
     }
 }
 
@@ -31,7 +41,13 @@ internal fun OnboardingScreenNeedsPermissionPreview() {
 @Composable
 internal fun OnboardingScreenDismissOnlyPreview() {
     BundelTheme {
-        OnboardingScreen(false, onSettingsIntentClick = { }, onDismissClicked = { })
+        OnboardingScreen(
+            false,
+            onSettingsIntentClick = { },
+            onDismissClicked = { },
+            true,
+            {}
+        )
     }
 }
 
@@ -39,7 +55,9 @@ internal fun OnboardingScreenDismissOnlyPreview() {
 internal fun OnboardingScreen(
     needsPermission: Boolean,
     onSettingsIntentClick: () -> Unit,
-    onDismissClicked: () -> Unit
+    onDismissClicked: () -> Unit,
+    crashReportingEnabled: Boolean,
+    onSwitchChanged: (Boolean) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,6 +74,42 @@ internal fun OnboardingScreen(
             Button(onClick = onDismissClicked) {
                 Text(text = "Let's a-go!")
             }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+private fun CrashlyticsSwitch(
+    crashReportingEnabled: Boolean,
+    onSwitchChanged: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column {
+            Text(
+                "Enable Crash reporting",
+                style = MaterialTheme.typography.h5
+            )
+        }
+        Column {
+            Switch(
+                checked = crashReportingEnabled,
+                onCheckedChange = { onSwitchChanged(!crashReportingEnabled) },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.End),
+            )
         }
     }
 }

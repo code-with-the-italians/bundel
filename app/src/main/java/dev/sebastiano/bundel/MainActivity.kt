@@ -12,13 +12,14 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sebastiano.bundel.history.NotificationsHistoryScreen
-import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
+import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Companion.NOTIFICATIONS_FLOW
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
@@ -51,8 +52,9 @@ class MainActivity : AppCompatActivity() {
                     composable(NavigationRoutes.ONBOARDING) {
                         OnboardingScreen(
                             onSettingsIntentClick = { showNotificationsPreferences() },
-                            onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) }
-                        )
+                            onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) },
+
+                            )
                     }
                     composable(NavigationRoutes.NOTIFICATIONS_LIST) {
                         NotificationsListScreen(
@@ -70,18 +72,28 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun OnboardingScreen(
+        viewModel: OnboardingViewModel = viewModel(),
         onSettingsIntentClick: () -> Unit,
-        onDismissClicked: () -> Unit
+        onDismissClicked: () -> Unit,
     ) {
         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
-        OnboardingScreen(needsNotificationsPermission, onSettingsIntentClick, onDismissClicked)
+
+        val checkedState by viewModel.crashlyticsState.collectAsState()
+
+        OnboardingScreen(
+            needsNotificationsPermission,
+            onSettingsIntentClick,
+            onDismissClicked,
+            checkedState,
+            { viewModel.onCrashlyticsChanged(it) }
+        )
     }
 
     @Composable
     private fun NotificationsListScreen(
         onHistoryClicked: () -> Unit
     ) {
-        val notifications by remember(lifecycle) { BundelNotificationListenerService.NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
+        val notifications by remember(lifecycle) { NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
             .collectAsState(emptyList())
         NotificationsListScreen(notifications, onHistoryClicked)
     }
