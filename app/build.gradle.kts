@@ -69,7 +69,7 @@ detekt {
 }
 
 dependencies {
-    val hiltVersion = "2.35.1"
+    val hiltVersion = "2.35"
     val roomVersion = "2.4.0-alpha02"
 
     implementation("androidx.activity:activity-compose:1.3.0-alpha07")
@@ -81,23 +81,31 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha01")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.4.0-alpha01")
+//    implementation("androidx.lifecycle:lifecycle-common-java8:2.4.0-alpha01")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$composeVersion")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.compose.compiler:compiler:$composeVersion")
+
+    implementation("com.google.dagger:dagger:2.35")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
+    implementation("androidx.hilt:hilt-common:1.0.0")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+
     implementation("com.jakewharton.timber:timber:4.7.1")
     implementation("io.coil-kt:coil:1.2.1")
-    implementation("com.google.accompanist:accompanist-coil:0.9.1")
+    implementation("com.google.accompanist:accompanist-coil:0.9.0")
 
     implementation(platform("com.google.firebase:firebase-bom:28.0.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     kapt("androidx.room:room-compiler:$roomVersion")
+    kapt("com.google.dagger:dagger-compiler:2.35")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
 }
 
 tasks {

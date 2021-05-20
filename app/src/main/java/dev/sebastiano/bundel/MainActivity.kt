@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -12,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     internal lateinit var repository: RobertoRepository
+
+    private val onboardingViewModel : OnboardingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun OnboardingScreen(
-        viewModel: OnboardingViewModel = viewModel(),
+        viewModel: OnboardingViewModel = onboardingViewModel,
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
