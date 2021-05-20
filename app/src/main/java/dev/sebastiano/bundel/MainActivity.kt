@@ -34,6 +34,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    // TODO Try to bring this into the OnboardingViewModel
     private val needsNotificationsPermission = lifecycle.eventsAsFlow()
         .filter { it == Lifecycle.Event.ON_START }
         .map { needsNotificationsPermission(this) }
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var repository: RobertoRepository
 
-    private val onboardingViewModel : OnboardingViewModel by viewModels()
+    private val onboardingViewModel: OnboardingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,9 +53,13 @@ class MainActivity : AppCompatActivity() {
             BundelTheme {
                 NavHost(navController = navController, startDestination = NavigationRoutes.ONBOARDING) {
                     composable(NavigationRoutes.ONBOARDING) {
+                        val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
+
                         OnboardingScreen(
+                            viewModel = onboardingViewModel,
                             onSettingsIntentClick = { showNotificationsPreferences() },
                             onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) },
+                            needsNotificationsPermission = needsNotificationsPermission
                         )
                     }
                     composable(NavigationRoutes.NOTIFICATIONS_LIST) {
@@ -73,12 +78,11 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun OnboardingScreen(
-        viewModel: OnboardingViewModel = onboardingViewModel,
+        viewModel: OnboardingViewModel,
+        needsNotificationsPermission: Boolean,
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
-        val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
-
         val checkedState by viewModel.crashlyticsState.collectAsState()
 
         OnboardingScreen(

@@ -1,5 +1,6 @@
 package dev.sebastiano.bundel
 
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -13,10 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val preferenceStorage: PreferenceStorage // UNCOMMENT THIS TO EXPERIENCE VM CREATION CRASH
+    private val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
 
     val crashlyticsState = MutableStateFlow(false)
+
+    init {
+        viewModelScope.launch {
+            val isCrashlyticsEnabled = preferenceStorage.loadCrashlytics()
+            crashlyticsState.emit(isCrashlyticsEnabled)
+        }
+    }
 
     fun onCrashlyticsChanged(enabled: Boolean) {
         Timber.d("Crashlytics is enabled: $enabled")
