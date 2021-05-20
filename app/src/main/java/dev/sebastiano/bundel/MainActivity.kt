@@ -53,8 +53,7 @@ class MainActivity : AppCompatActivity() {
                         OnboardingScreen(
                             onSettingsIntentClick = { showNotificationsPreferences() },
                             onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) },
-
-                            )
+                        )
                     }
                     composable(NavigationRoutes.NOTIFICATIONS_LIST) {
                         NotificationsListScreen(
@@ -81,11 +80,11 @@ class MainActivity : AppCompatActivity() {
         val checkedState by viewModel.crashlyticsState.collectAsState()
 
         OnboardingScreen(
-            needsNotificationsPermission,
-            onSettingsIntentClick,
-            onDismissClicked,
-            checkedState,
-            { viewModel.onCrashlyticsChanged(it) }
+            needsPermission = needsNotificationsPermission,
+            onSettingsIntentClick = onSettingsIntentClick,
+            onDismissClicked = onDismissClicked,
+            crashReportingEnabled = checkedState,
+            onSwitchChanged = { viewModel.onCrashlyticsChanged(it) }
         )
     }
 
