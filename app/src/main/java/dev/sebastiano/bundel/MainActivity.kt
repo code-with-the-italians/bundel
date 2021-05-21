@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var repository: RobertoRepository
 
-    private val onboardingViewModel: OnboardingViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,7 +54,6 @@ class MainActivity : AppCompatActivity() {
                         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
 
                         OnboardingScreen(
-                            viewModel = onboardingViewModel,
                             onSettingsIntentClick = { showNotificationsPreferences() },
                             onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) },
                             needsNotificationsPermission = needsNotificationsPermission
@@ -78,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun OnboardingScreen(
-        viewModel: OnboardingViewModel,
+        viewModel: OnboardingViewModel = hiltNavGraphViewModel(),
         needsNotificationsPermission: Boolean,
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
