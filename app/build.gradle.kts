@@ -69,7 +69,7 @@ detekt {
 }
 
 dependencies {
-    val hiltVersion = "2.35"
+    val hiltVersion = "2.35.1"
     val roomVersion = "2.4.0-alpha02"
 
     implementation("androidx.activity:activity-compose:1.3.0-alpha07")
@@ -89,7 +89,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.compose.compiler:compiler:$composeVersion")
 
-    implementation("com.google.dagger:dagger:2.35")
+    implementation("com.google.dagger:dagger:2.35.1")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("androidx.hilt:hilt-common:1.0.0")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
@@ -103,7 +103,7 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     kapt("androidx.room:room-compiler:$roomVersion")
-    kapt("com.google.dagger:dagger-compiler:2.35")
+    kapt("com.google.dagger:dagger-compiler:2.35.1")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
 }
