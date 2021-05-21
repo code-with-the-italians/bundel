@@ -9,13 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sebastiano.bundel.history.NotificationsHistoryScreen
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun OnboardingScreen(
-        viewModel: OnboardingViewModel = hiltNavGraphViewModel(),
+        viewModel: OnboardingViewModel = hiltViewModel(),
         needsNotificationsPermission: Boolean,
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
