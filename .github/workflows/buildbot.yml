@@ -23,7 +23,7 @@ jobs:
       - name: Check with Gradle
         uses: eskatos/gradle-command-action@v1.3.3
         with:
-          arguments: staticAnalysis collectSarifReports --continue --no-daemon
+          arguments: copyDummyDataForCi staticAnalysis collectSarifReports --continue --no-daemon
       - name: Upload SARIF to Github using the upload-sarif action
         uses: github/codeql-action/upload-sarif@v1
         if: ${{ always() }}
@@ -47,4 +47,4 @@ jobs:
       - name: Run tests with Gradle
         uses: eskatos/gradle-command-action@v1.3.3
         with:
-          arguments: test --continue --no-daemon
+          arguments: copyDummyDataForCi test --continue --no-daemon
