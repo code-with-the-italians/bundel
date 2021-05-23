@@ -7,11 +7,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.sebastiano.bundel.storage.PreferenceStorage
 import dev.sebastiano.bundel.storage.PreferenceStorageSP
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal class ApplicationModule {
 
     @Provides
+    @Singleton
     fun providePreferenceStorage(application: Application): PreferenceStorage = PreferenceStorageSP(application)
 }
