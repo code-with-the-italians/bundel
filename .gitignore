@@ -45,3 +45,6 @@ local.properties
 
 # Heap dump captures
 captures/
+
+# Google/Firebase secrets
+/app/google-services.json
