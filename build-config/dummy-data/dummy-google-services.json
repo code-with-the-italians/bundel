@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1055119861485",
-    "project_id": "bundel-59872",
-    "storage_bucket": "bundel-59872.appspot.com"
+    "project_number": "0000000000000",
+    "project_id": "bundel-00000",
+    "storage_bucket": "bundel-00000.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1055119861485:android:ce557689ae5b498927cee4",
+        "mobilesdk_app_id": "0:0000000000000:android:0000000000000000000000",
         "android_client_info": {
           "package_name": "dev.sebastiano.bundel"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1055119861485-9kd79u8lvp9dkcg4v232nbbrqua01fvl.apps.googleusercontent.com",
+          "client_id": "0000000000000-00000000000000000000000000000000.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDgyiWkDkIkFWdWCdPQd4Rwh-AlXJWfwUU"
+          "current_key": "00000000000000000000000000000-000000000"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1055119861485-9kd79u8lvp9dkcg4v232nbbrqua01fvl.apps.googleusercontent.com",
+              "client_id": "0000000000000-00000000000000000000000000000000.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

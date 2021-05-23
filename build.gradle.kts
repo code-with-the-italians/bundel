@@ -32,10 +32,9 @@ allprojects {
 
 tasks {
 
-    register("copyDummyDataForCi", Sync::class.java) {
+    register("copyDummyDataForCi", Copy::class.java) {
         from(rootProject.file("build-config/dummy-data/dummy-google-services.json"))
-        into(project(":app").projectDir) {
-            rename { "google-services.json" }
-        }
+        destinationDir = project(":app").projectDir
+        rename { "google-services.json" }
     }
 }
