@@ -4,8 +4,6 @@ plugins {
 }
 
 buildscript {
-    val hiltVersion by extra("2.35.1")
-
     repositories {
         gradlePluginPortal()
         google()
@@ -14,11 +12,13 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
-        classpath("com.android.tools.build:gradle:7.0.0-beta02")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
-        classpath("com.google.gms:google-services:4.3.8")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.6.1")
+        val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs") as org.gradle.accessors.dm.LibrariesForLibs
+
+        classpath(libs.gradlePlugins.android)
+        classpath(libs.gradlePlugins.crashlytics)
+        classpath(libs.gradlePlugins.gms)
+        classpath(libs.gradlePlugins.hilt)
+        classpath(libs.gradlePlugins.kotlin)
     }
 }
 
