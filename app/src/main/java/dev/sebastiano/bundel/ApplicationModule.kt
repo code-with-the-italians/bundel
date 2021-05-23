@@ -13,8 +13,5 @@ import dev.sebastiano.bundel.storage.PreferenceStorageSP
 internal class ApplicationModule {
 
     @Provides
-    fun provideBundelApplication(application: Application): BundelApplication = application as BundelApplication
-
-    @Provides
     fun providePreferenceStorage(application: Application): PreferenceStorage = PreferenceStorageSP(application)
 }
