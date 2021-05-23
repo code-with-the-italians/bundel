@@ -47,4 +47,4 @@ jobs:
       - name: Run tests with Gradle
         uses: eskatos/gradle-command-action@v1.3.3
         with:
-          arguments: test --continue --no-daemon
+          arguments: copyDummyDataForCi test --continue --no-daemon
