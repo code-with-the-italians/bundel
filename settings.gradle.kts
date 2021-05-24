@@ -3,9 +3,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
     }
-
 }
 rootProject.name = "Bundel"
 
