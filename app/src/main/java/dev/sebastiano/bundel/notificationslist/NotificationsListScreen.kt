@@ -39,10 +39,11 @@ fun NotificationsListEmptyDarkPreview() {
 
 private val activeNotification = ActiveNotification(
     persistableNotification = PersistableNotification(
+        id = 123,
+        key = "123",
         timestamp = 12345678L,
         text = "Hello Ivan",
-        appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!"),
-        id = 123
+        appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!")
     )
 )
 
@@ -78,7 +79,10 @@ internal fun NotificationsListScreen(
         scaffoldState = scaffoldState
     ) {
         if (activeNotifications.isNotEmpty()) {
-            NotificationsLazyColumn(activeNotifications) { it.interactions.main?.send() }
+            NotificationsLazyColumn(activeNotifications) {
+                it.persistableNotification.key
+//                it.interactions.main?.send()
+            }
         } else {
             NotificationsListEmptyState()
         }

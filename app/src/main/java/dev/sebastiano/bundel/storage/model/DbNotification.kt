@@ -24,6 +24,7 @@ internal data class DbAppInfo(
 internal data class DbNotification(
     @ColumnInfo(name = "notification_id") @PrimaryKey val id: Int,
     @ColumnInfo(name = "uid") val uniqueId: String,
+    @ColumnInfo(name = "notification_key") val key: String,
     val timestamp: Long,
     val showTimestamp: Boolean = false,
     val isGroup: Boolean = false,
@@ -36,6 +37,7 @@ internal data class DbNotification(
 
     fun toPersistableNotification() = PersistableNotification(
         id = id,
+        key = key,
         timestamp = timestamp,
         showTimestamp = showTimestamp,
         isGroup = isGroup,
@@ -52,6 +54,7 @@ internal data class DbNotification(
 
         fun from(notification: PersistableNotification) = DbNotification(
             id = notification.id,
+            key = notification.key,
             uniqueId = notification.uniqueId,
             timestamp = notification.timestamp,
             showTimestamp = notification.showTimestamp,

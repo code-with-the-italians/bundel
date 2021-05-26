@@ -33,10 +33,11 @@ fun NotificationsHistoryEmptyDarkPreview() {
 }
 
 private val persistableNotification = PersistableNotification(
+    id = 123,
+    key = "123",
     timestamp = 12345678L,
     text = "Hello Ivan",
-    appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!"),
-    id = 123
+    appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!")
 )
 
 @Preview

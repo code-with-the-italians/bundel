@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 
 internal data class PersistableNotification(
     val id: Int,
+    val key: String,
     val timestamp: Long,
     val showTimestamp: Boolean = false,
     val isGroup: Boolean = false,

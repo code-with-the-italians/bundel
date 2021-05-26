@@ -53,6 +53,8 @@ private fun singlePadding() = 8.dp
 
 private fun previewNotification(context: Context) = ActiveNotification(
     persistableNotification = PersistableNotification(
+        id = 1234,
+        key = "1234",
         timestamp = 12345678L,
         showTimestamp = true,
         text = "Hello I'm Ivan and I'm here to complain about things.",
@@ -62,7 +64,6 @@ private fun previewNotification(context: Context) = ActiveNotification(
             "Yeah! messenger",
             GraphicsIcon.createWithResource(context, R.drawable.ic_whatever_24dp)
         ),
-        id = 1234,
     ),
     interactions = ActiveNotification.Interactions(
         actions = listOf(

@@ -13,6 +13,7 @@ internal fun StatusBarNotification.toActiveNotificationOrNull(context: Context) 
 internal fun StatusBarNotification.toActiveNotification(context: Context) = ActiveNotification(
     persistableNotification = PersistableNotification(
         id = id,
+        key = key,
         timestamp = notification.`when`,
         showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
         isGroup = notification.run { groupKey != null && flags and Notification.FLAG_GROUP_SUMMARY != 0 },
