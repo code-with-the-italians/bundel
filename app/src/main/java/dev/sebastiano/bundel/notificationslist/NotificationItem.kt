@@ -97,9 +97,12 @@ internal fun NotificationItem(activeNotification: ActiveNotification) {
             .fillMaxWidth()
             .padding(horizontal = singlePadding())
             .padding(top = singlePadding())
-            .clickable(activeNotification) { checkNotNull(activeNotification.interactions.main).send() }
     ) {
-        Column(Modifier.padding(singlePadding())) {
+        Column(
+            Modifier
+                .clickable(activeNotification) { checkNotNull(activeNotification.interactions.main).send() }
+                .padding(singlePadding())
+        ) {
             NotificationMetadata(activeNotification.persistableNotification)
             NotificationContent(
                 notification = activeNotification.persistableNotification,
