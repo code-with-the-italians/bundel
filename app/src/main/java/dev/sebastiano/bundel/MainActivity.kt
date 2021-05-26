@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -16,6 +18,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sebastiano.bundel.history.NotificationsHistoryScreen
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Companion.NOTIFICATIONS_FLOW
@@ -47,7 +51,11 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController = rememberNavController()
 
+            val systemUiController = rememberSystemUiController()
+
             BundelTheme {
+                SetupSystemUi(systemUiController)
+
                 NavHost(navController = navController, startDestination = NavigationRoutes.ONBOARDING) {
                     composable(NavigationRoutes.ONBOARDING) {
                         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
@@ -69,6 +77,15 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun SetupSystemUi(systemUiController: SystemUiController) {
+        val barsColor = MaterialTheme.colors.primaryVariant
+        SideEffect {
+            systemUiController.setStatusBarColor(color = barsColor)
+            systemUiController.setNavigationBarColor(color = barsColor)
         }
     }
 

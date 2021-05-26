@@ -152,4 +152,7 @@ internal fun BundelTheme(
 
 @Composable
 internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =
-    if (darkModeOverride ?: isSystemInDarkTheme()) bundelDarkColors else bundelLightColors
+    getBundelColors(darkModeOverride ?: isSystemInDarkTheme())
+
+internal fun getBundelColors(darkMode: Boolean = false): Colors =
+    if (darkMode) bundelDarkColors else bundelLightColors

@@ -38,7 +38,8 @@ androidx-room-roomCompiler={ module="androidx.room:room-compiler", version.ref="
 androidx-room-roomKtx={ module="androidx.room:room-ktx", version.ref="room" }
 androidx-room-roomRuntime={ module="androidx.room:room-runtime", version.ref="room" }
 coilKt-coil={ module="io.coil-kt:coil", version.ref="coil" }
-google-accompanist={ module="com.google.accompanist:accompanist-coil", version.ref="accompanist" }
+google-accompanistCoil={ module="com.google.accompanist:accompanist-coil", version.ref="accompanist" }
+google-accompanistSystemUIController={ module="com.google.accompanist:accompanist-systemuicontroller", version.ref="accompanist" }
 google-dagger-dagger={ module="com.google.dagger:dagger", version.ref="daggerHilt" }
 google-dagger-daggerCompiler={ module="com.google.dagger:dagger-compiler", version.ref="daggerHilt" }
 google-dagger-hiltAndroid={ module="com.google.dagger:hilt-android", version.ref="daggerHilt" }
@@ -51,6 +52,7 @@ gradlePlugins-kotlin={ module="org.jetbrains.kotlin:kotlin-gradle-plugin", versi
 jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
 
 [bundles]
+accompanist=["google-accompanistCoil", "google-accompanistSystemUIController"]
 compose=["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
 hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
 hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]

@@ -70,12 +70,12 @@ dependencies {
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.hilt.hiltNavigationCompose)
     implementation(libs.androidx.navigation.navigationCompose)
+    implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
     implementation(libs.coilKt.coil)
-    implementation(libs.google.accompanist)
     implementation(libs.jakes.timber.timber)
 
     implementation(platform("com.google.firebase:firebase-bom:28.0.1"))
