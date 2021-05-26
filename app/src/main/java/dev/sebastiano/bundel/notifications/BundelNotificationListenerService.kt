@@ -60,14 +60,21 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         runBlocking {
             repository.saveNotification(sbn.toActiveNotification(this@BundelNotificationListenerService))
         }
-        mutableNotificationsFlow.value = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
+        val activeNotification = sbn.toActiveNotificationOrNull(this)
+        if (activeNotification != null) {
+            mutableNotificationsFlow.value = (mutableNotificationsFlow.value + activeNotification)
+                .sortedByDescending { it.persistableNotification.timestamp }
+        }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Timber.i("Notification removed by ${sbn.packageName}")
-        mutableNotificationsFlow.value = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
+        val existing = mutableNotificationsFlow.value.find { it.persistableNotification.key == sbn.key }
+            ?: return
+        mutableNotificationsFlow.value = mutableNotificationsFlow.value - existing
     }
 
+    @Suppress("MagicNumber") // TODO pass in snooze amount
     private fun snooze(key: String) {
         Timber.i("Snoozing notification '$key'")
         snoozeNotification(key, 5_000L)

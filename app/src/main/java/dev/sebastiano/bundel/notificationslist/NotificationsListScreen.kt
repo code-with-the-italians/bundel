@@ -13,13 +13,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -78,9 +81,13 @@ internal fun NotificationsListScreen(
         topBar = { NotificationsListTopAppBar(onHistoryClicked) },
         scaffoldState = scaffoldState
     ) {
+        val scope = rememberCoroutineScope()
         if (activeNotifications.isNotEmpty()) {
             NotificationsLazyColumn(activeNotifications) {
-                it.persistableNotification.key
+                scope.launch {
+                    scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+                    BundelNotificationListenerService.snoozeFlow.emit(it.persistableNotification.key)
+                }
 //                it.interactions.main?.send()
             }
         } else {
