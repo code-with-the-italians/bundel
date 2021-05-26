@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -70,12 +71,14 @@ internal fun NotificationsListScreen(
     activeNotifications: List<ActiveNotification>,
     onHistoryClicked: () -> Unit = {}
 ) {
+    val scaffoldState = rememberScaffoldState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { NotificationsListTopAppBar(onHistoryClicked) },
+        scaffoldState = scaffoldState
     ) {
         if (activeNotifications.isNotEmpty()) {
-            NotificationsLazyColumn(activeNotifications)
+            NotificationsLazyColumn(activeNotifications) { it.interactions.main?.send() }
         } else {
             NotificationsListEmptyState()
         }
@@ -83,10 +86,13 @@ internal fun NotificationsListScreen(
 }
 
 @Composable
-private fun NotificationsLazyColumn(activeNotifications: List<ActiveNotification>) {
+private fun NotificationsLazyColumn(
+    activeNotifications: List<ActiveNotification>,
+    onNotificationContentClick: (ActiveNotification) -> Unit = { }
+) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(activeNotifications.filterNot { it.persistableNotification.isGroup }) { notification ->
-            NotificationItem(notification)
+            NotificationItem(notification, onNotificationContentClick)
         }
     }
 }

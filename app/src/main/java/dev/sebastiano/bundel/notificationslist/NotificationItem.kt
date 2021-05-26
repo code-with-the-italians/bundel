@@ -91,7 +91,10 @@ private fun NotificationItemDarkPreview() {
 }
 
 @Composable
-internal fun NotificationItem(activeNotification: ActiveNotification) {
+internal fun NotificationItem(
+    activeNotification: ActiveNotification,
+    onNotificationContentClick: (ActiveNotification) -> Unit = {}
+) {
     Card(
         Modifier
             .fillMaxWidth()
@@ -100,7 +103,7 @@ internal fun NotificationItem(activeNotification: ActiveNotification) {
     ) {
         Column(
             Modifier
-                .clickable(activeNotification) { checkNotNull(activeNotification.interactions.main).send() }
+                .clickable(activeNotification, onNotificationContentClick)
                 .padding(singlePadding())
         ) {
             NotificationMetadata(activeNotification.persistableNotification)
