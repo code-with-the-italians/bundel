@@ -37,19 +37,15 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.iconSize
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.singlePadding
 import dev.sebastiano.bundel.storage.ImagesStorage
 import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
 import java.io.File
 import android.graphics.drawable.Icon as GraphicsIcon
-
-@Composable
-private fun iconSize() = 48.dp
-
-@Composable
-private fun singlePadding() = 8.dp
 
 private fun previewNotification(context: Context) = ActiveNotification(
     persistableNotification = PersistableNotification(
@@ -79,7 +75,7 @@ private fun previewNotification(context: Context) = ActiveNotification(
 @Composable
 private fun NotificationItemLightPreview() {
     BundelTheme {
-        NotificationItem(previewNotification(LocalContext.current))
+        NotificationItem(previewNotification(LocalContext.current), isLastItem = false)
     }
 }
 
@@ -87,21 +83,17 @@ private fun NotificationItemLightPreview() {
 @Composable
 private fun NotificationItemDarkPreview() {
     BundelTheme(darkModeOverride = true) {
-        NotificationItem(previewNotification(LocalContext.current))
+        NotificationItem(previewNotification(LocalContext.current), isLastItem = false)
     }
 }
 
 @Composable
 internal fun NotificationItem(
     activeNotification: ActiveNotification,
+    isLastItem: Boolean,
     onNotificationContentClick: (ActiveNotification) -> Unit = {}
 ) {
-    Card(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = singlePadding())
-            .padding(top = singlePadding())
-    ) {
+    NotificationCard(isLastItem) {
         Column(
             Modifier
                 .clickable(activeNotification, onNotificationContentClick)
@@ -120,14 +112,10 @@ internal fun NotificationItem(
 @Composable
 internal fun NotificationItem(
     persistableNotification: PersistableNotification,
-    imagesStorage: ImagesStorage
+    imagesStorage: ImagesStorage,
+    isLastItem: Boolean
 ) {
-    Card(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = singlePadding())
-            .padding(top = singlePadding())
-    ) {
+    NotificationCard(isLastItem) {
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(persistableNotification)
 
@@ -137,6 +125,19 @@ internal fun NotificationItem(
             NotificationContent(persistableNotification, iconPainter, interactions = null)
         }
     }
+}
+
+@Composable
+internal fun NotificationCard(
+    isLastItem: Boolean,
+    contents: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .run { if (!isLastItem) padding(bottom = singlePadding()) else this },
+        content = contents
+    )
 }
 
 @Composable

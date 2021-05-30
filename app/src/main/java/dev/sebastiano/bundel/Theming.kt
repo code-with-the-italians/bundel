@@ -12,6 +12,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val bundel_black = Color(0xFF000000)
@@ -156,3 +157,9 @@ internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =
 
 internal fun getBundelColors(darkMode: Boolean = false): Colors =
     if (darkMode) bundelDarkColors else bundelLightColors
+
+@Composable
+internal fun iconSize() = 48.dp
+
+@Composable
+internal fun singlePadding() = 8.dp

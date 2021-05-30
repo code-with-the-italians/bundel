@@ -1,10 +1,12 @@
 package dev.sebastiano.bundel.notificationslist
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -17,11 +19,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
 
 @Preview
@@ -88,7 +92,6 @@ internal fun NotificationsListScreen(
                     scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
                     BundelNotificationListenerService.snoozeFlow.emit(it.persistableNotification.key)
                 }
-//                it.interactions.main?.send()
             }
         } else {
             NotificationsListEmptyState()
@@ -101,9 +104,13 @@ private fun NotificationsLazyColumn(
     activeNotifications: List<ActiveNotification>,
     onNotificationContentClick: (ActiveNotification) -> Unit = { }
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(activeNotifications.filterNot { it.persistableNotification.isGroup }) { notification ->
-            NotificationItem(notification, onNotificationContentClick)
+    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(singlePadding())) {
+        val items = activeNotifications.filterNot { it.persistableNotification.isGroup }
+        itemsIndexed(
+            items = items,
+            key = { _, item -> item.persistableNotification.uniqueId }
+        ) { index, notification ->
+            NotificationItem(notification, isLastItem = index == items.lastIndex, onNotificationContentClick)
         }
     }
 }
@@ -113,7 +120,7 @@ private fun NotificationsListTopAppBar(onHistoryClicked: () -> Unit) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4) },
         actions = {
-            Button(onClick = onHistoryClicked) {
+            IconButton(onClick = onHistoryClicked) {
                 Icon(Icons.Rounded.History, stringResource(id = R.string.menu_history))
             }
         }

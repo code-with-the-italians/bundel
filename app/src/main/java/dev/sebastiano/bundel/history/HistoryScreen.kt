@@ -2,9 +2,10 @@ package dev.sebastiano.bundel.history
 
 import android.app.Application
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.notificationslist.NotificationItem
 import dev.sebastiano.bundel.notificationslist.NotificationsListEmptyState
+import dev.sebastiano.bundel.singlePadding
 import dev.sebastiano.bundel.storage.DiskImagesStorage
 
 @Preview
@@ -78,9 +80,10 @@ internal fun NotificationsHistoryScreen(persistableNotifications: List<Persistab
 @Composable
 private fun NotificationsLazyColumn(persistableNotifications: List<PersistableNotification>) {
     val imagesStorage = DiskImagesStorage(LocalContext.current.applicationContext as Application)
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(persistableNotifications.filterNot { it.isGroup }) { notification ->
-            NotificationItem(notification, imagesStorage)
+    LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(singlePadding())) {
+        val items = persistableNotifications.filterNot { it.isGroup }
+        itemsIndexed(items) { index, notification ->
+            NotificationItem(notification, imagesStorage, isLastItem = index == items.lastIndex)
         }
     }
 }
