@@ -15,9 +15,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,27 +60,43 @@ class MainActivity : AppCompatActivity() {
             BundelTheme {
                 SetupSystemUi(systemUiController)
 
-                NavHost(navController = navController, startDestination = NavigationRoutes.ONBOARDING) {
-                    composable(NavigationRoutes.ONBOARDING) {
+                NavHost(navController = navController, startDestination = NavigationRoute.Onboarding.route) {
+                    composable(NavigationRoute.Onboarding.route) {
                         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
 
                         OnboardingScreen(
                             onSettingsIntentClick = { showNotificationsPreferences() },
-                            onDismissClicked = { navController.navigate(NavigationRoutes.NOTIFICATIONS_LIST) },
+                            onDismissClicked = {
+                                navController.navigate(
+                                    route = NavigationRoute.MainScreen.route,
+                                    navOptions = NavOptions.Builder()
+                                        .setPopUpTo(NavigationRoute.Onboarding.route, inclusive = true)
+                                        .build()
+                                )
+                            },
                             needsNotificationsPermission = needsNotificationsPermission
                         )
                     }
-                    composable(NavigationRoutes.NOTIFICATIONS_LIST) {
-                        NotificationsListScreen(
-                            onHistoryClicked = { navController.navigate(NavigationRoutes.HISTORY) }
-                        )
-                    }
-                    composable(NavigationRoutes.HISTORY) {
-                        val items by repository.getNotifications().collectAsState(initial = emptyList())
-                        NotificationsHistoryScreen(items)
+                    navigation(
+                        startDestination = NavigationRoute.MainScreen.NotificationsList.route,
+                        route = NavigationRoute.MainScreen.route
+                    ) {
+                        mainScreen(navController)
                     }
                 }
             }
+        }
+    }
+
+    private fun NavGraphBuilder.mainScreen(navController: NavController) {
+        composable(NavigationRoute.MainScreen.NotificationsList.route) {
+            NotificationsListScreen(
+                onHistoryClicked = { navController.navigate(NavigationRoute.MainScreen.History.route) }
+            )
+        }
+        composable(NavigationRoute.MainScreen.History.route) {
+            val items by repository.getNotifications().collectAsState(initial = emptyList())
+            NotificationsHistoryScreen(items)
         }
     }
 
@@ -120,11 +140,15 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
     }
 
-    private object NavigationRoutes {
+    private sealed class NavigationRoute(val route: String) {
 
-        const val ONBOARDING = "onboarding"
-        const val NOTIFICATIONS_LIST = "notifications_list"
-        const val HISTORY = "history"
+        object Onboarding : NavigationRoute("onboarding")
+
+        object MainScreen : NavigationRoute("main_screen") {
+
+            object NotificationsList : NavigationRoute("notifications_list")
+            object History : NavigationRoute("history")
+        }
     }
 }
 
