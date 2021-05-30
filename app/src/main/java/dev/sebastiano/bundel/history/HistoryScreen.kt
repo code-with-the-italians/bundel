@@ -4,13 +4,14 @@ import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.notificationslist.NotificationItem
@@ -63,17 +64,19 @@ fun NotificationsHistoryDarkPreview() {
 }
 
 @Composable
-internal fun NotificationsHistoryScreen(persistableNotifications: List<PersistableNotification>) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        if (persistableNotifications.isNotEmpty()) {
-            Column(Modifier.fillMaxSize()) {
-                NotificationsLazyColumn(persistableNotifications)
-            }
-        } else {
-            NotificationsListEmptyState()
+internal fun NotificationsHistoryScreen(
+    innerPadding: PaddingValues = PaddingValues(0.dp),
+    persistableNotifications: List<PersistableNotification>
+) {
+    if (persistableNotifications.isNotEmpty()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
+            NotificationsLazyColumn(persistableNotifications)
         }
+    } else {
+        NotificationsListEmptyState(Modifier.padding(innerPadding))
     }
 }
 

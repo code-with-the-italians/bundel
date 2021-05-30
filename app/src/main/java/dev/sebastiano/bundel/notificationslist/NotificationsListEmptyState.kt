@@ -19,11 +19,12 @@ import androidx.compose.ui.unit.sp
 import dev.sebastiano.bundel.R
 
 @Composable
-internal fun NotificationsListEmptyState() {
+internal fun NotificationsListEmptyState(modifier: Modifier = Modifier) {
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
         Column(
             Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .then(modifier),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
