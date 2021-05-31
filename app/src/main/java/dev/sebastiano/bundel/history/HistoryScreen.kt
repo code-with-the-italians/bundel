@@ -72,7 +72,8 @@ internal fun NotificationsHistoryScreen(
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding)) {
+                .padding(innerPadding)
+        ) {
             NotificationsLazyColumn(persistableNotifications)
         }
     } else {

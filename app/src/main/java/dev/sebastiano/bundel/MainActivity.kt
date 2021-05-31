@@ -111,10 +111,13 @@ class MainActivity : AppCompatActivity() {
             bottomBar = { MainScreenBottomNavigation(navController) }
         ) { innerPadding ->
             NavHost(navController, startDestination = NavigationRoute.MainScreen.NotificationsList.route) {
-                mainScreen(innerPadding, onItemClicked = { notification ->
-                    scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
-                    BundelNotificationListenerService.snoozeFlow.emit(notification.persistableNotification.key)
-                })
+                mainScreen(
+                    innerPadding,
+                    onItemClicked = { notification ->
+                        scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+                        BundelNotificationListenerService.snoozeFlow.emit(notification.persistableNotification.key)
+                    }
+                )
             }
         }
     }

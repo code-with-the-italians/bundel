@@ -7,7 +7,7 @@ import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.sebastiano.bundel.R
 
-internal abstract class NavigationRoute(val route: String) {
+internal sealed class NavigationRoute(val route: String) {
 
     object Onboarding : NavigationRoute("onboarding")
 
