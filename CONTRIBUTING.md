@@ -80,6 +80,10 @@ on what we're actually doing, not wandering off into too much imaginary stuff.
 
 NOTE: the dummy-google-services.json in the project is used by CI or if you need to do static analysis
 
+## What testing tool do you use to generate notifications?
+
+From the [first stream episode on YouTube](https://www.youtube.com/watch?v=H6jEZY0gxg8&t=1357s) here is the link to the [notification generator](https://github.com/googlecreativelab/digital-wellbeing-experiments-toolkit/tree/master/notifications/notification-generator). Build this project and run on your device and it generates notifications.
+
 # Inspiration
 This guide is inspired to [Juno Suárez' contribution guidelines](https://github.com/junosuarez/CONTRIBUTING.md/blob/master/CONTRIBUTING.md),
 licensed under CC-0 license.
