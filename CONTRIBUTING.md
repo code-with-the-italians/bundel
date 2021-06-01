@@ -51,7 +51,7 @@ excludes people in socially marginalized groups.
 Private harassment is also unacceptable. No matter who you are, if you feel
 you have been or are being harassed or made uncomfortable by a community
 member, please contact us [on Twitter](https://twitter.com/codewiththeita)
-immediately. 
+immediately.
 Whether you're a regular contributor or a newcomer, we care about
 making this community a safe place for you and we've got your back.
 
@@ -72,7 +72,13 @@ on what we're actually doing, not wandering off into too much imaginary stuff.
 
 # Frequently Asked Questions
 
-None so far 😊
+## I can't build the app because it asks for google-services.json
+
+1. Create a project on [Firebase console](https://console.firebase.google.com/) using the package name, `dev.sebastiano.bundel` in the AndroidManifest.xml file. Use this [guide](https://firebase.google.com/docs/android/setup).
+1. Follow the instructions, download the google-services.json file and put it in `app` folder.
+1. Enable Crashlytics on Firebase console
+
+NOTE: the dummy-google-services.json in the project is used by CI or if you need to do static analysis
 
 # Inspiration
 This guide is inspired to [Juno Suárez' contribution guidelines](https://github.com/junosuarez/CONTRIBUTING.md/blob/master/CONTRIBUTING.md),

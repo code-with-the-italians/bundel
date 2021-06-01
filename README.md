@@ -1,7 +1,7 @@
 <p align="center">
   <img alt="Bundel logo" src="art/logo_horiz@2x.png" /><br/>
-  
-  
+
+
   <a href="https://github.com/rock3r/Bundel/actions/workflows/buildbot.yml" target=_blank>
     <img alt="GitHub Workflow Status (branch)" src="https://img.shields.io/github/workflow/status/rock3r/bundel/buildbot/main?logo=github"/>
   </a>
@@ -68,6 +68,9 @@ We regularly stream ourselves coding on this app. We are _generally_ live at the
 Dates and times may vary though, so watch out for announcements. Or, you know, add
 [this nifty iCal subscription](http://bit.ly/cwi-ical) to your calendar. You can find some instructions
 [here](https://twitter.com/codewiththeita/status/1389220980506173445).
+
+### I want to contribute
+Find the [guide to contributing here](CONTRIBUTING.md)
 
 ## Acknowledgements
 While ourselves, Ivan and Seb, are the two main authors of this app and the hosts of the streams,
