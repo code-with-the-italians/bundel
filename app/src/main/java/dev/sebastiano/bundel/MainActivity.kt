@@ -20,12 +20,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -44,12 +46,15 @@ import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Com
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
+import dev.sebastiano.bundel.storage.PreferenceStorage
 import dev.sebastiano.bundel.storage.RobertoRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,24 +68,35 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var repository: RobertoRepository
 
+    @Inject
+    internal lateinit var preferenceStorage: PreferenceStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val startDestination = runBlocking {
+            if (preferenceStorage.isOnboardingSeen()) {
+                NavigationRoute.MainScreen.route
+            } else {
+                NavigationRoute.Onboarding.route
+            }
+        }
+
         setContent {
             val navController = rememberNavController()
-
             val systemUiController = rememberSystemUiController()
 
             BundelTheme {
                 SetupSystemUi(systemUiController)
-
-                NavHost(navController = navController, startDestination = NavigationRoute.Onboarding.route) {
+                NavHost(navController = navController, startDestination = startDestination) {
                     composable(NavigationRoute.Onboarding.route) {
                         val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
+                        val scope = rememberCoroutineScope()
 
                         OnboardingScreen(
                             onSettingsIntentClick = { showNotificationsPreferences() },
                             onDismissClicked = {
+                                scope.launch { preferenceStorage.setIsOnboardingSeen(true) }
                                 navController.navigate(
                                     route = NavigationRoute.MainScreen.route,
                                     navOptions = NavOptions.Builder()
