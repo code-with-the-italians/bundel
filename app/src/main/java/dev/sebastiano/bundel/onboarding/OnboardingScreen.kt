@@ -1,6 +1,6 @@
 package dev.sebastiano.bundel.onboarding
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,23 +10,42 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.bundelOnboardingColors
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
 internal fun OnboardingScreenNeedsPermissionPreview() {
-    BundelTheme {
+    BundelOnboardingTheme {
+        OnboardingScreen(
+            true,
+            onSettingsIntentClick = { },
+            onDismissClicked = { },
+            false,
+            {}
+        )
+    }
+}
+
+@Preview(name = "Onboarding screen (needs permission, dark theme)", showSystemUi = true)
+@Composable
+internal fun OnboardingDarkScreenNeedsPermissionPreview() {
+    BundelOnboardingTheme(darkModeOverride = true) {
         OnboardingScreen(
             true,
             onSettingsIntentClick = { },
@@ -40,7 +59,7 @@ internal fun OnboardingScreenNeedsPermissionPreview() {
 @Preview(name = "Onboarding screen (dismiss only)", showSystemUi = true)
 @Composable
 internal fun OnboardingScreenDismissOnlyPreview() {
-    BundelTheme {
+    BundelOnboardingTheme {
         OnboardingScreen(
             false,
             onSettingsIntentClick = { },
@@ -59,30 +78,34 @@ internal fun OnboardingScreen(
     crashReportingEnabled: Boolean,
     onSwitchChanged: (Boolean) -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onBackground) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+        ) {
+            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        if (needsPermission) {
-            RequestNotificationsAccess(onSettingsIntentClick)
-        } else {
-            Button(onClick = onDismissClicked) {
-                Text(text = "Let's a-go!")
+            if (needsPermission) {
+                RequestNotificationsAccess(onSettingsIntentClick)
+            } else {
+                Button(onClick = onDismissClicked) {
+                    Text(text = "Let's a-go!")
+                }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
     }
+
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CrashlyticsSwitch(
     crashReportingEnabled: Boolean,
@@ -94,7 +117,6 @@ private fun CrashlyticsSwitch(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Column {
             Text(
                 "Enable Crash reporting",

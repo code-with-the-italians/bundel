@@ -22,10 +22,12 @@ private val bundel_light_gray = Color(0xFFAAAAAA)
 private val bundel_green = Color(0xFF4CE062)
 private val bundel_green_dark = Color(0xFF1E8F3E)
 private val bundel_purple = Color(0xFF4F1D91)
+private val bundel_purple_dark = Color(0xFF3C166D)
 private val bundel_dark_background_gray = Color(0xFF101010)
 private val bundel_dark_green = Color(0xFF33783D)
 private val bundel_dark_green_dark = Color(0xFF224D28)
 private val bundel_dark_purple = Color(0xFF33135D)
+private val bundel_dark_purple_dark = Color(0xFF240E42)
 
 internal val bundelLightColors = lightColors(
     primary = bundel_green,
@@ -43,6 +45,30 @@ internal val bundelDarkColors = darkColors(
     onSurface = bundel_light_gray,
     primaryVariant = bundel_dark_green_dark,
     background = bundel_dark_background_gray
+)
+
+internal val bundelOnboardingLightColors = lightColors(
+    primary = bundel_purple,
+    onPrimary = bundel_white,
+    secondary = bundel_purple,
+    onSecondary = bundel_white,
+    surface = bundel_white,
+    onSurface = bundel_black,
+    primaryVariant = bundel_purple_dark,
+    background = bundel_green,
+    onBackground = bundel_white
+)
+
+internal val bundelOnboardingDarkColors = darkColors(
+    primary = bundel_dark_purple,
+    onPrimary = bundel_light_gray,
+    secondary = bundel_dark_purple,
+    onSecondary = bundel_light_gray,
+    surface = bundel_black,
+    onSurface = bundel_light_gray,
+    primaryVariant = bundel_dark_purple_dark,
+    background = bundel_dark_green_dark,
+    onBackground = bundel_light_gray
 )
 
 private val podkovaBold = Font(R.font.podkova_bold, weight = FontWeight.Bold)
@@ -152,11 +178,28 @@ internal fun BundelTheme(
 }
 
 @Composable
+internal fun BundelOnboardingTheme(
+    darkModeOverride: Boolean? = null,
+    content: @Composable () -> Unit
+) {
+    MaterialTheme(bundelOnboardingColors(darkModeOverride), bundelTypography) {
+        content()
+    }
+}
+
+@Composable
 internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =
     getBundelColors(darkModeOverride ?: isSystemInDarkTheme())
 
+@Composable
+internal fun bundelOnboardingColors(darkModeOverride: Boolean? = null): Colors =
+    getBundelOnboardingColors(darkModeOverride ?: isSystemInDarkTheme())
+
 internal fun getBundelColors(darkMode: Boolean = false): Colors =
     if (darkMode) bundelDarkColors else bundelLightColors
+
+internal fun getBundelOnboardingColors(darkMode: Boolean = false): Colors =
+    if (darkMode) bundelOnboardingDarkColors else bundelOnboardingLightColors
 
 @Composable
 internal fun iconSize() = 48.dp

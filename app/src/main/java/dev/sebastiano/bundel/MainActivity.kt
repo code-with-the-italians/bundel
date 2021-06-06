@@ -203,13 +203,15 @@ class MainActivity : AppCompatActivity() {
     ) {
         val checkedState by viewModel.crashlyticsState.collectAsState()
 
-        OnboardingScreen(
-            needsPermission = needsNotificationsPermission,
-            onSettingsIntentClick = onSettingsIntentClick,
-            onDismissClicked = onDismissClicked,
-            crashReportingEnabled = checkedState,
-            onSwitchChanged = { viewModel.onCrashlyticsChanged(it) }
-        )
+        BundelOnboardingTheme {
+            OnboardingScreen(
+                needsPermission = needsNotificationsPermission,
+                onSettingsIntentClick = onSettingsIntentClick,
+                onDismissClicked = onDismissClicked,
+                crashReportingEnabled = checkedState,
+                onSwitchChanged = { viewModel.onCrashlyticsChanged(it) }
+            )
+        }
     }
 
     @Composable
