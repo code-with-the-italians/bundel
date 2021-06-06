@@ -7,19 +7,19 @@ import javax.inject.Inject
 
 interface PreferenceStorage {
 
-    suspend fun loadCrashlytics(): Boolean
-    suspend fun storeCrashlytics(enabled: Boolean): Boolean
+    suspend fun isCrashlyticsEnabled(): Boolean
+    suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean
 }
 
-class PreferenceStorageSP @Inject constructor(context: Context) : PreferenceStorage {
+class SharedPreferencesStorage @Inject constructor(context: Context) : PreferenceStorage {
 
     private val storage by lazy { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
 
-    override suspend fun loadCrashlytics(): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun isCrashlyticsEnabled(): Boolean = withContext(Dispatchers.IO) {
         storage.getBoolean("crashlytics", false)
     }
 
-    override suspend fun storeCrashlytics(enabled: Boolean) = withContext(Dispatchers.IO) {
+    override suspend fun setIsCrashlyticsEnabled(enabled: Boolean) = withContext(Dispatchers.IO) {
         storage.edit().putBoolean("crashlytics", enabled).commit()
     }
 }

@@ -20,7 +20,7 @@ class OnboardingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val isCrashlyticsEnabled = preferenceStorage.loadCrashlytics()
+            val isCrashlyticsEnabled = preferenceStorage.isCrashlyticsEnabled()
             crashlyticsState.emit(isCrashlyticsEnabled)
         }
     }
@@ -30,7 +30,7 @@ class OnboardingViewModel @Inject constructor(
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(enabled)
 
         viewModelScope.launch {
-            preferenceStorage.storeCrashlytics(enabled)
+            preferenceStorage.setIsCrashlyticsEnabled(enabled)
             crashlyticsState.emit(enabled)
         }
     }
