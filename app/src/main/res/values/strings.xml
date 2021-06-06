@@ -11,4 +11,6 @@
     <string name="app_icon_content_description">%s icon</string>
     <string name="bottom_nav_active_notifications">Active notifications</string>
     <string name="bottom_nav_history">History</string>
+    <string name="onboarding_blurb">Set your working hours, and Bundel will make sure you’re never interrupted — unless it’s really important.\n\nYou can always tell Bundel to let that special someone through.</string>
+    <string name="next">Next</string>
 </resources>

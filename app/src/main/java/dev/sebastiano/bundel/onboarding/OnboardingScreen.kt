@@ -1,32 +1,36 @@
 package dev.sebastiano.bundel.onboarding
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import dev.sebastiano.bundel.BundelOnboardingTheme
-import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.bundelOnboardingColors
+import java.time.temporal.TemporalAdjusters.next
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
@@ -78,32 +82,70 @@ internal fun OnboardingScreen(
     crashReportingEnabled: Boolean,
     onSwitchChanged: (Boolean) -> Unit
 ) {
-    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onBackground) {
+    Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colors.background)
+                .padding(16.dp)
         ) {
-            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            if (needsPermission) {
-                RequestNotificationsAccess(onSettingsIntentClick)
-            } else {
-                Button(onClick = onDismissClicked) {
-                    Text(text = "Let's a-go!")
-                }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painterResource(R.drawable.ic_bundel_icon),
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier.size(72.dp)
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
+            OnboardingPager(needsPermission, onSettingsIntentClick, onDismissClicked, crashReportingEnabled, onSwitchChanged)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = { error("YOLO") }) {
+                    Text(text = stringResource(id = R.string.next))
+                }
+            }
         }
     }
+}
 
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun ColumnScope.OnboardingPager(
+    needsPermission: Boolean,
+    onSettingsIntentClick: () -> Unit,
+    onDismissClicked: () -> Unit,
+    crashReportingEnabled: Boolean,
+    onSwitchChanged: (Boolean) -> Unit
+) {
+    val pagerState = rememberPagerState(
+        pageCount = if (needsPermission) 2 else 1
+    )
+
+    HorizontalPager(pagerState, Modifier.weight(1F)) { pageIndex ->
+        when (pageIndex) {
+            0 -> IntroPage(crashReportingEnabled, onSwitchChanged)
+            1 -> RequestNotificationsAccess(onSettingsIntentClick)
+            else -> error("Too many pages")
+        }
+    }
+}
+
+@Composable
+fun IntroPage(
+    crashReportingEnabled: Boolean,
+    onSwitchChanged: (Boolean) -> Unit
+) {
+    Column {
+        Text(text = stringResource(id = R.string.onboarding_blurb))
+
+        CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
+    }
 }
 
 @Composable
@@ -141,9 +183,7 @@ private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit) {
     Text(
         text = stringResource(R.string.notifications_permission_explanation),
         textAlign = TextAlign.Center,
-        modifier = Modifier
-            .padding(horizontal = 32.dp)
-            .padding(bottom = 16.dp)
+        modifier = Modifier.padding(bottom = 16.dp)
     )
     Button(
         onClick = onSettingsIntentClick,
