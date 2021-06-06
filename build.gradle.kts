@@ -1,5 +1,5 @@
 plugins {
-    id("io.gitlab.arturbosch.detekt") version "1.17.0" apply false
+    id("io.gitlab.arturbosch.detekt") version "1.17.1" apply false
     id("org.jmailen.kotlinter") version "3.4.4" apply false
     id("com.github.ben-manes.versions") version "0.39.0"
 }

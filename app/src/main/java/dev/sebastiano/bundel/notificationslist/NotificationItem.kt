@@ -1,9 +1,10 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package dev.sebastiano.bundel.notificationslist
 
 import android.content.Context
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
@@ -26,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -93,12 +96,13 @@ internal fun NotificationItem(
     isLastItem: Boolean,
     onNotificationContentClick: (ActiveNotification) -> Unit = {}
 ) {
-    NotificationCard(isLastItem) {
-        Column(
-            Modifier
-                .clickable(activeNotification, onNotificationContentClick)
-                .padding(singlePadding())
-        ) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .bottomPaddingIfLastItem(isLastItem),
+        onClick = activeNotification.ifClickable { onNotificationContentClick(activeNotification) }
+    ) {
+        Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(activeNotification.persistableNotification)
             NotificationContent(
                 notification = activeNotification.persistableNotification,
@@ -109,13 +113,27 @@ internal fun NotificationItem(
     }
 }
 
+private fun Modifier.bottomPaddingIfLastItem(isLastItem: Boolean): Modifier =
+    composed { if (!isLastItem) padding(bottom = singlePadding()) else this }
+
+private fun ActiveNotification.ifClickable(onClick: (ActiveNotification) -> Unit) =
+    if (isClickable()) {
+        { onClick(this) }
+    } else {
+        {} // No-op
+    }
+
 @Composable
 internal fun NotificationItem(
     persistableNotification: PersistableNotification,
     imagesStorage: ImagesStorage,
     isLastItem: Boolean
 ) {
-    NotificationCard(isLastItem) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .run { if (!isLastItem) padding(bottom = singlePadding()) else this }
+    ) {
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(persistableNotification)
 
@@ -128,19 +146,6 @@ internal fun NotificationItem(
 }
 
 @Composable
-internal fun NotificationCard(
-    isLastItem: Boolean,
-    contents: @Composable () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .run { if (!isLastItem) padding(bottom = singlePadding()) else this },
-        content = contents
-    )
-}
-
-@Composable
 private fun getIconRequest(
     imagesStorage: ImagesStorage,
     persistableNotification: PersistableNotification
@@ -148,9 +153,6 @@ private fun getIconRequest(
     File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.LARGE))
         .takeIf { it.exists() }
         ?: File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.SMALL))
-
-private fun Modifier.clickable(actionableNotification: ActiveNotification, onClick: (ActiveNotification) -> Unit) =
-    if (actionableNotification.isClickable()) clickable { onClick(actionableNotification) } else this
 
 @Composable
 private fun NotificationMetadata(notification: PersistableNotification) {

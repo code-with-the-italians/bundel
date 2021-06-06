@@ -35,6 +35,10 @@ android {
         compose = true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+    }
+
     lint {
         lintConfig = rootProject.file("build-config/lint.xml")
         isWarningsAsErrors = true
@@ -49,6 +53,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf(
+            "-Xallow-jvm-ir-dependencies",
             "-Xopt-in=kotlin.RequiresOptIn",
             "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
         )
@@ -83,7 +88,7 @@ dependencies {
     implementation(libs.coilKt.coil)
     implementation(libs.jakes.timber.timber)
 
-    implementation(platform("com.google.firebase:firebase-bom:28.0.1"))
+    implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
