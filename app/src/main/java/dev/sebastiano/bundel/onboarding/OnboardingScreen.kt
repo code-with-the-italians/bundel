@@ -1,10 +1,15 @@
+@file:OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+
 package dev.sebastiano.bundel.onboarding
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,8 +21,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,10 +38,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.R
-import java.time.temporal.TemporalAdjusters.next
+import dev.sebastiano.bundel.singlePadding
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
@@ -39,7 +54,7 @@ internal fun OnboardingScreenNeedsPermissionPreview() {
         OnboardingScreen(
             true,
             onSettingsIntentClick = { },
-            onDismissClicked = { },
+            onOnboardingDoneClicked = { },
             false,
             {}
         )
@@ -53,7 +68,7 @@ internal fun OnboardingDarkScreenNeedsPermissionPreview() {
         OnboardingScreen(
             true,
             onSettingsIntentClick = { },
-            onDismissClicked = { },
+            onOnboardingDoneClicked = { },
             false,
             {}
         )
@@ -67,7 +82,7 @@ internal fun OnboardingScreenDismissOnlyPreview() {
         OnboardingScreen(
             false,
             onSettingsIntentClick = { },
-            onDismissClicked = { },
+            onOnboardingDoneClicked = { },
             true,
             {}
         )
@@ -78,7 +93,7 @@ internal fun OnboardingScreenDismissOnlyPreview() {
 internal fun OnboardingScreen(
     needsPermission: Boolean,
     onSettingsIntentClick: () -> Unit,
-    onDismissClicked: () -> Unit,
+    onOnboardingDoneClicked: () -> Unit,
     crashReportingEnabled: Boolean,
     onSwitchChanged: (Boolean) -> Unit
 ) {
@@ -89,6 +104,8 @@ internal fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painterResource(R.drawable.ic_bundel_icon),
@@ -101,37 +118,32 @@ internal fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            OnboardingPager(needsPermission, onSettingsIntentClick, onDismissClicked, crashReportingEnabled, onSwitchChanged)
+            val pagerState = rememberPagerState(
+                pageCount = if (needsPermission) 2 else 1
+            )
+            OnboardingPager(
+                onSettingsIntentClick, crashReportingEnabled, onSwitchChanged, pagerState
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Button(onClick = { error("YOLO") }) {
-                    Text(text = stringResource(id = R.string.next))
-                }
-            }
+            ActionsRow(pagerState, onOnboardingDoneClicked)
         }
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ColumnScope.OnboardingPager(
-    needsPermission: Boolean,
     onSettingsIntentClick: () -> Unit,
-    onDismissClicked: () -> Unit,
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit
+    onSwitchChanged: (Boolean) -> Unit,
+    pagerState: PagerState
 ) {
-    val pagerState = rememberPagerState(
-        pageCount = if (needsPermission) 2 else 1
-    )
-
     HorizontalPager(pagerState, Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
             0 -> IntroPage(crashReportingEnabled, onSwitchChanged)
             1 -> RequestNotificationsAccess(onSettingsIntentClick)
-            else -> error("Too many pages")
+            else -> error("Too many pages") // TODO
         }
     }
 }
@@ -144,51 +156,93 @@ fun IntroPage(
     Column {
         Text(text = stringResource(id = R.string.onboarding_blurb))
 
-        CrashlyticsSwitch(crashReportingEnabled, onSwitchChanged)
+        Spacer(modifier = Modifier.height(24.dp))
+
+        CrashlyticsSwitch(
+            crashReportingEnabled = crashReportingEnabled,
+            onSwitchChanged = onSwitchChanged,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = singlePadding(), horizontal = 16.dp)
+        )
     }
 }
 
 @Composable
 private fun CrashlyticsSwitch(
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit
+    onSwitchChanged: (Boolean) -> Unit,
+    modifier: Modifier
 ) {
+    var switchChecked by remember { mutableStateOf(crashReportingEnabled) }
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .clickable { switchChecked = !switchChecked }
+            .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(
-                "Enable Crash reporting",
-                style = MaterialTheme.typography.h5
+        Text(
+            stringResource(R.string.onboarding_enable_crashlytics),
+            modifier = Modifier.weight(1f)
+        )
+
+        Switch(
+            checked = switchChecked,
+            onCheckedChange = { onSwitchChanged(!crashReportingEnabled) },
+            colors = SwitchDefaults.colors(
+                // TODO
             )
-        }
-        Column {
-            Switch(
-                checked = crashReportingEnabled,
-                onCheckedChange = { onSwitchChanged(!crashReportingEnabled) },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.End),
-            )
-        }
+        )
     }
 }
 
 @Composable
 private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit) {
-    Text(
-        text = stringResource(R.string.notifications_permission_explanation),
-        textAlign = TextAlign.Center,
-        modifier = Modifier.padding(bottom = 16.dp)
-    )
-    Button(
-        onClick = onSettingsIntentClick,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Text(stringResource(R.string.button_notifications_access_prompt))
+    Column {
+        Text(
+            text = stringResource(R.string.notifications_permission_explanation),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Button(
+            onClick = onSettingsIntentClick,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(stringResource(R.string.button_notifications_access_prompt))
+        }
+    }
+}
+
+@Composable
+private fun ActionsRow(pagerState: PagerState, onOnboardingDoneClicked: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        val scope = rememberCoroutineScope()
+        AnimatedVisibility(visible = pagerState.currentPage > 0) {
+            Button(
+                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } }
+            ) {
+                Text(text = stringResource(id = R.string.back).toUpperCase(Locale.getDefault()))
+            }
+        }
+
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)) {
+            HorizontalPagerIndicator(pagerState = pagerState)
+        }
+
+        if (pagerState.currentPage < pagerState.pageCount - 1) {
+            Button(
+                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } }
+            ) {
+                Text(text = stringResource(id = R.string.next).toUpperCase(Locale.getDefault()))
+            }
+        } else {
+            Button(
+                onClick = { onOnboardingDoneClicked() }
+            ) {
+                Text(text = stringResource(id = R.string.done).toUpperCase(Locale.getDefault()))
+            }
+        }
     }
 }

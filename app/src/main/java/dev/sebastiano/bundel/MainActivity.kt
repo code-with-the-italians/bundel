@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
             OnboardingScreen(
                 needsPermission = needsNotificationsPermission,
                 onSettingsIntentClick = onSettingsIntentClick,
-                onDismissClicked = onDismissClicked,
+                onOnboardingDoneClicked = onDismissClicked,
                 crashReportingEnabled = checkedState,
                 onSwitchChanged = { viewModel.onCrashlyticsChanged(it) }
             )
