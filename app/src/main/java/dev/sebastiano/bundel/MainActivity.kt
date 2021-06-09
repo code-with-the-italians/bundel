@@ -201,15 +201,15 @@ class MainActivity : AppCompatActivity() {
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
-        val checkedState by viewModel.crashlyticsState.collectAsState()
+        val crashReportingEnabled by viewModel.crashReportingEnabledFlow.collectAsState()
 
         BundelOnboardingTheme {
             OnboardingScreen(
                 needsPermission = needsNotificationsPermission,
                 onSettingsIntentClick = onSettingsIntentClick,
                 onOnboardingDoneClicked = onDismissClicked,
-                crashReportingEnabled = checkedState,
-                onSwitchChanged = { viewModel.onCrashlyticsChanged(it) }
+                crashReportingEnabled = crashReportingEnabled,
+                onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
             )
         }
     }

@@ -26,11 +26,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -97,7 +93,7 @@ internal fun OnboardingScreen(
     onSettingsIntentClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit,
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit
+    onCrashlyticsEnabledChanged: (Boolean) -> Unit
 ) {
     Surface {
         Column(
@@ -124,7 +120,10 @@ internal fun OnboardingScreen(
                 pageCount = if (needsPermission) 2 else 1
             )
             OnboardingPager(
-                onSettingsIntentClick, crashReportingEnabled, onSwitchChanged, pagerState
+                onSettingsIntentClick = onSettingsIntentClick,
+                crashReportingEnabled = crashReportingEnabled,
+                onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
+                pagerState = pagerState
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -138,12 +137,12 @@ internal fun OnboardingScreen(
 private fun ColumnScope.OnboardingPager(
     onSettingsIntentClick: () -> Unit,
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit,
+    onCrashlyticsEnabledChanged: (Boolean) -> Unit,
     pagerState: PagerState
 ) {
     HorizontalPager(pagerState, Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
-            0 -> IntroPage(crashReportingEnabled, onSwitchChanged)
+            0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
             1 -> RequestNotificationsAccess(onSettingsIntentClick)
             else -> error("Too many pages") // TODO
         }
@@ -153,7 +152,7 @@ private fun ColumnScope.OnboardingPager(
 @Composable
 fun IntroPage(
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit
+    onCrashlyticsEnabledChanged: (Boolean) -> Unit
 ) {
     Column {
         Text(text = stringResource(id = R.string.onboarding_blurb))
@@ -162,7 +161,7 @@ fun IntroPage(
 
         CrashlyticsSwitch(
             crashReportingEnabled = crashReportingEnabled,
-            onSwitchChanged = onSwitchChanged,
+            onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = singlePadding(), horizontal = 16.dp)
@@ -173,28 +172,29 @@ fun IntroPage(
 @Composable
 private fun CrashlyticsSwitch(
     crashReportingEnabled: Boolean,
-    onSwitchChanged: (Boolean) -> Unit,
+    onCrashlyticsEnabledChanged: (Boolean) -> Unit,
     modifier: Modifier
 ) {
-    var switchChecked by remember { mutableStateOf(crashReportingEnabled) }
     Row(
         modifier = Modifier
-            .clickable { switchChecked = !switchChecked }
+            .clickable { onCrashlyticsEnabledChanged(!crashReportingEnabled) }
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            stringResource(R.string.onboarding_enable_crashlytics),
-            modifier = Modifier.weight(1f)
-        )
-
         Switch(
-            checked = switchChecked,
-            onCheckedChange = { onSwitchChanged(!crashReportingEnabled) },
+            checked = crashReportingEnabled,
+            onCheckedChange = null,
             colors = SwitchDefaults.colors(
-                // TODO
+                uncheckedThumbColor = MaterialTheme.colors.secondary,
+                uncheckedTrackColor = MaterialTheme.colors.onSecondary,
+                checkedThumbColor = MaterialTheme.colors.primary,
+                checkedTrackColor = MaterialTheme.colors.onPrimary
             )
         )
+
+        Spacer(modifier = Modifier.width(singlePadding()))
+
+        Text(stringResource(R.string.onboarding_enable_crashlytics))
     }
 }
 

@@ -16,22 +16,22 @@ class OnboardingViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
 
-    val crashlyticsState = MutableStateFlow(false)
+    val crashReportingEnabledFlow = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
             val isCrashlyticsEnabled = preferenceStorage.isCrashlyticsEnabled()
-            crashlyticsState.emit(isCrashlyticsEnabled)
+            crashReportingEnabledFlow.emit(isCrashlyticsEnabled)
         }
     }
 
-    fun onCrashlyticsChanged(enabled: Boolean) {
+    fun setCrashReportingEnabled(enabled: Boolean) {
         Timber.d("Crashlytics is enabled: $enabled")
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(enabled)
 
         viewModelScope.launch {
             preferenceStorage.setIsCrashlyticsEnabled(enabled)
-            crashlyticsState.emit(enabled)
+            crashReportingEnabledFlow.emit(enabled)
         }
     }
 }
