@@ -63,6 +63,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         val activeNotification = sbn.toActiveNotificationOrNull(this)
         if (activeNotification != null) {
             mutableNotificationsFlow.value = (mutableNotificationsFlow.value + activeNotification)
+                .distinctBy { it.persistableNotification.uniqueId }
                 .sortedByDescending { it.persistableNotification.timestamp }
         }
     }

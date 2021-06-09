@@ -4,6 +4,8 @@ package dev.sebastiano.bundel.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -217,29 +219,37 @@ private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit) {
 
 @Composable
 private fun ActionsRow(pagerState: PagerState, onOnboardingDoneClicked: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         val scope = rememberCoroutineScope()
-        AnimatedVisibility(visible = pagerState.currentPage > 0) {
+        AnimatedVisibility(
+            visible = pagerState.currentPage > 0,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             Button(
-                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } }
+                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+                modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Text(text = stringResource(id = R.string.back).toUpperCase(Locale.getDefault()))
             }
         }
 
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)) {
-            HorizontalPagerIndicator(pagerState = pagerState)
-        }
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier.align(Alignment.Center)
+        )
 
         if (pagerState.currentPage < pagerState.pageCount - 1) {
             Button(
-                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } }
+                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Text(text = stringResource(id = R.string.next).toUpperCase(Locale.getDefault()))
             }
         } else {
             Button(
-                onClick = { onOnboardingDoneClicked() }
+                onClick = { onOnboardingDoneClicked() },
+                modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Text(text = stringResource(id = R.string.done).toUpperCase(Locale.getDefault()))
             }
