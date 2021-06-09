@@ -117,18 +117,19 @@ internal fun OnboardingScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             val pagerState = rememberPagerState(
-                pageCount = if (needsPermission) 2 else 1
+                pageCount = if (needsPermission) 3 else 2
             )
             OnboardingPager(
                 onSettingsIntentClick = onSettingsIntentClick,
                 crashReportingEnabled = crashReportingEnabled,
                 onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
-                pagerState = pagerState
+                pagerState = pagerState,
+                needsPermission = needsPermission
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ActionsRow(pagerState, onOnboardingDoneClicked)
+            ActionsRow(pagerState, needsPermission, onOnboardingDoneClicked)
         }
     }
 }
@@ -138,12 +139,14 @@ private fun ColumnScope.OnboardingPager(
     onSettingsIntentClick: () -> Unit,
     crashReportingEnabled: Boolean,
     onCrashlyticsEnabledChanged: (Boolean) -> Unit,
-    pagerState: PagerState
+    pagerState: PagerState,
+    needsPermission: Boolean
 ) {
-    HorizontalPager(pagerState, Modifier.weight(1F)) { pageIndex ->
+    HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
             0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
             1 -> RequestNotificationsAccess(onSettingsIntentClick)
+            2 -> Text("Welp", modifier = Modifier.fillMaxSize())    // TODO
             else -> error("Too many pages") // TODO
         }
     }
@@ -218,7 +221,11 @@ private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit) {
 }
 
 @Composable
-private fun ActionsRow(pagerState: PagerState, onOnboardingDoneClicked: () -> Unit) {
+private fun ActionsRow(
+    pagerState: PagerState,
+    needsPermission: Boolean,
+    onOnboardingDoneClicked: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxWidth()) {
         val scope = rememberCoroutineScope()
         AnimatedVisibility(
@@ -239,19 +246,23 @@ private fun ActionsRow(pagerState: PagerState, onOnboardingDoneClicked: () -> Un
             modifier = Modifier.align(Alignment.Center)
         )
 
-        if (pagerState.currentPage < pagerState.pageCount - 1) {
-            Button(
-                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                Text(text = stringResource(id = R.string.next).toUpperCase(Locale.getDefault()))
+        when {
+            pagerState.currentPage < pagerState.pageCount - 1 -> {
+                Button(
+                    enabled = needsPermission && pagerState.currentPage != 1,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Text(text = stringResource(id = R.string.next).toUpperCase(Locale.getDefault()))
+                }
             }
-        } else {
-            Button(
-                onClick = { onOnboardingDoneClicked() },
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                Text(text = stringResource(id = R.string.done).toUpperCase(Locale.getDefault()))
+            else -> {
+                Button(
+                    onClick = { onOnboardingDoneClicked() },
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Text(text = stringResource(id = R.string.done).toUpperCase(Locale.getDefault()))
+                }
             }
         }
     }
