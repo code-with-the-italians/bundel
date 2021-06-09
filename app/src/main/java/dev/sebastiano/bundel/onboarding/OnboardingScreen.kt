@@ -7,6 +7,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -20,11 +21,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DoneOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -116,9 +120,7 @@ internal fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            val pagerState = rememberPagerState(
-                pageCount = if (needsPermission) 3 else 2
-            )
+            val pagerState = rememberPagerState(pageCount = 3)
             OnboardingPager(
                 onSettingsIntentClick = onSettingsIntentClick,
                 crashReportingEnabled = crashReportingEnabled,
@@ -143,10 +145,10 @@ private fun ColumnScope.OnboardingPager(
     needsPermission: Boolean
 ) {
     HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
-        when (pageIndex) {
-            0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
-            1 -> RequestNotificationsAccess(onSettingsIntentClick)
-            2 -> Text("Welp", modifier = Modifier.fillMaxSize())    // TODO
+        when {
+            pageIndex == 0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
+            pageIndex == 1 -> RequestNotificationsAccess(onSettingsIntentClick, needsPermission)
+            pageIndex == 2 -> Text("Welp", modifier = Modifier.fillMaxSize())    // TODO
             else -> error("Too many pages") // TODO
         }
     }
@@ -190,8 +192,8 @@ private fun CrashlyticsSwitch(
             colors = SwitchDefaults.colors(
                 uncheckedThumbColor = MaterialTheme.colors.secondary,
                 uncheckedTrackColor = MaterialTheme.colors.onSecondary,
-                checkedThumbColor = MaterialTheme.colors.primary,
-                checkedTrackColor = MaterialTheme.colors.onPrimary
+                checkedThumbColor = MaterialTheme.colors.secondary,
+                checkedTrackColor = MaterialTheme.colors.onSecondary
             )
         )
 
@@ -202,20 +204,40 @@ private fun CrashlyticsSwitch(
 }
 
 @Composable
-private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit) {
-    Column {
-        Text(
-            text = stringResource(R.string.notifications_permission_explanation),
-            textAlign = TextAlign.Center
-        )
+private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit, needsPermission: Boolean) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (needsPermission) {
+            Text(
+                text = stringResource(R.string.notifications_permission_explanation),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
+            )
 
-        Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-        Button(
-            onClick = onSettingsIntentClick,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(stringResource(R.string.button_notifications_access_prompt))
+            Button(onClick = onSettingsIntentClick) {
+                Text(stringResource(R.string.button_notifications_access_prompt))
+            }
+        } else {
+            Icon(
+                imageVector = Icons.Rounded.DoneOutline,
+                contentDescription = stringResource(R.string.notifications_permission_done_image_content_description),
+                tint = LocalContentColor.current,
+                modifier = Modifier
+                    .size(72.dp)
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.notifications_permission_all_done),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }
@@ -249,7 +271,7 @@ private fun ActionsRow(
         when {
             pagerState.currentPage < pagerState.pageCount - 1 -> {
                 Button(
-                    enabled = needsPermission && pagerState.currentPage != 1,
+                    enabled = if (needsPermission) pagerState.currentPage != 1 else true,
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {

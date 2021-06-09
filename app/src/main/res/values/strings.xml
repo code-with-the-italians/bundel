@@ -16,4 +16,6 @@
     <string name="onboarding_enable_crashlytics">Enable crash reporting</string>
     <string name="back">Back</string>
     <string name="done">Done</string>
+    <string name="notifications_permission_done_image_content_description">All done</string>
+    <string name="notifications_permission_all_done">Thanks, we\'re all set.\nBundel has been granted access to the notifications.</string>
 </resources>
