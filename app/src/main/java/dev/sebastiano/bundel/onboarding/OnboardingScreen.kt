@@ -2,11 +2,14 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -30,14 +34,20 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DoneOutline
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -45,6 +55,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.composables.MaterialChip
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -144,6 +155,7 @@ private fun ColumnScope.OnboardingPager(
     pagerState: PagerState,
     needsPermission: Boolean
 ) {
+    @Suppress("MagicNumber") // Yolo, page indices
     HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
             0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
@@ -243,9 +255,64 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
     }
 }
 
+private enum class WeekDays(@StringRes val displayResId: Int) {
+    MONDAY(R.string.day_monday),
+    TUESDAY(R.string.day_tuesday),
+    WEDNESDAY(R.string.day_wednesday),
+    THURSDAY(R.string.day_thursday),
+    FRIDAY(R.string.day_friday),
+    SATURDAY(R.string.day_saturday),
+    SUNDAY(R.string.day_sunday)
+}
+
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+private fun ScheduleSetupPagePreview() {
+    BundelOnboardingTheme {
+        ScheduleSetupPage()
+    }
+}
+
 @Composable
 private fun ScheduleSetupPage() {
-    Text("Welp", modifier = Modifier.fillMaxSize())
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .scrollable(rememberScrollState(), Orientation.Vertical),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.onboarding_schedule_blurb),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        FlowRow(
+            modifier = Modifier.padding(horizontal = 32.dp),
+            mainAxisAlignment = MainAxisAlignment.Center,
+            mainAxisSpacing = singlePadding(),
+            crossAxisSpacing = singlePadding()
+        ) {
+            val checkedDays = remember { mutableStateListOf(*WeekDays.values().indices.map { true }.toTypedArray()) }
+
+            for ((index, weekDay) in WeekDays.values().withIndex()) {
+                MaterialChip(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    checkedBackgroundColor = MaterialTheme.colors.onSurface,
+                    checked = checkedDays[index],
+                    onCheckedChanged = { checked -> checkedDays[index] = checked }
+                ) {
+                    Text(
+                        text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
+                        style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -287,7 +354,7 @@ private fun ActionsRow(
                 onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
-                Text(text = stringResource(id = R.string.back).toUpperCase(Locale.getDefault()))
+                Text(text = stringResource(id = R.string.back).uppercase(Locale.getDefault()))
             }
         }
 
@@ -303,7 +370,7 @@ private fun ActionsRow(
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
-                    Text(text = stringResource(id = R.string.next).toUpperCase(Locale.getDefault()))
+                    Text(text = stringResource(id = R.string.next).uppercase(Locale.getDefault()))
                 }
             }
             else -> {
@@ -311,7 +378,7 @@ private fun ActionsRow(
                     onClick = { onOnboardingDoneClicked() },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 ) {
-                    Text(text = stringResource(id = R.string.done).toUpperCase(Locale.getDefault()))
+                    Text(text = stringResource(id = R.string.done).uppercase(Locale.getDefault()))
                 }
             }
         }
