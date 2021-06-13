@@ -120,7 +120,7 @@ internal fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            val pagerState = rememberPagerState(pageCount = 3)
+            val pagerState = rememberPagerState(pageCount = 4)
             OnboardingPager(
                 onSettingsIntentClick = onSettingsIntentClick,
                 crashReportingEnabled = crashReportingEnabled,
@@ -145,11 +145,12 @@ private fun ColumnScope.OnboardingPager(
     needsPermission: Boolean
 ) {
     HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
-        when {
-            pageIndex == 0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
-            pageIndex == 1 -> RequestNotificationsAccess(onSettingsIntentClick, needsPermission)
-            pageIndex == 2 -> Text("Welp", modifier = Modifier.fillMaxSize())    // TODO
-            else -> error("Too many pages") // TODO
+        when (pageIndex) {
+            0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
+            1 -> NotificationsAccessPage(onSettingsIntentClick, needsPermission)
+            2 -> ScheduleSetupPage()
+            3 -> AllSetPage()
+            else -> error("Too many pages")
         }
     }
 }
@@ -204,7 +205,7 @@ private fun CrashlyticsSwitch(
 }
 
 @Composable
-private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit, needsPermission: Boolean) {
+private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPermission: Boolean) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -239,6 +240,33 @@ private fun RequestNotificationsAccess(onSettingsIntentClick: () -> Unit, needsP
                 modifier = Modifier.padding(16.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun ScheduleSetupPage() {
+    Text("Welp", modifier = Modifier.fillMaxSize())
+}
+
+@Composable
+fun AllSetPage() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.onboarding_all_set),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(id = R.string.onboarding_all_set_blurb),
+            textAlign = TextAlign.Center
+        )
     }
 }
 

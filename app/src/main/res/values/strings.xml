@@ -18,4 +18,6 @@
     <string name="done">Done</string>
     <string name="notifications_permission_done_image_content_description">All done</string>
     <string name="notifications_permission_all_done">Thanks, we\'re all set.\nBundel has been granted access to the notifications.</string>
+    <string name="onboarding_all_set">Cool, we\'re all set!</string>
+    <string name="onboarding_all_set_blurb">Bundel is ready to help you stay focused.</string>
 </resources>
