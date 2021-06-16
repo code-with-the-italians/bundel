@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
@@ -39,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -172,17 +175,30 @@ fun IntroPage(
     crashReportingEnabled: Boolean,
     onCrashlyticsEnabledChanged: (Boolean) -> Unit
 ) {
-    Column {
-        Text(text = stringResource(id = R.string.onboarding_blurb))
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Text(
+            text = stringResource(id = R.string.onboarding_welcome_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(id = R.string.onboarding_blurb),
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         CrashlyticsSwitch(
             crashReportingEnabled = crashReportingEnabled,
             onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = singlePadding(), horizontal = 16.dp)
+            modifier = Modifier.padding(vertical = singlePadding(), horizontal = 16.dp)
         )
     }
 }
@@ -221,8 +237,16 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
+        Text(
+            text = stringResource(id = R.string.notifications_permission_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
+        )
+
+        Spacer(Modifier.height(24.dp))
+
         if (needsPermission) {
             Text(
                 text = stringResource(R.string.notifications_permission_explanation),
@@ -280,15 +304,23 @@ private fun ScheduleSetupPage() {
             .fillMaxSize()
             .scrollable(rememberScrollState(), Orientation.Vertical),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
+        Text(
+            text = stringResource(id = R.string.onboarding_schedule_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
+        )
+
+        Spacer(Modifier.height(24.dp))
+
         Text(
             text = stringResource(R.string.onboarding_schedule_blurb),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         FlowRow(
             modifier = Modifier.padding(horizontal = 32.dp),
@@ -312,6 +344,14 @@ private fun ScheduleSetupPage() {
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(R.string.onboarding_schedule_blurb_2),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -320,7 +360,7 @@ fun AllSetPage() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = stringResource(id = R.string.onboarding_all_set),
@@ -328,7 +368,7 @@ fun AllSetPage() {
             style = MaterialTheme.typography.h5
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = stringResource(id = R.string.onboarding_all_set_blurb),
@@ -345,6 +385,12 @@ private fun ActionsRow(
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         val scope = rememberCoroutineScope()
+        val buttonColors = buttonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = MaterialTheme.colors.onSurface
+        )
+        val buttonElevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
+
         AnimatedVisibility(
             visible = pagerState.currentPage > 0,
             enter = fadeIn(),
@@ -352,7 +398,9 @@ private fun ActionsRow(
         ) {
             Button(
                 onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier.align(Alignment.CenterStart),
+                colors = buttonColors,
+                elevation = buttonElevation
             ) {
                 Text(text = stringResource(id = R.string.back).uppercase(Locale.getDefault()))
             }
@@ -368,7 +416,9 @@ private fun ActionsRow(
                 Button(
                     enabled = if (needsPermission) pagerState.currentPage != 1 else true,
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-                    modifier = Modifier.align(Alignment.CenterEnd)
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    colors = buttonColors,
+                    elevation = buttonElevation
                 ) {
                     Text(text = stringResource(id = R.string.next).uppercase(Locale.getDefault()))
                 }
@@ -376,7 +426,9 @@ private fun ActionsRow(
             else -> {
                 Button(
                     onClick = { onOnboardingDoneClicked() },
-                    modifier = Modifier.align(Alignment.CenterEnd)
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    colors = buttonColors,
+                    elevation = buttonElevation
                 ) {
                     Text(text = stringResource(id = R.string.done).uppercase(Locale.getDefault()))
                 }

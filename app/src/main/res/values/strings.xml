@@ -28,4 +28,8 @@
     <string name="day_friday">Fri</string>
     <string name="day_saturday">Sat</string>
     <string name="day_sunday">Sun</string>
+    <string name="notifications_permission_title">Notifications access</string>
+    <string name="onboarding_welcome_title">Welcome to Bundel</string>
+    <string name="onboarding_schedule_title">Work schedule</string>
+    <string name="onboarding_schedule_blurb_2">For most, these should be your workdays. But you could also use Bundel to make sure you have your “me time” when you’re not working.</string>
 </resources>
