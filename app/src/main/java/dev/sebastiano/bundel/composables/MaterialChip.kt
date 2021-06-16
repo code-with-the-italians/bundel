@@ -60,22 +60,43 @@ internal fun MaterialChip(
         targetValue = if (checked) checkedBackgroundColor else uncheckedBackgroundColor
     )
 
+    MaterialPill(
+        modifier = Modifier
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                role = Role.Checkbox,
+                onValueChange = { onCheckedChanged(!checked) }
+            )
+            .then(modifier),
+        bgColor = bgColor,
+        contentColor = if (checked) checkedContentColor else uncheckedContentColor,
+        borderStroke = if (checked) checkedBorder else uncheckedBorder,
+        elevation = elevation,
+        content = content
+    )
+}
+
+@Composable
+private fun MaterialPill(
+    modifier: Modifier = Modifier,
+    bgColor: Color,
+    contentColor: Color,
+    borderStroke: BorderStroke? = null,
+    elevation: Dp = 0.dp,
+    content: @Composable () -> Unit
+) {
     Surface(
         shape = CircleShape,
         color = bgColor,
-        contentColor = if (checked) checkedContentColor else uncheckedContentColor,
-        border = if (checked) checkedBorder else uncheckedBorder,
+        contentColor = contentColor,
+        border = borderStroke,
         elevation = elevation
     ) {
+        // This is a hack to work around a regression in beta08 where some modifiers don't work on Surface,
+        // TODO we should be able to remove this when moving to beta09
         Box(
-            modifier = Modifier
-                .toggleable(
-                    value = checked,
-                    enabled = enabled,
-                    role = Role.Checkbox,
-                    onValueChange = { onCheckedChanged(!checked) }
-                )
-                .then(modifier)
+            modifier = modifier
         ) {
             content()
         }

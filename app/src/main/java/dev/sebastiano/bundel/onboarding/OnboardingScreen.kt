@@ -2,14 +2,13 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import androidx.annotation.IntRange
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +22,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonDefaults.buttonColors
+import androidx.compose.material.ButtonElevation
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -34,8 +41,10 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.DoneOutline
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,11 +65,16 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.buttons
+import com.vanpra.composematerialdialogs.datetime.timepicker.timepicker
 import dev.sebastiano.bundel.BundelOnboardingTheme
+import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import java.util.Locale
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
@@ -102,6 +116,22 @@ internal fun OnboardingScreenDismissOnlyPreview() {
             true,
             {}
         )
+    }
+}
+
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+private fun ScheduleDaysPagePreview() {
+    BundelOnboardingTheme {
+        ScheduleDaysPage()
+    }
+}
+
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+private fun ScheduleHoursPagePreview() {
+    BundelOnboardingTheme {
+        ScheduleHoursPage()
     }
 }
 
@@ -163,8 +193,9 @@ private fun ColumnScope.OnboardingPager(
         when (pageIndex) {
             0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
             1 -> NotificationsAccessPage(onSettingsIntentClick, needsPermission)
-            2 -> ScheduleSetupPage()
-            3 -> AllSetPage()
+            2 -> ScheduleDaysPage()
+            3 -> ScheduleHoursPage()
+            4 -> AllSetPage()
             else -> error("Too many pages")
         }
     }
@@ -289,20 +320,10 @@ private enum class WeekDays(@StringRes val displayResId: Int) {
     SUNDAY(R.string.day_sunday)
 }
 
-@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
-private fun ScheduleSetupPagePreview() {
-    BundelOnboardingTheme {
-        ScheduleSetupPage()
-    }
-}
-
-@Composable
-private fun ScheduleSetupPage() {
+private fun ScheduleDaysPage() {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .scrollable(rememberScrollState(), Orientation.Vertical),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -352,6 +373,171 @@ private fun ScheduleSetupPage() {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+private data class TimeRange(
+    val from: HourOfDay,
+    val to: HourOfDay
+) {
+
+    data class HourOfDay(
+        @IntRange(from = 0, to = 23) val hour: Int,
+        @IntRange(from = 0, to = 59) val minute: Int
+    )
+}
+
+private const val MAX_TIME_RANGES = 5
+
+@Composable
+fun ScheduleHoursPage() {
+    val timeRanges = remember {
+        mutableStateListOf(TimeRange(from = TimeRange.HourOfDay(9, 0), to = TimeRange.HourOfDay(13, 0)))
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Text(
+            text = stringResource(id = R.string.onboarding_schedule_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(R.string.onboarding_schedule_blurb),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                for ((index, timeRange) in timeRanges.withIndex()) {
+                    TimeRangeRow(
+                        timeRange = timeRange,
+                        onRemoved = if (index > 0) {
+                            { timeRanges.remove(it) }
+                        } else {
+                            null
+                        },
+                        onTimeRangeChanged = { newTimeRange ->
+                            timeRanges.remove(timeRange)
+                            timeRanges.add(index, newTimeRange)
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(singlePadding()))
+                }
+
+                if (timeRanges.size < MAX_TIME_RANGES) {
+                    Box(modifier = Modifier.clickable { timeRanges.add(timeRanges.last().copy()) }) {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                            TimeRangeRow(timeRange = null, enabled = false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimeRangeRow(
+    timeRange: TimeRange? = null,
+    pillButtonColors: ButtonColors = buttonColors(
+        backgroundColor = MaterialTheme.colors.onSurface
+    ),
+    pillButtonElevation: ButtonElevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
+    enabled: Boolean = true,
+    onRemoved: ((TimeRange) -> Unit)? = null,
+    onTimeRangeChanged: (TimeRange) -> Unit = {}
+) {
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (onRemoved != null && timeRange != null) {
+            IconButton(onClick = { onRemoved(timeRange) }) {
+                Icon(Icons.Rounded.Clear, contentDescription = "Remove")
+            }
+
+            Spacer(modifier = Modifier.width(singlePadding()))
+        } else {
+            Box(Modifier.size(48.dp))
+            Spacer(modifier = Modifier.width(singlePadding()))
+        }
+
+        Text(text = "From")
+
+        Spacer(modifier = Modifier.width(singlePadding()))
+
+        // TODO use proper date/time formatting
+        fun TimeRange.HourOfDay?.asDisplayString() = if (this != null) {
+            "$hour:${minute.toString().padStart(2, '0')}"
+        } else {
+            ""
+        }
+
+        TimePillButton(
+            text = timeRange?.from.asDisplayString(),
+            pillButtonColors = pillButtonColors,
+            pillButtonElevation = pillButtonElevation,
+            enabled = enabled
+        ) { onTimeRangeChanged(checkNotNull(timeRange) { "Null timeRange" }.copy(from = TimeRange.HourOfDay(it.hour, it.minute))) }
+
+        Spacer(modifier = Modifier.width(singlePadding()))
+
+        Text(text = "to")
+
+        Spacer(modifier = Modifier.width(singlePadding()))
+
+        TimePillButton(
+            text = timeRange?.to.asDisplayString(),
+            pillButtonColors = pillButtonColors,
+            pillButtonElevation = pillButtonElevation,
+            enabled = enabled
+        ) { onTimeRangeChanged(checkNotNull(timeRange) { "Null timeRange" }.copy(to = TimeRange.HourOfDay(it.hour, it.minute))) }
+    }
+}
+
+@Composable
+private fun TimePillButton(
+    text: String,
+    pillButtonColors: ButtonColors,
+    pillButtonElevation: ButtonElevation,
+    enabled: Boolean,
+    onValueChanged: (LocalTime) -> Unit
+) {
+    val timePickerDialog = remember { MaterialDialog() }
+    BundelTheme {
+        timePickerDialog.build(shape = RoundedCornerShape(16.dp)) {
+            timepicker(is24HourClock = true) { time ->
+                onValueChanged(time)
+            }
+            buttons {
+                positiveButton("Ok")
+                negativeButton("Cancel")
+            }
+        }
+    }
+
+    Button(
+        shape = CircleShape,
+        colors = pillButtonColors,
+        elevation = pillButtonElevation,
+        enabled = enabled,
+        onClick = { timePickerDialog.show() }
+    ) {
+        Text(text = text)
     }
 }
 

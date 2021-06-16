@@ -46,6 +46,8 @@ android {
     }
 
     compileOptions {
+        // We likely don't reeeeally need this, but hey — shiny
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -76,6 +78,8 @@ detekt {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.com.android.tools.desugar)
+
     implementation(libs.androidx.activity.activityCompose)
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.hilt.hiltNavigationCompose)
@@ -86,6 +90,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
     implementation(libs.coilKt.coil)
+    implementation(libs.io.github.vanpra.dialogs.datetime)
     implementation(libs.jakes.timber.timber)
 
     implementation(platform("com.google.firebase:firebase-bom:28.1.0"))

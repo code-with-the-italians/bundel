@@ -5,6 +5,8 @@ appCompat="1.4.0-alpha02"
 coil="1.2.2"
 compose="1.0.0-beta08"
 daggerHilt="2.36"
+datetime-dialogs="0.4.2"
+desugar="1.1.5"
 gradlePlugins-agp="7.0.0-beta03"
 gradlePlugins-crashlytics="2.7.0"
 gradlePlugins-gms="4.3.8"
@@ -38,6 +40,7 @@ androidx-navigation-navigationCompose={ module="androidx.navigation:navigation-c
 androidx-room-roomCompiler={ module="androidx.room:room-compiler", version.ref="room" }
 androidx-room-roomKtx={ module="androidx.room:room-ktx", version.ref="room" }
 androidx-room-roomRuntime={ module="androidx.room:room-runtime", version.ref="room" }
+com-android-tools-desugar={ module="com.android.tools:desugar_jdk_libs", version.ref="desugar" }
 coilKt-coil={ module="io.coil-kt:coil", version.ref="coil" }
 google-accompanistCoil={ module="com.google.accompanist:accompanist-coil", version.ref="accompanist" }
 google-accompanistFlowLayout={ module="com.google.accompanist:accompanist-flowlayout", version.ref="accompanist" }
@@ -53,6 +56,7 @@ gradlePlugins-crashlytics={ module="com.google.firebase:firebase-crashlytics-gra
 gradlePlugins-gms={ module="com.google.gms:google-services", version.ref="gradlePlugins-gms" }
 gradlePlugins-hilt={ module="com.google.dagger:hilt-android-gradle-plugin", version.ref="daggerHilt" }
 gradlePlugins-kotlin={ module="org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref="kotlin" }
+io-github-vanpra-dialogs-datetime={ module="io.github.vanpra.compose-material-dialogs:datetime", version.ref="datetime-dialogs" }
 jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
 
 [bundles]
