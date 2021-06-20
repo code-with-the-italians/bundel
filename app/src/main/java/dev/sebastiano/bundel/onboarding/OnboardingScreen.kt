@@ -2,7 +2,6 @@
 
 package dev.sebastiano.bundel.onboarding
 
-import androidx.annotation.IntRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -46,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -75,6 +73,7 @@ import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.OnboardingViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
+import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
@@ -135,7 +134,12 @@ private fun ScheduleDaysPagePreview() {
 @Composable
 private fun ScheduleHoursPagePreview() {
     BundelOnboardingTheme {
-        ScheduleHoursPage()
+        ScheduleHoursPage(
+            timeRanges = listOf(TimeRange(from = TimeRange.HourOfDay(8, 0), to = TimeRange.HourOfDay(12, 0))),
+            onAddTimeRange = {},
+            onRemoveTimeRange = {},
+            onChangeTimeRange = { _, _ -> }
+        )
     }
 }
 
@@ -203,7 +207,15 @@ private fun ColumnScope.OnboardingPager(
                 val activeDays by viewModel.daysSchedule.collectAsState()
                 ScheduleDaysPage(activeDays) { day, active -> viewModel.onScheduleDayActiveChanged(day, active) }
             }
-            3 -> ScheduleHoursPage()
+            3 -> {
+                val activeHours by viewModel.hoursSchedule.collectAsState()
+                ScheduleHoursPage(
+                    timeRanges = activeHours,
+                    onAddTimeRange = { viewModel.onScheduleHoursAddTimeRange() },
+                    onRemoveTimeRange = { viewModel.onScheduleHoursRemoveTimeRange(it) },
+                    onChangeTimeRange = { old, new -> viewModel.onScheduleHoursChangeTimeRange(old, new) }
+                )
+            }
             4 -> AllSetPage()
             else -> error("Too many pages")
         }
@@ -376,25 +388,15 @@ private fun ScheduleDaysPage(
     }
 }
 
-private data class TimeRange(
-    val from: HourOfDay,
-    val to: HourOfDay
-) {
-
-    data class HourOfDay(
-        @IntRange(from = 0, to = 23) val hour: Int,
-        @IntRange(from = 0, to = 59) val minute: Int
-    )
-}
-
 private const val MAX_TIME_RANGES = 5
 
 @Composable
-fun ScheduleHoursPage() {
-    val timeRanges = remember {
-        mutableStateListOf(TimeRange(from = TimeRange.HourOfDay(9, 0), to = TimeRange.HourOfDay(13, 0)))
-    }
-
+private fun ScheduleHoursPage(
+    timeRanges: List<TimeRange>,
+    onAddTimeRange: () -> Unit,
+    onRemoveTimeRange: (timeRange: TimeRange) -> Unit,
+    onChangeTimeRange: (old: TimeRange, new: TimeRange) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -425,21 +427,18 @@ fun ScheduleHoursPage() {
                     TimeRangeRow(
                         timeRange = timeRange,
                         onRemoved = if (index > 0) {
-                            { timeRanges.remove(it) }
+                            { onRemoveTimeRange(timeRange) }
                         } else {
                             null
                         },
-                        onTimeRangeChanged = { newTimeRange ->
-                            timeRanges.remove(timeRange)
-                            timeRanges.add(index, newTimeRange)
-                        }
+                        onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) }
                     )
 
                     Spacer(modifier = Modifier.height(singlePadding()))
                 }
 
                 if (timeRanges.size < MAX_TIME_RANGES) {
-                    Box(modifier = Modifier.clickable { timeRanges.add(timeRanges.last().copy()) }) {
+                    Box(modifier = Modifier.clickable { onAddTimeRange() }) {
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
                             TimeRangeRow(timeRange = null, enabled = false)
                         }
@@ -458,6 +457,7 @@ private fun TimeRangeRow(
     ),
     pillButtonElevation: ButtonElevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
     enabled: Boolean = true,
+    canBeRemoved: Boolean = false,
     onRemoved: ((TimeRange) -> Unit)? = null,
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
@@ -465,7 +465,8 @@ private fun TimeRangeRow(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (onRemoved != null && timeRange != null) {
+        if (canBeRemoved && timeRange != null) {
+            checkNotNull(onRemoved) { "Time range with canBeRemoved true requires a onRemove callback" }
             IconButton(onClick = { onRemoved(timeRange) }) {
                 Icon(Icons.Rounded.Clear, contentDescription = "Remove")
             }

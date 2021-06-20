@@ -2,6 +2,8 @@ package dev.sebastiano.bundel.storage
 
 import android.content.Context
 import dev.sebastiano.bundel.preferences.schedule.DaysScheduleSerializer
+import dev.sebastiano.bundel.preferences.schedule.HoursScheduleSerializer
+import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,6 +19,9 @@ internal interface PreferenceStorage {
 
     suspend fun getScheduleActiveDays(): Map<WeekDay, Boolean>
     suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean
+
+    suspend fun getScheduleActiveHours(): List<TimeRange>
+    suspend fun setScheduleActiveHours(hoursSchedule: List<TimeRange>): Boolean
 }
 
 internal class SharedPreferencesStorage @Inject constructor(context: Context) : PreferenceStorage {
@@ -50,15 +55,34 @@ internal class SharedPreferencesStorage @Inject constructor(context: Context) : 
         storage.edit().putString(Keys.DAYS_SCHEDULE, DaysScheduleSerializer.serializeToString(daysSchedule)).commit()
     }
 
+    override suspend fun getScheduleActiveHours(): List<TimeRange> = withContext(Dispatchers.IO) {
+        val rawValue = storage.getString(Keys.HOURS_SCHEDULE, null)
+            ?: HoursScheduleSerializer.serializeToString(DEFAULT_HOURS_SCHEDULE)
+
+        HoursScheduleSerializer.deserializeFromString(rawValue)
+    }
+
+    override suspend fun setScheduleActiveHours(hoursSchedule: List<TimeRange>): Boolean = withContext(Dispatchers.IO) {
+        storage.edit().putString(Keys.HOURS_SCHEDULE, HoursScheduleSerializer.serializeToString(hoursSchedule)).commit()
+    }
+
     private object Keys {
 
         const val CRASHLYTICS_ENABLED = "crashlytics"
         const val ONBOARDING_SEEN = "onboarding_seen"
         const val DAYS_SCHEDULE = "days_schedule"
+        const val HOURS_SCHEDULE = "hours_schedule"
     }
 
     companion object {
 
         private val DEFAULT_DAYS_SCHEDULE = WeekDay.values().map { it to true }.toMap()
+
+        private val DEFAULT_HOURS_SCHEDULE = listOf(
+            TimeRange(
+                from = TimeRange.HourOfDay(9, 0),
+                to = TimeRange.HourOfDay(13, 0)
+            )
+        )
     }
 }
