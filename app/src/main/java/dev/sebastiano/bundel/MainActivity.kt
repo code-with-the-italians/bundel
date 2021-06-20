@@ -230,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 private fun Lifecycle.eventsAsFlow(): Flow<Lifecycle.Event> = callbackFlow {
-    val observer = LifecycleEventObserver { _, event -> offer(event) }
+    val observer = LifecycleEventObserver { _, event -> trySend(event) }
     addObserver(observer)
 
     awaitClose { removeObserver(observer) }
