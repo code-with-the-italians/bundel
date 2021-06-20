@@ -63,7 +63,7 @@ You can also find the whole archive of previous streams over on YouTube.
 
 We regularly stream ourselves coding on this app. We are _generally_ live at these times:
 * Wednesdays, at 18:30 CEST / 12:30 PM EST / 9:30 AM PST
-* Sundays, at 16:00 CEST / 10 AM EST / 7 AM PST
+* Sundays, at 17:00 CEST / 11 AM EST / 8 AM PST
 
 Dates and times may vary though, so watch out for announcements. Or, you know, add
 [this nifty iCal subscription](http://bit.ly/cwi-ical) to your calendar. You can find some instructions
