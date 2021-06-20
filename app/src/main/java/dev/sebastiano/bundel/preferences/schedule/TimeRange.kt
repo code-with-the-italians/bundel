@@ -12,6 +12,7 @@ internal data class TimeRange(
         @IntRange(from = 0, to = 59) val minute: Int
     ) {
 
+        @Suppress("MagicNumber") // We should not depende on this crap logic anyway
         fun plusMinutes(minutes: Int): HourOfDay {
             val newMinutes = minute + minutes
             return if (newMinutes <= 59) {

@@ -130,6 +130,7 @@ private fun ScheduleDaysPagePreview() {
     }
 }
 
+@Suppress("MagicNumber") // It's a preview
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun ScheduleHoursPagePreview() {
