@@ -12,6 +12,7 @@ buildscript {
         classpath(libs.gradlePlugins.crashlytics)
         classpath(libs.gradlePlugins.gms)
         classpath(libs.gradlePlugins.hilt)
+        classpath(libs.gradlePlugins.junit5)
         classpath(libs.gradlePlugins.kotlin)
     }
 }

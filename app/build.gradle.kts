@@ -10,6 +10,7 @@ plugins {
     id("org.jmailen.kotlinter")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("de.mannodermaus.android-junit5")
 }
 
 android {
@@ -99,6 +100,10 @@ dependencies {
 
     kapt(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
+
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.assertk)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 tasks {
