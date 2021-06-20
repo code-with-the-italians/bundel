@@ -3,7 +3,6 @@
 package dev.sebastiano.bundel.onboarding
 
 import androidx.annotation.IntRange
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -45,6 +44,8 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.DoneOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -70,8 +72,10 @@ import com.vanpra.composematerialdialogs.buttons
 import com.vanpra.composematerialdialogs.datetime.timepicker.timepicker
 import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.BundelTheme
+import dev.sebastiano.bundel.OnboardingViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
+import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -123,7 +127,7 @@ internal fun OnboardingScreenDismissOnlyPreview() {
 @Composable
 private fun ScheduleDaysPagePreview() {
     BundelOnboardingTheme {
-        ScheduleDaysPage()
+        ScheduleDaysPage(WeekDay.values().map { it to true }.toMap()) { _, _ -> }
     }
 }
 
@@ -164,7 +168,7 @@ internal fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            val pagerState = rememberPagerState(pageCount = 4)
+            val pagerState = rememberPagerState(pageCount = 5)
             OnboardingPager(
                 onSettingsIntentClick = onSettingsIntentClick,
                 crashReportingEnabled = crashReportingEnabled,
@@ -188,12 +192,17 @@ private fun ColumnScope.OnboardingPager(
     pagerState: PagerState,
     needsPermission: Boolean
 ) {
+    val viewModel = viewModel<OnboardingViewModel>()
+
     @Suppress("MagicNumber") // Yolo, page indices
     HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
             0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
             1 -> NotificationsAccessPage(onSettingsIntentClick, needsPermission)
-            2 -> ScheduleDaysPage()
+            2 -> {
+                val activeDays by viewModel.daysSchedule.collectAsState()
+                ScheduleDaysPage(activeDays) { day, active -> viewModel.onScheduleDayActiveChanged(day, active) }
+            }
             3 -> ScheduleHoursPage()
             4 -> AllSetPage()
             else -> error("Too many pages")
@@ -310,18 +319,11 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
     }
 }
 
-private enum class WeekDays(@StringRes val displayResId: Int) {
-    MONDAY(R.string.day_monday),
-    TUESDAY(R.string.day_tuesday),
-    WEDNESDAY(R.string.day_wednesday),
-    THURSDAY(R.string.day_thursday),
-    FRIDAY(R.string.day_friday),
-    SATURDAY(R.string.day_saturday),
-    SUNDAY(R.string.day_sunday)
-}
-
 @Composable
-private fun ScheduleDaysPage() {
+private fun ScheduleDaysPage(
+    activeDays: Map<WeekDay, Boolean>,
+    onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -349,14 +351,12 @@ private fun ScheduleDaysPage() {
             mainAxisSpacing = singlePadding(),
             crossAxisSpacing = singlePadding()
         ) {
-            val checkedDays = remember { mutableStateListOf(*WeekDays.values().indices.map { true }.toTypedArray()) }
-
-            for ((index, weekDay) in WeekDays.values().withIndex()) {
+            for (weekDay in activeDays.keys) {
                 MaterialChip(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     checkedBackgroundColor = MaterialTheme.colors.onSurface,
-                    checked = checkedDays[index],
-                    onCheckedChanged = { checked -> checkedDays[index] = checked }
+                    checked = checkNotNull(activeDays[weekDay]) { "Checked state missing for day $weekDay" },
+                    onCheckedChanged = { checked -> onDayCheckedChange(weekDay, checked) }
                 ) {
                     Text(
                         text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
