@@ -2,11 +2,17 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -44,8 +50,6 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowDropUp
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.DoneOutline
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -548,100 +552,125 @@ private fun TimeRangeRow(
                     .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
                 backgroundColor = backgroundColor
             ) {
-                val hourOfDay = if (expanded == ExpandedTime.FROM) timeRange!!.from else timeRange!!.to
+                TimePicker(expanded, timeRange, backgroundColor, onTimeRangeChanged)
+            }
+        }
+    }
+}
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    val textStyle = MaterialTheme.typography.h2
-                    var selectedPart by remember { mutableStateOf(SelectedPartOfHour.HOUR) }
+@Composable
+private fun TimePicker(
+    expanded: ExpandedTime,
+    timeRange: TimeRange?,
+    backgroundColor: Color,
+    onTimeRangeChanged: (TimeRange) -> Unit
+) {
+    val hourOfDay = if (expanded == ExpandedTime.FROM) timeRange!!.from else timeRange!!.to
 
-                    val selectedPartColor = MaterialTheme.colors.primary
-                    val normalPartColor = contentColorFor(backgroundColor)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        val textStyle = MaterialTheme.typography.h2
+        var selectedPart by remember { mutableStateOf(SelectedPartOfHour.HOUR) }
 
-                    val hourColor by animateColorAsState(
-                        targetValue = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else normalPartColor
-                    )
+        val selectedPartColor = MaterialTheme.colors.primary
+        val normalPartColor = contentColorFor(backgroundColor)
 
-                    Text(
-                        modifier = Modifier.clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { selectedPart = SelectedPartOfHour.HOUR }
-                        ),
-                        text = hourOfDay.hour.toString().padStart(2, '0'),
-                        style = textStyle,
-                        color = hourColor
-                    )
-                    Text(":", style = textStyle)
+        val hourColor by animateColorAsState(
+            targetValue = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else normalPartColor
+        )
 
-                    val minuteColor by animateColorAsState(
-                        targetValue = if (selectedPart == SelectedPartOfHour.MINUTE) selectedPartColor else normalPartColor
-                    )
-                    Text(
-                        modifier = Modifier.clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { selectedPart = SelectedPartOfHour.MINUTE }
-                        ),
-                        text = hourOfDay.minute.toString().padStart(2, '0'),
-                        style = textStyle,
-                        color = minuteColor
-                    )
+        val numbersSlidingAnimation: AnimatedContentScope<Int>.() -> ContentTransform = {
+            if (initialState > targetState) {
+                slideInVertically(initialOffsetY = { it }) + fadeIn() with slideOutVertically(targetOffsetY = { -it }) + fadeOut()
+            } else {
+                slideInVertically(initialOffsetY = { -it }) + fadeIn() with slideOutVertically(targetOffsetY = { it }) + fadeOut()
+            }
+        }
+        AnimatedContent(
+            targetState = hourOfDay.hour,
+            transitionSpec = numbersSlidingAnimation
+        ) { hours ->
+            Text(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { selectedPart = SelectedPartOfHour.HOUR }
+                ),
+                text = hours.toString().padStart(2, '0'),
+                style = textStyle,
+                color = hourColor
+            )
+        }
+        Text(":", style = textStyle)
 
-                    Spacer(modifier = Modifier.padding(start = singlePadding()))
+        val minuteColor by animateColorAsState(
+            targetValue = if (selectedPart == SelectedPartOfHour.MINUTE) selectedPartColor else normalPartColor
+        )
+        AnimatedContent(
+            targetState = hourOfDay.minute,
+            transitionSpec = numbersSlidingAnimation
+        ) { minutes ->
+            Text(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { selectedPart = SelectedPartOfHour.MINUTE }
+                ),
+                text = minutes.toString().padStart(2, '0'),
+                style = textStyle,
+                color = minuteColor
+            )
+        }
 
-                    Column {
-                        IconButton(onClick = {
-                            val newTimeRange = timeRange.copy(
-                                from = if (expanded == ExpandedTime.FROM) {
-                                    if (selectedPart == SelectedPartOfHour.HOUR) {
-                                        timeRange.from.plusHours(1)
-                                    } else {
-                                        timeRange.from.plusMinutes(1)
-                                    }
-                                } else timeRange.from,
-                                to = if (expanded == ExpandedTime.TO) {
-                                    if (selectedPart == SelectedPartOfHour.HOUR) {
-                                        timeRange.to.plusHours(1)
-                                    } else {
-                                        timeRange.to.plusMinutes(1)
-                                    }
-                                } else timeRange.to,
+        Spacer(modifier = Modifier.padding(start = singlePadding()))
 
-                                )
-                            onTimeRangeChanged(newTimeRange)
-                        }) {
-                            Icon(Icons.Rounded.ArrowDropUp, contentDescription = "One more!")
+        Column {
+            IconButton(onClick = {
+                val newTimeRange = timeRange.copy(
+                    from = if (expanded == ExpandedTime.FROM) {
+                        if (selectedPart == SelectedPartOfHour.HOUR) {
+                            timeRange.from.plusHours(1)
+                        } else {
+                            timeRange.from.plusMinutes(1)
                         }
-                        IconButton(onClick = {
-                            val newTimeRange = timeRange.copy(
-                                from = if (expanded == ExpandedTime.FROM) {
-                                    if (selectedPart == SelectedPartOfHour.HOUR) {
-                                        timeRange.from.minusHours(1)
-                                    } else {
-                                        timeRange.from.minusMinutes(1)
-                                    }
-                                } else timeRange.from,
-                                to = if (expanded == ExpandedTime.TO) {
-                                    if (selectedPart == SelectedPartOfHour.HOUR) {
-                                        timeRange.to.minusHours(1)
-                                    } else {
-                                        timeRange.to.minusMinutes(1)
-                                    }
-                                } else timeRange.to,
-
-                                )
-                            onTimeRangeChanged(newTimeRange)
-                        }) {
-                            Icon(Icons.Rounded.ArrowDropDown, contentDescription = "One less!")
+                    } else timeRange.from,
+                    to = if (expanded == ExpandedTime.TO) {
+                        if (selectedPart == SelectedPartOfHour.HOUR) {
+                            timeRange.to.plusHours(1)
+                        } else {
+                            timeRange.to.plusMinutes(1)
                         }
-                    }
-                }
+                    } else timeRange.to
+                )
+                onTimeRangeChanged(newTimeRange)
+            }) {
+                Icon(Icons.Rounded.ArrowDropUp, contentDescription = "One more!")
+            }
+            IconButton(onClick = {
+                val newTimeRange = timeRange.copy(
+                    from = if (expanded == ExpandedTime.FROM) {
+                        if (selectedPart == SelectedPartOfHour.HOUR) {
+                            timeRange.from.minusHours(1)
+                        } else {
+                            timeRange.from.minusMinutes(1)
+                        }
+                    } else timeRange.from,
+                    to = if (expanded == ExpandedTime.TO) {
+                        if (selectedPart == SelectedPartOfHour.HOUR) {
+                            timeRange.to.minusHours(1)
+                        } else {
+                            timeRange.to.minusMinutes(1)
+                        }
+                    } else timeRange.to
+                )
+                onTimeRangeChanged(newTimeRange)
+            }) {
+                Icon(Icons.Rounded.ArrowDropDown, contentDescription = "One less!")
             }
         }
     }
