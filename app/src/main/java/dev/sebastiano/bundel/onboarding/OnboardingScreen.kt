@@ -4,9 +4,11 @@ package dev.sebastiano.bundel.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +23,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonDefaults.buttonColors
-import androidx.compose.material.ButtonElevation
+import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,15 +38,22 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.ArrowDropUp
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.DoneOutline
+import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,11 +72,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.buttons
-import com.vanpra.composematerialdialogs.datetime.timepicker.timepicker
 import dev.sebastiano.bundel.BundelOnboardingTheme
-import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.OnboardingViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
@@ -77,7 +80,6 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 import java.util.Locale
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
@@ -453,94 +455,213 @@ private fun ScheduleHoursPage(
     }
 }
 
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+fun Timerangerowpreview() {    // STOPSHIP because yes
+    BundelOnboardingTheme {
+        TimeRangeRow(
+            timeRange = TimeRange(from = TimeRange.HourOfDay(9, 0), to = TimeRange.HourOfDay(12, 30))
+        )
+    }
+}
+
+private enum class ExpandedTime {
+    NONE,
+    FROM,
+    TO
+}
+
+private enum class SelectedPartOfHour {
+    HOUR,
+    MINUTE
+}
+
 @Composable
 private fun TimeRangeRow(
     timeRange: TimeRange? = null,
-    pillButtonColors: ButtonColors = buttonColors(
-        backgroundColor = MaterialTheme.colors.onSurface
-    ),
-    pillButtonElevation: ButtonElevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
     onRemoved: ((TimeRange) -> Unit)? = null,
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (canBeRemoved && timeRange != null) {
-            checkNotNull(onRemoved) { "Time range with canBeRemoved true requires a onRemove callback" }
-            IconButton(onClick = { onRemoved(timeRange) }) {
-                Icon(Icons.Rounded.Clear, contentDescription = "Remove")
+        var expanded by remember { mutableStateOf(ExpandedTime.NONE) }
+
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (canBeRemoved && timeRange != null) {
+                checkNotNull(onRemoved) { "Time range with canBeRemoved true requires a onRemove callback" }
+                IconButton(onClick = { onRemoved(timeRange) }) {
+                    Icon(Icons.Rounded.Clear, contentDescription = "Remove")
+                }
+
+                Spacer(modifier = Modifier.width(singlePadding()))
+            } else {
+                Box(Modifier.size(48.dp))
+                Spacer(modifier = Modifier.width(singlePadding()))
             }
 
+            Text(text = "From")
+
             Spacer(modifier = Modifier.width(singlePadding()))
-        } else {
-            Box(Modifier.size(48.dp))
+
+            // TODO use proper date/time formatting
+            fun TimeRange.HourOfDay?.asDisplayString() = if (this != null) {
+                "$hour:${minute.toString().padStart(2, '0')}"
+            } else {
+                ""
+            }
+
+            val expandedPillColor = MaterialTheme.colors.primary
+            val normalPillColor = MaterialTheme.colors.onSurface
+
+            TimePillButton(
+                text = timeRange?.from.asDisplayString(),
+                pillBackgroundColor = if (expanded == ExpandedTime.FROM) expandedPillColor else normalPillColor,
+                enabled = enabled
+            ) { expanded = if (expanded != ExpandedTime.FROM) ExpandedTime.FROM else ExpandedTime.NONE }
+
             Spacer(modifier = Modifier.width(singlePadding()))
+
+            Text(text = "to")
+
+            Spacer(modifier = Modifier.width(singlePadding()))
+
+            TimePillButton(
+                text = timeRange?.to.asDisplayString(),
+                pillBackgroundColor = if (expanded == ExpandedTime.TO) expandedPillColor else normalPillColor,
+                enabled = enabled
+            ) { expanded = if (expanded != ExpandedTime.TO) ExpandedTime.TO else ExpandedTime.NONE }
         }
 
-        Text(text = "From")
+        AnimatedVisibility(visible = expanded != ExpandedTime.NONE) {
+            val backgroundColor = MaterialTheme.colors.secondary
 
-        Spacer(modifier = Modifier.width(singlePadding()))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
+                backgroundColor = backgroundColor
+            ) {
+                val hourOfDay = if (expanded == ExpandedTime.FROM) timeRange!!.from else timeRange!!.to
 
-        // TODO use proper date/time formatting
-        fun TimeRange.HourOfDay?.asDisplayString() = if (this != null) {
-            "$hour:${minute.toString().padStart(2, '0')}"
-        } else {
-            ""
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val textStyle = MaterialTheme.typography.h2
+                    var selectedPart by remember { mutableStateOf(SelectedPartOfHour.HOUR) }
+
+                    val selectedPartColor = MaterialTheme.colors.primary
+                    val normalPartColor = contentColorFor(backgroundColor)
+
+                    val hourColor by animateColorAsState(
+                        targetValue = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else normalPartColor
+                    )
+
+                    Text(
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { selectedPart = SelectedPartOfHour.HOUR }
+                        ),
+                        text = hourOfDay.hour.toString().padStart(2, '0'),
+                        style = textStyle,
+                        color = hourColor
+                    )
+                    Text(":", style = textStyle)
+
+                    val minuteColor by animateColorAsState(
+                        targetValue = if (selectedPart == SelectedPartOfHour.MINUTE) selectedPartColor else normalPartColor
+                    )
+                    Text(
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { selectedPart = SelectedPartOfHour.MINUTE }
+                        ),
+                        text = hourOfDay.minute.toString().padStart(2, '0'),
+                        style = textStyle,
+                        color = minuteColor
+                    )
+
+                    Spacer(modifier = Modifier.padding(start = singlePadding()))
+
+                    Column {
+                        IconButton(onClick = {
+                            val newTimeRange = timeRange.copy(
+                                from = if (expanded == ExpandedTime.FROM) {
+                                    if (selectedPart == SelectedPartOfHour.HOUR) {
+                                        timeRange.from.plusHours(1)
+                                    } else {
+                                        timeRange.from.plusMinutes(1)
+                                    }
+                                } else timeRange.from,
+                                to = if (expanded == ExpandedTime.TO) {
+                                    if (selectedPart == SelectedPartOfHour.HOUR) {
+                                        timeRange.to.plusHours(1)
+                                    } else {
+                                        timeRange.to.plusMinutes(1)
+                                    }
+                                } else timeRange.to,
+
+                                )
+                            onTimeRangeChanged(newTimeRange)
+                        }) {
+                            Icon(Icons.Rounded.ArrowDropUp, contentDescription = "One more!")
+                        }
+                        IconButton(onClick = {
+                            val newTimeRange = timeRange.copy(
+                                from = if (expanded == ExpandedTime.FROM) {
+                                    if (selectedPart == SelectedPartOfHour.HOUR) {
+                                        timeRange.from.minusHours(1)
+                                    } else {
+                                        timeRange.from.minusMinutes(1)
+                                    }
+                                } else timeRange.from,
+                                to = if (expanded == ExpandedTime.TO) {
+                                    if (selectedPart == SelectedPartOfHour.HOUR) {
+                                        timeRange.to.minusHours(1)
+                                    } else {
+                                        timeRange.to.minusMinutes(1)
+                                    }
+                                } else timeRange.to,
+
+                                )
+                            onTimeRangeChanged(newTimeRange)
+                        }) {
+                            Icon(Icons.Rounded.ArrowDropDown, contentDescription = "One less!")
+                        }
+                    }
+                }
+            }
         }
-
-        TimePillButton(
-            text = timeRange?.from.asDisplayString(),
-            pillButtonColors = pillButtonColors,
-            pillButtonElevation = pillButtonElevation,
-            enabled = enabled
-        ) { onTimeRangeChanged(checkNotNull(timeRange) { "Null timeRange" }.copy(from = TimeRange.HourOfDay(it.hour, it.minute))) }
-
-        Spacer(modifier = Modifier.width(singlePadding()))
-
-        Text(text = "to")
-
-        Spacer(modifier = Modifier.width(singlePadding()))
-
-        TimePillButton(
-            text = timeRange?.to.asDisplayString(),
-            pillButtonColors = pillButtonColors,
-            pillButtonElevation = pillButtonElevation,
-            enabled = enabled
-        ) { onTimeRangeChanged(checkNotNull(timeRange) { "Null timeRange" }.copy(to = TimeRange.HourOfDay(it.hour, it.minute))) }
     }
 }
 
 @Composable
 private fun TimePillButton(
     text: String,
-    pillButtonColors: ButtonColors,
-    pillButtonElevation: ButtonElevation,
+    pillBackgroundColor: Color = MaterialTheme.colors.onSurface,
     enabled: Boolean,
-    onValueChanged: (LocalTime) -> Unit
+    onClick: () -> Unit
 ) {
-    val timePickerDialog = remember { MaterialDialog() }
-    BundelTheme {
-        timePickerDialog.build(shape = RoundedCornerShape(16.dp)) {
-            timepicker(is24HourClock = true) { time ->
-                onValueChanged(time)
-            }
-            buttons {
-                positiveButton("Ok")
-                negativeButton("Cancel")
-            }
-        }
-    }
+    val backgroundColor by animateColorAsState(targetValue = pillBackgroundColor)
 
     Button(
         shape = CircleShape,
-        colors = pillButtonColors,
-        elevation = pillButtonElevation,
+        colors = buttonColors(backgroundColor = backgroundColor),
+        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
         enabled = enabled,
-        onClick = { timePickerDialog.show() }
+        onClick = { onClick() }
     ) {
         Text(text = text)
     }
