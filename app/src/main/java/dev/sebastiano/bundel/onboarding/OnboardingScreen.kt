@@ -432,6 +432,7 @@ private fun ScheduleHoursPage(
                         } else {
                             null
                         },
+                        canBeRemoved = index > 0,
                         onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) }
                     )
 
