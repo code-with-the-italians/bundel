@@ -421,7 +421,9 @@ private fun ScheduleHoursPage(
 
         Box(
             contentAlignment = Alignment.TopCenter,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 48.dp + singlePadding())
         ) {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 for ((index, timeRange) in timeRanges.withIndex()) {
