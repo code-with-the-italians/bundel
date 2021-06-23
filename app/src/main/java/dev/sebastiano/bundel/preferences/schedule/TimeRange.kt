@@ -14,7 +14,7 @@ internal data class TimeRange(
 
         // TODO wrap a LocalTime instead of doing maths ourselves
 
-        @Suppress("MagicNumber") // We should not depend on this crap logic anyway
+        @Suppress("MagicNumber") // We should not have this crap logic anyway
         fun plusMinutes(minutes: Int): HourOfDay {
             val newMinutes = minute + minutes
             return if (newMinutes <= 59) {
@@ -26,6 +26,7 @@ internal data class TimeRange(
 
         fun minusMinutes(minutes: Int): HourOfDay = copy(minute = (minute - minutes).coerceAtLeast(0))
 
+        @Suppress("MagicNumber") // We should not have this crap logic anyway
         fun plusHours(hours: Int): HourOfDay = copy(hour = (hour + hours).coerceAtMost(23))
 
         fun minusHours(hours: Int): HourOfDay = copy(hour = (hour - hours).coerceAtLeast(0))
