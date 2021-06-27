@@ -2,8 +2,8 @@ package dev.sebastiano.bundel.preferences.schedule
 
 import java.time.LocalTime
 
-private val MINIMUM_TIME = LocalTime.of(0,0)
-private val MAXIMUM_TIME = LocalTime.of(23,59)
+private val MINIMUM_TIME = LocalTime.of(0, 0)
+private val MAXIMUM_TIME = LocalTime.of(23, 59)
 
 internal data class TimeRange(
     val from: LocalTime,

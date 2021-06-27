@@ -3,12 +3,10 @@ package dev.sebastiano.bundel.storage
 import android.content.Context
 import dev.sebastiano.bundel.preferences.schedule.DaysScheduleSerializer
 import dev.sebastiano.bundel.preferences.schedule.HoursScheduleSerializer
-import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.LocalTime
 import javax.inject.Inject
 
 internal interface PreferenceStorage {

@@ -19,6 +19,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,14 +55,15 @@ import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
-import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
 import dev.sebastiano.bundel.preferences.schedule.PartOfHour
+import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.singlePadding
 import java.time.LocalTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 
+@Suppress("MagicNumber") // It's a preview
 @Preview(name = "Inactive", backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 fun TimeRangeRowInactivePreview() {
@@ -72,6 +74,7 @@ fun TimeRangeRowInactivePreview() {
     }
 }
 
+@Suppress("MagicNumber") // It's a preview
 @Preview(name = "Active", backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 fun TimeRangeRowActivePreview() {
@@ -107,25 +110,7 @@ internal fun TimeRangeRow(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AnimatedContent(
-                targetState = canBeRemoved && timeRange != null,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
-                }
-            ) { showRemoveAction ->
-                if (showRemoveAction) {
-                    checkNotNull(timeRange) { "Time range can't be null when canBeRemoved == true" }
-
-                    IconButton(onClick = { onRemoved(timeRange) }) {
-                        Icon(Icons.Rounded.Clear, contentDescription = "Remove")
-                    }
-
-                    Spacer(modifier = Modifier.width(singlePadding()))
-                } else {
-                    Box(Modifier.size(48.dp))
-                    Spacer(modifier = Modifier.width(singlePadding()))
-                }
-            }
+            RemoveIcon(canBeRemoved, timeRange, onRemoved)
 
             Text(text = "From")
 
@@ -153,26 +138,64 @@ internal fun TimeRangeRow(
             ) { expanded = if (expanded != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE }
         }
 
-        AnimatedVisibility(visible = expanded != ExpandedRangeExtremity.NONE) {
-            val backgroundColor = MaterialTheme.colors.secondary
-            checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
+        ExpandableTimePicker(expanded, timeRange, minimumAllowableFrom, maximumAllowableTo, onTimeRangeChanged)
+    }
+}
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
-                backgroundColor = backgroundColor
-            ) {
-                TimePicker(
-                    expanded = expanded,
-                    timeRange = timeRange,
-                    contentColor = contentColorFor(backgroundColor),
-                    minimumAllowableFrom = minimumAllowableFrom,
-                    maximumAllowableTo = maximumAllowableTo,
-                    onTimeRangeChanged = onTimeRangeChanged
-                )
+@Composable
+private fun RemoveIcon(
+    canBeRemoved: Boolean,
+    timeRange: TimeRange?,
+    onRemoved: (TimeRange) -> Unit
+) {
+    AnimatedContent(
+        targetState = canBeRemoved && timeRange != null,
+        transitionSpec = {
+            fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
+        }
+    ) { showRemoveAction ->
+        if (showRemoveAction) {
+            checkNotNull(timeRange) { "Time range can't be null when canBeRemoved == true" }
+
+            IconButton(onClick = { onRemoved(timeRange) }) {
+                Icon(Icons.Rounded.Clear, contentDescription = "Remove")
             }
+
+            Spacer(modifier = Modifier.width(singlePadding()))
+        } else {
+            Box(Modifier.size(48.dp))
+            Spacer(modifier = Modifier.width(singlePadding()))
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.ExpandableTimePicker(
+    expanded: ExpandedRangeExtremity,
+    timeRange: TimeRange?,
+    minimumAllowableFrom: LocalTime?,
+    maximumAllowableTo: LocalTime?,
+    onTimeRangeChanged: (TimeRange) -> Unit
+) {
+    AnimatedVisibility(visible = expanded != ExpandedRangeExtremity.NONE) {
+        val backgroundColor = MaterialTheme.colors.secondary
+        checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
+            backgroundColor = backgroundColor
+        ) {
+            TimePicker(
+                expanded = expanded,
+                timeRange = timeRange,
+                contentColor = contentColorFor(backgroundColor),
+                minimumAllowableFrom = minimumAllowableFrom,
+                maximumAllowableTo = maximumAllowableTo,
+                onTimeRangeChanged = onTimeRangeChanged
+            )
         }
     }
 }

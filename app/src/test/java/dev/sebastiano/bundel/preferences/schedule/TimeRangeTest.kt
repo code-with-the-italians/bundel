@@ -147,7 +147,7 @@ internal class TimeRangeTest {
 
         @Test
         internal fun `should NOT allow decreasing 'to' HOURS when set to from + 1h or earlier`() {
-            assertThat(timeRange(from = anyTime,to = anyTime.plusHours(1)))
+            assertThat(timeRange(from = anyTime, to = anyTime.plusHours(1)))
                 .prop(TimeRange::canDecrementToHours).isFalse()
         }
 

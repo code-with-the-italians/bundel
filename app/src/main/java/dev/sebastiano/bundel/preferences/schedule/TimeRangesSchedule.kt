@@ -7,7 +7,7 @@ private const val MINIMUM_RANGE_DURATION_IN_MINUTES = 1L
 private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_TIME_OF_DAY.minusMinutes(MINIMUM_RANGE_DURATION_IN_MINUTES)
 
 internal class TimeRangesSchedule private constructor(
-    private val ranges: List<TimeRange> = listOf()
+    private val ranges: List<TimeRange>
 ) {
 
     val canAppendAnotherRange: Boolean
