@@ -54,10 +54,7 @@ internal class OnboardingViewModel @Inject constructor(
     }
 
     fun onScheduleHoursAddTimeRange() {
-        val timeRange = hoursSchedule.value.last().let { timeRange ->
-            TimeRange(from = timeRange.to.plusMinutes(1), to = timeRange.to.plusMinutes(60))
-        }
-        Timber.d("Adding time range to schedule: $timeRange")
+        Timber.d("Adding time range to schedule")
 
         val newSchedule = hoursSchedule.value.appendTimeRange()
 

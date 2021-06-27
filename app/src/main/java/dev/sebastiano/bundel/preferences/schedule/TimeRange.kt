@@ -8,6 +8,6 @@ internal data class TimeRange(
 ) {
 
     init {
-        require(from < to) { "'From' must be strictly lower than 'to'" }
+        require(from < to) { "'From' ($from) must be strictly lower than 'to' ($to)" }
     }
 }

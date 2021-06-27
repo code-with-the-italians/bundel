@@ -103,25 +103,26 @@ internal fun TimeRangeRow(
         .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
         .toFormatter(LocalConfiguration.current.locales[0])
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         var expanded by remember { mutableStateOf(ExpandedTime.NONE) }
 
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (canBeRemoved && timeRange != null) {
-                IconButton(onClick = { onRemoved(timeRange) }) {
-                    Icon(Icons.Rounded.Clear, contentDescription = "Remove")
-                }
+            AnimatedContent(targetState = canBeRemoved && timeRange != null) { showRemoveAction ->
+                if (showRemoveAction) {
+                    checkNotNull(timeRange) { "Time range can't be null when canBeRemoved == true" }
 
-                Spacer(modifier = Modifier.width(singlePadding()))
-            } else {
-                Box(Modifier.size(48.dp))
-                Spacer(modifier = Modifier.width(singlePadding()))
+                    IconButton(onClick = { onRemoved(timeRange) }) {
+                        Icon(Icons.Rounded.Clear, contentDescription = "Remove")
+                    }
+
+                    Spacer(modifier = Modifier.width(singlePadding()))
+                } else {
+                    Box(Modifier.size(48.dp))
+                    Spacer(modifier = Modifier.width(singlePadding()))
+                }
             }
 
             Text(text = "From")
@@ -157,6 +158,7 @@ internal fun TimeRangeRow(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
                     .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
                 backgroundColor = backgroundColor
             ) {

@@ -2,9 +2,9 @@ package dev.sebastiano.bundel.preferences.schedule
 
 import java.time.LocalTime
 
-private val LAST_AVAILABLE_MINUTE_OF_DAY = LocalTime.of(23, 59)
+private val LAST_AVAILABLE_TIME_OF_DAY = LocalTime.of(23, 59)
 private const val MINIMUM_RANGE_DURATION_IN_MINUTES = 1L
-private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_MINUTE_OF_DAY.minusMinutes(MINIMUM_RANGE_DURATION_IN_MINUTES)
+private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_TIME_OF_DAY.minusMinutes(MINIMUM_RANGE_DURATION_IN_MINUTES)
 
 internal class TimeRangesSchedule private constructor(
     private val ranges: List<TimeRange> = listOf()
@@ -25,9 +25,10 @@ internal class TimeRangesSchedule private constructor(
         check(canAppendAnotherRange) { "Trying to add a time range when canAppendAnotherRange is false" }
 
         val lastTo = last().to
+        val newTo = lastTo.plusHours(1)
         val timeRange = TimeRange(
             from = lastTo.plusMinutes(1),
-            to = lastTo.plusHours(1)
+            to = if (newTo < lastTo) LAST_AVAILABLE_TIME_OF_DAY else newTo
         )
         return of(ranges + timeRange)
     }

@@ -377,8 +377,6 @@ private fun ScheduleDaysPage(
     }
 }
 
-private const val MAX_TIME_RANGES = 5
-
 @Composable
 private fun ScheduleHoursPage(
     schedule: TimeRangesSchedule,
@@ -407,33 +405,31 @@ private fun ScheduleHoursPage(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Box(
-            contentAlignment = Alignment.TopCenter,
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 48.dp + singlePadding())
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                for (timeRange in schedule.timeRanges) {
-                    TimeRangeRow(
-                        timeRange = timeRange,
-                        onRemoved = if (schedule.canRemoveRanges) {
-                            { onRemoveTimeRange(timeRange) }
-                        } else {
-                            { }
-                        },
-                        canBeRemoved = schedule.canRemoveRanges,
-                        onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) }
-                    )
+            for (timeRange in schedule.timeRanges) {
+                TimeRangeRow(
+                    timeRange = timeRange,
+                    onRemoved = if (schedule.canRemoveRanges) {
+                        { onRemoveTimeRange(timeRange) }
+                    } else {
+                        { }
+                    },
+                    canBeRemoved = schedule.canRemoveRanges,
+                    onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) }
+                )
 
-                    Spacer(modifier = Modifier.height(singlePadding()))
-                }
+                Spacer(modifier = Modifier.height(singlePadding()))
+            }
 
-                if (schedule.size < MAX_TIME_RANGES) {
-                    Box(modifier = Modifier.clickable { onAddTimeRange() }) {
-                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-                            TimeRangeRow(timeRange = null, enabled = false)
-                        }
+            AnimatedVisibility (schedule.canAppendAnotherRange) {
+                Box(modifier = Modifier.clickable { onAddTimeRange() }) {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                        TimeRangeRow(timeRange = null, enabled = false)
                     }
                 }
             }
