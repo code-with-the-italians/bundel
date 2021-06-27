@@ -202,24 +202,20 @@ private fun TimePicker(
         }
 
         SelectableAnimatedHourPart(
-            selectedPart = selectedPart,
-            selectedPartColor = selectedPartColor,
-            normalPartColor = contentColor,
             numbersSlidingAnimation = numbersSlidingAnimation,
             value = hourOfDay.hour,
             textStyle = textStyle,
+            color = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else contentColor,
             onClick = { selectedPart = SelectedPartOfHour.HOUR }
         )
 
         Text(":", style = textStyle)
 
         SelectableAnimatedHourPart(
-            selectedPart = selectedPart,
-            selectedPartColor = selectedPartColor,
-            normalPartColor = contentColor,
             numbersSlidingAnimation = numbersSlidingAnimation,
             value = hourOfDay.minute,
             textStyle = textStyle,
+            color = if (selectedPart == SelectedPartOfHour.MINUTE) selectedPartColor else contentColor,
             onClick = { selectedPart = SelectedPartOfHour.MINUTE }
         )
 
@@ -231,16 +227,14 @@ private fun TimePicker(
 
 @Composable
 private fun SelectableAnimatedHourPart(
-    selectedPart: SelectedPartOfHour,
-    selectedPartColor: Color,
-    normalPartColor: Color,
     numbersSlidingAnimation: AnimatedContentScope<Int>.() -> ContentTransform,
     value: Int,
     textStyle: TextStyle,
+    color: Color,
     onClick: () -> Unit
 ) {
     val partColor by animateColorAsState(
-        targetValue = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else normalPartColor
+        targetValue = color
     )
     AnimatedContent(
         targetState = value,
