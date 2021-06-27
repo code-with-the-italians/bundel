@@ -47,26 +47,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.BundelOnboardingTheme
+import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
+import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
+import dev.sebastiano.bundel.preferences.schedule.PartOfHour
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.singlePadding
 import java.time.LocalTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
-
-private enum class ExpandedTime {
-    NONE,
-    FROM,
-    TO
-}
-
-private enum class SelectedPartOfHour {
-    HOUR,
-    MINUTE
-}
 
 @Preview(name = "Inactive", backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
@@ -95,6 +89,8 @@ internal fun TimeRangeRow(
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
+    minimumAllowableFrom: LocalTime? = null,
+    maximumAllowableTo: LocalTime? = null,
     onRemoved: ((TimeRange) -> Unit) = {},
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
@@ -105,7 +101,7 @@ internal fun TimeRangeRow(
         .toFormatter(LocalConfiguration.current.locales[0])
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        var expanded by remember { mutableStateOf(ExpandedTime.NONE) }
+        var expanded by remember { mutableStateOf(ExpandedRangeExtremity.NONE) }
 
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -140,9 +136,9 @@ internal fun TimeRangeRow(
 
             TimePillButton(
                 text = timeRange?.let { timeFormatter.format(timeRange.from) } ?: "",
-                pillBackgroundColor = if (expanded == ExpandedTime.FROM) expandedPillColor else normalPillColor,
+                pillBackgroundColor = if (expanded == ExpandedRangeExtremity.FROM) expandedPillColor else normalPillColor,
                 enabled = enabled
-            ) { expanded = if (expanded != ExpandedTime.FROM) ExpandedTime.FROM else ExpandedTime.NONE }
+            ) { expanded = if (expanded != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE }
 
             Spacer(modifier = Modifier.width(singlePadding()))
 
@@ -152,12 +148,12 @@ internal fun TimeRangeRow(
 
             TimePillButton(
                 text = timeRange?.let { timeFormatter.format(timeRange.to) } ?: "",
-                pillBackgroundColor = if (expanded == ExpandedTime.TO) expandedPillColor else normalPillColor,
+                pillBackgroundColor = if (expanded == ExpandedRangeExtremity.TO) expandedPillColor else normalPillColor,
                 enabled = enabled
-            ) { expanded = if (expanded != ExpandedTime.TO) ExpandedTime.TO else ExpandedTime.NONE }
+            ) { expanded = if (expanded != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE }
         }
 
-        AnimatedVisibility(visible = expanded != ExpandedTime.NONE) {
+        AnimatedVisibility(visible = expanded != ExpandedRangeExtremity.NONE) {
             val backgroundColor = MaterialTheme.colors.secondary
             checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
 
@@ -172,6 +168,8 @@ internal fun TimeRangeRow(
                     expanded = expanded,
                     timeRange = timeRange,
                     contentColor = contentColorFor(backgroundColor),
+                    minimumAllowableFrom = minimumAllowableFrom,
+                    maximumAllowableTo = maximumAllowableTo,
                     onTimeRangeChanged = onTimeRangeChanged
                 )
             }
@@ -181,12 +179,14 @@ internal fun TimeRangeRow(
 
 @Composable
 private fun TimePicker(
-    expanded: ExpandedTime,
+    expanded: ExpandedRangeExtremity,
     timeRange: TimeRange,
     contentColor: Color,
+    minimumAllowableFrom: LocalTime? = null,
+    maximumAllowableTo: LocalTime? = null,
     onTimeRangeChanged: (TimeRange) -> Unit
 ) {
-    val hourOfDay = if (expanded == ExpandedTime.FROM) timeRange.from else timeRange.to
+    val hourOfDay = if (expanded == ExpandedRangeExtremity.FROM) timeRange.from else timeRange.to
 
     Row(
         modifier = Modifier
@@ -196,7 +196,7 @@ private fun TimePicker(
         horizontalArrangement = Arrangement.Center
     ) {
         val textStyle = MaterialTheme.typography.h2
-        var selectedPart by remember { mutableStateOf(SelectedPartOfHour.HOUR) }
+        var selectedPart by remember { mutableStateOf(PartOfHour.HOUR) }
 
         val selectedPartColor = MaterialTheme.colors.primary
 
@@ -212,8 +212,8 @@ private fun TimePicker(
             numbersSlidingAnimation = numbersSlidingAnimation,
             value = hourOfDay.hour,
             textStyle = textStyle,
-            color = if (selectedPart == SelectedPartOfHour.HOUR) selectedPartColor else contentColor,
-            onClick = { selectedPart = SelectedPartOfHour.HOUR }
+            color = if (selectedPart == PartOfHour.HOUR) selectedPartColor else contentColor,
+            onClick = { selectedPart = PartOfHour.HOUR }
         )
 
         Text(":", style = textStyle)
@@ -222,13 +222,14 @@ private fun TimePicker(
             numbersSlidingAnimation = numbersSlidingAnimation,
             value = hourOfDay.minute,
             textStyle = textStyle,
-            color = if (selectedPart == SelectedPartOfHour.MINUTE) selectedPartColor else contentColor,
-            onClick = { selectedPart = SelectedPartOfHour.MINUTE }
+            color = if (selectedPart == PartOfHour.MINUTE) selectedPartColor else contentColor,
+            onClick = { selectedPart = PartOfHour.MINUTE }
         )
 
         Spacer(modifier = Modifier.padding(start = singlePadding()))
 
-        UpDownButtons(timeRange, expanded, selectedPart, onTimeRangeChanged)
+        val modifiableTimeRange = TimePickerModel(timeRange, expanded, selectedPart, minimumAllowableFrom, maximumAllowableTo)
+        UpDownButtons(modifiableTimeRange, onTimeRangeChanged)
     }
 }
 
@@ -262,88 +263,31 @@ private fun SelectableAnimatedHourPart(
 
 @Composable
 private fun UpDownButtons(
-    timeRange: TimeRange,
-    expandedTime: ExpandedTime,
-    selectedPart: SelectedPartOfHour,
+    timePickerModel: TimePickerModel,
     onTimeRangeChanged: (TimeRange) -> Unit
 ) {
-
     Column {
-        val canIncrease = when {
-            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canIncreaseFromHours
-            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canIncreaseFromMinutes
-            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canIncreaseToHours
-            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canIncreaseToMinutes
-            else -> false
-        }
-        val canDecrease = when {
-            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canDecreaseFromHours
-            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canDecreaseFromMinutes
-            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canDecreaseToHours
-            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canDecreaseToMinutes
-            else -> false
-        }
-
-        println("!!!!! Time: ${timeRange.selectedTimeValue(expandedTime)}, part: ${selectedPart.name}. Can increase: $canIncrease, can decrease: $canDecrease")
-
         IconButton(
-            enabled = canIncrease,
+            enabled = timePickerModel.canIncrement,
             onClick = {
-                val newTimeRange = timeRange.copy(
-                    from = if (expandedTime == ExpandedTime.FROM) {
-                        if (selectedPart == SelectedPartOfHour.HOUR) {
-                            timeRange.from.plusHours(1)
-                        } else {
-                            timeRange.from.plusMinutes(1)
-                        }
-                    } else timeRange.from,
-                    to = if (expandedTime == ExpandedTime.TO) {
-                        if (selectedPart == SelectedPartOfHour.HOUR) {
-                            timeRange.to.plusHours(1)
-                        } else {
-                            timeRange.to.plusMinutes(1)
-                        }
-                    } else timeRange.to
-                )
+                val newTimeRange = timePickerModel.incrementTimeRangePart()
                 onTimeRangeChanged(newTimeRange)
             }
         ) {
-            Icon(Icons.Rounded.ArrowDropUp, contentDescription = "One more!")
+            Icon(Icons.Rounded.ArrowDropUp, contentDescription = stringResource(R.string.content_description_time_picker_increase))
         }
 
         IconButton(
-            enabled = canDecrease,
+            enabled = timePickerModel.canDecrement,
             onClick = {
-                val newTimeRange = timeRange.copy(
-                    from = if (expandedTime == ExpandedTime.FROM) {
-                        if (selectedPart == SelectedPartOfHour.HOUR) {
-                            timeRange.from.minusHours(1)
-                        } else {
-                            timeRange.from.minusMinutes(1)
-                        }
-                    } else timeRange.from,
-                    to = if (expandedTime == ExpandedTime.TO) {
-                        if (selectedPart == SelectedPartOfHour.HOUR) {
-                            timeRange.to.minusHours(1)
-                        } else {
-                            timeRange.to.minusMinutes(1)
-                        }
-                    } else timeRange.to
-                )
+                val newTimeRange = timePickerModel.decrementTimeRangePart()
                 onTimeRangeChanged(newTimeRange)
             }
         ) {
-            Icon(Icons.Rounded.ArrowDropDown, contentDescription = "One less!")
+            Icon(Icons.Rounded.ArrowDropDown, contentDescription = stringResource(R.string.content_description_time_picker_decrease))
         }
     }
 }
-
-private fun TimeRange.selectedTimeValue(expandedTime: ExpandedTime) =
-    when (expandedTime) {
-        ExpandedTime.FROM -> from
-        ExpandedTime.TO -> to
-        else -> error("No selected time, how did we get here")
-    }
 
 @Composable
 private fun TimePillButton(

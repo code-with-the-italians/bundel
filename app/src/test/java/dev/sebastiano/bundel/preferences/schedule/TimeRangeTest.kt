@@ -54,91 +54,91 @@ internal class TimeRangeTest {
         @Test
         internal fun `should NOT allow decreasing 'from' HOURS when set to 00_00`() {
             assertThat(timeRange(from = midnight))
-                .prop(TimeRange::canDecreaseFromHours).isFalse()
+                .prop(TimeRange::canDecrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow decreasing 'from' MINUTES when set to 00_00`() {
             assertThat(timeRange(from = midnight))
-                .prop(TimeRange::canDecreaseFromMinutes).isFalse()
+                .prop(TimeRange::canDecrementFromMinutes).isFalse()
         }
 
         @Test
         internal fun `should NOT allow decreasing 'from' HOURS when set to 00_59`() {
             assertThat(timeRange(from = midnight.plusMinutes(59)))
-                .prop(TimeRange::canDecreaseFromHours).isFalse()
+                .prop(TimeRange::canDecrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should allow decreasing 'from' MINUTES when set to 00_01`() {
             assertThat(timeRange(from = midnight.plusMinutes(1)))
-                .prop(TimeRange::canDecreaseFromMinutes).isTrue()
+                .prop(TimeRange::canDecrementFromMinutes).isTrue()
         }
 
         @Test
         internal fun `should allow decreasing 'from' HOURS when set to 01_00`() {
             assertThat(timeRange(from = midnight.plusHours(1)))
-                .prop(TimeRange::canDecreaseFromHours).isTrue()
+                .prop(TimeRange::canDecrementFromHours).isTrue()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' HOURS when less than 1h earlier than 'to'`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusMinutes(59)))
-                .prop(TimeRange::canIncreaseFromHours).isFalse()
+                .prop(TimeRange::canIncrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' HOURS when it's 1h earlier than 'to'`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusHours(1)))
-                .prop(TimeRange::canIncreaseFromHours).isFalse()
+                .prop(TimeRange::canIncrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' MINUTES when it's only 1m earlier than 'to'`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusMinutes(1)))
-                .prop(TimeRange::canIncreaseFromMinutes).isFalse()
+                .prop(TimeRange::canIncrementFromMinutes).isFalse()
         }
 
         @Test
         internal fun `should allow increasing 'from' HOURS when it's 1h1m earlier than 'to'`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusHours(1).plusMinutes(1)))
-                .prop(TimeRange::canIncreaseFromHours).isTrue()
+                .prop(TimeRange::canIncrementFromHours).isTrue()
         }
 
         @Test
         internal fun `should allow increasing 'from' MINUTES when it's 2m earlier than 'to'`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusMinutes(2)))
-                .prop(TimeRange::canIncreaseFromMinutes).isTrue()
+                .prop(TimeRange::canIncrementFromMinutes).isTrue()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' HOURS when set to 23_58`() {
             assertThat(timeRange(from = justBeforeMidnight.minusMinutes(1)))
-                .prop(TimeRange::canIncreaseFromHours).isFalse()
+                .prop(TimeRange::canIncrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' MINUTES when set to 23_58`() {
             assertThat(timeRange(from = justBeforeMidnight.minusMinutes(1)))
-                .prop(TimeRange::canIncreaseFromMinutes).isFalse()
+                .prop(TimeRange::canIncrementFromMinutes).isFalse()
         }
 
         @Test
         internal fun `should NOT allow increasing 'from' HOURS when set to 23_00`() {
             assertThat(timeRange(from = elevenPm))
-                .prop(TimeRange::canIncreaseFromHours).isFalse()
+                .prop(TimeRange::canIncrementFromHours).isFalse()
         }
 
         @Test
         internal fun `should allow increasing 'from' MINUTES when set to 23_57 and to is 23_59`() {
             assertThat(timeRange(from = justBeforeMidnight.minusMinutes(2), to = justBeforeMidnight))
-                .prop(TimeRange::canIncreaseFromMinutes).isTrue()
+                .prop(TimeRange::canIncrementFromMinutes).isTrue()
         }
 
         @Test
         internal fun `should allow increasing 'from' HOURS when set to 22_58 and to is 23_59`() {
             assertThat(timeRange(from = elevenPm.minusMinutes(2), to = justBeforeMidnight))
-                .prop(TimeRange::canIncreaseFromMinutes).isTrue()
+                .prop(TimeRange::canIncrementFromMinutes).isTrue()
         }
     }
 
@@ -148,49 +148,49 @@ internal class TimeRangeTest {
         @Test
         internal fun `should NOT allow decreasing 'to' HOURS when set to from + 1h or earlier`() {
             assertThat(timeRange(from = anyTime,to = anyTime.plusHours(1)))
-                .prop(TimeRange::canDecreaseToHours).isFalse()
+                .prop(TimeRange::canDecrementToHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow decreasing 'to' MINUTES when set to from + 1m`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusMinutes(1)))
-                .prop(TimeRange::canDecreaseToMinutes).isFalse()
+                .prop(TimeRange::canDecrementToMinutes).isFalse()
         }
 
         @Test
         internal fun `should allow decreasing 'to' HOURS when set to from + 1h1m or later`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusHours(1).plusMinutes(1)))
-                .prop(TimeRange::canDecreaseToHours).isTrue()
+                .prop(TimeRange::canDecrementToHours).isTrue()
         }
 
         @Test
         internal fun `should allow decreasing 'to' MINUTES when set to from + 2m or later`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusMinutes(2)))
-                .prop(TimeRange::canDecreaseToMinutes).isTrue()
+                .prop(TimeRange::canDecrementToMinutes).isTrue()
         }
 
         @Test
         internal fun `should NOT allow increasing 'to' HOURS when it's 23_00 or later`() {
             assertThat(timeRange(from = anyTime, to = elevenPm))
-                .prop(TimeRange::canIncreaseToHours).isFalse()
+                .prop(TimeRange::canIncrementToHours).isFalse()
         }
 
         @Test
         internal fun `should NOT allow increasing 'to' MINUTES when it's 23_59`() {
             assertThat(timeRange(from = anyTime, to = justBeforeMidnight))
-                .prop(TimeRange::canIncreaseToMinutes).isFalse()
+                .prop(TimeRange::canIncrementToMinutes).isFalse()
         }
 
         @Test
         internal fun `should allow increasing 'to' HOURS when it's it's 22_59 or earlier`() {
             assertThat(timeRange(from = anyTime, to = elevenPm.minusMinutes(1)))
-                .prop(TimeRange::canIncreaseToHours).isTrue()
+                .prop(TimeRange::canIncrementToHours).isTrue()
         }
 
         @Test
         internal fun `should allow increasing 'to' MINUTES when it's it's 23_58 or earlier`() {
             assertThat(timeRange(from = anyTime, to = justBeforeMidnight.minusMinutes(1)))
-                .prop(TimeRange::canIncreaseToMinutes).isTrue()
+                .prop(TimeRange::canIncrementToMinutes).isTrue()
         }
     }
 

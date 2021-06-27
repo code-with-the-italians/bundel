@@ -32,4 +32,6 @@
     <string name="onboarding_welcome_title">Welcome to Bundel</string>
     <string name="onboarding_schedule_title">Work schedule</string>
     <string name="onboarding_schedule_blurb_2">For most, these should be your workdays. But you could also use Bundel to make sure you have your “me time” when you’re not working.</string>
+    <string name="content_description_time_picker_increase">One more!</string>
+    <string name="content_description_time_picker_decrease">One less!</string>
 </resources>

@@ -16,49 +16,49 @@ internal data class TimeRange(
         require(to > MINIMUM_TIME) { "'To' ($from) must be strictly larger than $MINIMUM_TIME" }
     }
 
-    val canIncreaseFromMinutes: Boolean
+    val canIncrementFromMinutes: Boolean
         get() {
             val newFrom = from.plusMinutes(1)
             return newFrom > from && newFrom < to
         }
 
-    val canIncreaseFromHours: Boolean
+    val canIncrementFromHours: Boolean
         get() {
             val newFrom = from.plusHours(1)
             return newFrom > from && newFrom < to
         }
 
-    val canDecreaseFromMinutes: Boolean
+    val canDecrementFromMinutes: Boolean
         get() {
             val newFrom = from.minusMinutes(1)
             return newFrom < from
         }
 
-    val canDecreaseFromHours: Boolean
+    val canDecrementFromHours: Boolean
         get() {
             val newFrom = from.minusHours(1)
             return newFrom < from
         }
 
-    val canIncreaseToMinutes: Boolean
+    val canIncrementToMinutes: Boolean
         get() {
             val newTo = to.plusMinutes(1)
             return newTo > to
         }
 
-    val canIncreaseToHours: Boolean
+    val canIncrementToHours: Boolean
         get() {
             val newTo = to.plusHours(1)
             return newTo > to
         }
 
-    val canDecreaseToMinutes: Boolean
+    val canDecrementToMinutes: Boolean
         get() {
             val newTo = to.minusMinutes(1)
             return newTo > from
         }
 
-    val canDecreaseToHours: Boolean
+    val canDecrementToHours: Boolean
         get() {
             val newTo = to.minusHours(1)
             return newTo > from

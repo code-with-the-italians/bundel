@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonDefaults.buttonColors
@@ -410,7 +411,12 @@ private fun ScheduleHoursPage(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            items(schedule.timeRanges) { timeRange ->
+            val items = schedule.timeRanges.withIndex().toList()
+
+            items(items = items) { (index, timeRange) ->
+                val minimumAllowedFrom = if (index > 0) (items[index - 1]).value.to else null
+                val maximumAllowedTo = if (index < items.count() - 1) (items[index + 1]).value.from else null
+
                 TimeRangeRow(
                     timeRange = timeRange,
                     onRemoved = if (schedule.canRemoveRanges) {
@@ -419,7 +425,9 @@ private fun ScheduleHoursPage(
                         { }
                     },
                     canBeRemoved = schedule.canRemoveRanges,
-                    onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) }
+                    onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) },
+                    minimumAllowableFrom = minimumAllowedFrom,
+                    maximumAllowableTo = maximumAllowedTo
                 )
 
                 Spacer(modifier = Modifier.height(singlePadding()))
