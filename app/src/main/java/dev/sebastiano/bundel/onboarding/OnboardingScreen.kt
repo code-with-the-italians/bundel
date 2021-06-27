@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -405,13 +407,12 @@ private fun ScheduleHoursPage(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            for (timeRange in schedule.timeRanges) {
+            items(schedule.timeRanges) { timeRange ->
                 TimeRangeRow(
                     timeRange = timeRange,
                     onRemoved = if (schedule.canRemoveRanges) {
@@ -426,10 +427,12 @@ private fun ScheduleHoursPage(
                 Spacer(modifier = Modifier.height(singlePadding()))
             }
 
-            AnimatedVisibility (schedule.canAppendAnotherRange) {
-                Box(modifier = Modifier.clickable { onAddTimeRange() }) {
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-                        TimeRangeRow(timeRange = null, enabled = false)
+            if (schedule.canAppendAnotherRange) {
+                item {
+                    Box(modifier = Modifier.clickable { onAddTimeRange() }) {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                            TimeRangeRow(timeRange = null, enabled = false)
+                        }
                     }
                 }
             }

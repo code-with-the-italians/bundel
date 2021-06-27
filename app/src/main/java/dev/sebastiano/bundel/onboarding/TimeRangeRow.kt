@@ -8,6 +8,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -110,7 +111,12 @@ internal fun TimeRangeRow(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AnimatedContent(targetState = canBeRemoved && timeRange != null) { showRemoveAction ->
+            AnimatedContent(
+                targetState = canBeRemoved && timeRange != null,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
+                }
+            ) { showRemoveAction ->
                 if (showRemoveAction) {
                     checkNotNull(timeRange) { "Time range can't be null when canBeRemoved == true" }
 
