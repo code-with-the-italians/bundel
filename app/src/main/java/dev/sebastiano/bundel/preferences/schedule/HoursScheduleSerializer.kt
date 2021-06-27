@@ -1,5 +1,7 @@
 package dev.sebastiano.bundel.preferences.schedule
 
+import java.time.LocalTime
+
 internal object HoursScheduleSerializer {
 
     fun serializeToString(schedule: List<TimeRange>): String {
@@ -8,7 +10,7 @@ internal object HoursScheduleSerializer {
         return schedule.joinToString(separator = ",") { "${it.from.serializeToString()}–${it.to.serializeToString()}" }
     }
 
-    private fun TimeRange.HourOfDay.serializeToString() = "$hour:$minute"
+    private fun LocalTime.serializeToString() = "$hour:$minute"
 
     fun deserializeFromString(rawSchedule: String): List<TimeRange> {
         require(rawSchedule.isNotBlank()) { "The raw schedule must not be blank" }
@@ -26,10 +28,10 @@ internal object HoursScheduleSerializer {
             .map { (from, to) -> TimeRange(from, to) }
     }
 
-    private fun String.deserializeToHourOfDay(): TimeRange.HourOfDay {
+    private fun String.deserializeToHourOfDay(): LocalTime {
         val entryParts = split(':')
         require(entryParts.size == 2) { "HourOfDay with invalid number of parts: '$this'" }
 
-        return TimeRange.HourOfDay(hour = entryParts.first().toInt(), minute = entryParts.last().toInt())
+        return LocalTime.of(entryParts.first().toInt(), entryParts.last().toInt())
     }
 }

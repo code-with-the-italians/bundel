@@ -66,6 +66,7 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import java.util.Locale
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
@@ -124,7 +125,7 @@ private fun ScheduleDaysPagePreview() {
 private fun ScheduleHoursPagePreview() {
     BundelOnboardingTheme {
         ScheduleHoursPage(
-            timeRanges = listOf(TimeRange(from = TimeRange.HourOfDay(8, 0), to = TimeRange.HourOfDay(12, 0))),
+            timeRanges = listOf(TimeRange(from = LocalTime.of(8, 0), to = LocalTime.of(12, 0))),
             onAddTimeRange = {},
             onRemoveTimeRange = {},
             onChangeTimeRange = { _, _ -> }

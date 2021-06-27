@@ -45,10 +45,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.sebastiano.bundel.BundelOnboardingTheme
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.singlePadding
+import java.time.LocalTime
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 
 private enum class ExpandedTime {
     NONE,
@@ -61,14 +67,42 @@ private enum class SelectedPartOfHour {
     MINUTE
 }
 
+@Preview(name = "Inactive", backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+fun TimeRangeRowInactivePreview() {
+    BundelOnboardingTheme {
+        TimeRangeRow(
+            enabled = false
+        )
+    }
+}
+
+@Preview(name = "Active", backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+fun TimeRangeRowActivePreview() {
+    BundelOnboardingTheme {
+        TimeRangeRow(
+            timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
+            enabled = true,
+            canBeRemoved = true
+        )
+    }
+}
+
 @Composable
 internal fun TimeRangeRow(
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
-    onRemoved: ((TimeRange) -> Unit)? = null,
+    onRemoved: ((TimeRange) -> Unit)? = {},
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
+    val timeFormatter = DateTimeFormatterBuilder()
+        .appendValue(ChronoField.HOUR_OF_DAY, 2)
+        .appendLiteral(':')
+        .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+        .toFormatter(LocalConfiguration.current.locales[0])
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -95,18 +129,11 @@ internal fun TimeRangeRow(
 
             Spacer(modifier = Modifier.width(singlePadding()))
 
-            // TODO use proper date/time formatting
-            fun TimeRange.HourOfDay?.asDisplayString() = if (this != null) {
-                "$hour:${minute.toString().padStart(2, '0')}"
-            } else {
-                ""
-            }
-
             val expandedPillColor = MaterialTheme.colors.primary
             val normalPillColor = MaterialTheme.colors.onSurface
 
             TimePillButton(
-                text = timeRange?.from.asDisplayString(),
+                text = timeRange?.let { timeFormatter.format(timeRange.from) } ?: "",
                 pillBackgroundColor = if (expanded == ExpandedTime.FROM) expandedPillColor else normalPillColor,
                 enabled = enabled
             ) { expanded = if (expanded != ExpandedTime.FROM) ExpandedTime.FROM else ExpandedTime.NONE }
@@ -118,7 +145,7 @@ internal fun TimeRangeRow(
             Spacer(modifier = Modifier.width(singlePadding()))
 
             TimePillButton(
-                text = timeRange?.to.asDisplayString(),
+                text = timeRange?.let { timeFormatter.format(timeRange.to) } ?: "",
                 pillBackgroundColor = if (expanded == ExpandedTime.TO) expandedPillColor else normalPillColor,
                 enabled = enabled
             ) { expanded = if (expanded != ExpandedTime.TO) ExpandedTime.TO else ExpandedTime.NONE }

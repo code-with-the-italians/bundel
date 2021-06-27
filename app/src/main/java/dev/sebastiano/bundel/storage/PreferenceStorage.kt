@@ -7,6 +7,7 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalTime
 import javax.inject.Inject
 
 internal interface PreferenceStorage {
@@ -80,8 +81,8 @@ internal class SharedPreferencesStorage @Inject constructor(context: Context) : 
 
         private val DEFAULT_HOURS_SCHEDULE = listOf(
             TimeRange(
-                from = TimeRange.HourOfDay(9, 0),
-                to = TimeRange.HourOfDay(13, 0)
+                from = LocalTime.of(9, 0),
+                to = LocalTime.of(13, 0)
             )
         )
     }
