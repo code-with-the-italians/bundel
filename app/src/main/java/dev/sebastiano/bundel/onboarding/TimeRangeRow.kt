@@ -263,22 +263,41 @@ private fun SelectableAnimatedHourPart(
 @Composable
 private fun UpDownButtons(
     timeRange: TimeRange,
-    expanded: ExpandedTime,
+    expandedTime: ExpandedTime,
     selectedPart: SelectedPartOfHour,
     onTimeRangeChanged: (TimeRange) -> Unit
 ) {
+
     Column {
+        val canIncrease = when {
+            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canIncreaseFromHours
+            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canIncreaseFromMinutes
+            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canIncreaseToHours
+            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canIncreaseToMinutes
+            else -> false
+        }
+        val canDecrease = when {
+            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canDecreaseFromHours
+            expandedTime == ExpandedTime.FROM && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canDecreaseFromMinutes
+            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.HOUR -> timeRange.canDecreaseToHours
+            expandedTime == ExpandedTime.TO && selectedPart == SelectedPartOfHour.MINUTE -> timeRange.canDecreaseToMinutes
+            else -> false
+        }
+
+        println("!!!!! Time: ${timeRange.selectedTimeValue(expandedTime)}, part: ${selectedPart.name}. Can increase: $canIncrease, can decrease: $canDecrease")
+
         IconButton(
+            enabled = canIncrease,
             onClick = {
                 val newTimeRange = timeRange.copy(
-                    from = if (expanded == ExpandedTime.FROM) {
+                    from = if (expandedTime == ExpandedTime.FROM) {
                         if (selectedPart == SelectedPartOfHour.HOUR) {
                             timeRange.from.plusHours(1)
                         } else {
                             timeRange.from.plusMinutes(1)
                         }
                     } else timeRange.from,
-                    to = if (expanded == ExpandedTime.TO) {
+                    to = if (expandedTime == ExpandedTime.TO) {
                         if (selectedPart == SelectedPartOfHour.HOUR) {
                             timeRange.to.plusHours(1)
                         } else {
@@ -293,16 +312,17 @@ private fun UpDownButtons(
         }
 
         IconButton(
+            enabled = canDecrease,
             onClick = {
                 val newTimeRange = timeRange.copy(
-                    from = if (expanded == ExpandedTime.FROM) {
+                    from = if (expandedTime == ExpandedTime.FROM) {
                         if (selectedPart == SelectedPartOfHour.HOUR) {
                             timeRange.from.minusHours(1)
                         } else {
                             timeRange.from.minusMinutes(1)
                         }
                     } else timeRange.from,
-                    to = if (expanded == ExpandedTime.TO) {
+                    to = if (expandedTime == ExpandedTime.TO) {
                         if (selectedPart == SelectedPartOfHour.HOUR) {
                             timeRange.to.minusHours(1)
                         } else {
@@ -317,6 +337,13 @@ private fun UpDownButtons(
         }
     }
 }
+
+private fun TimeRange.selectedTimeValue(expandedTime: ExpandedTime) =
+    when (expandedTime) {
+        ExpandedTime.FROM -> from
+        ExpandedTime.TO -> to
+        else -> error("No selected time, how did we get here")
+    }
 
 @Composable
 private fun TimePillButton(
