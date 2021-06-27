@@ -69,8 +69,8 @@ internal class TimeRangesScheduleTest {
 
         @Test
         internal fun `should append a TimeRange that starts immediately after the last one, and lasts 59 minutes`() {
-            schedule.appendTimeRange()
-            assertThat(schedule.last())
+            val newSchedule = schedule.appendTimeRange()
+            assertThat(newSchedule.last())
                 .hasFrom(LocalTime.of(18, 1))
                 .hasTo(LocalTime.of(19, 0))
         }
@@ -105,11 +105,11 @@ internal class TimeRangesScheduleTest {
             val someNewRange = TimeRange(from = LocalTime.of(10, 1), to = LocalTime.of(11, 0))
             val scheduleWithOneRange = TimeRangesSchedule.of(someRange)
 
-            scheduleWithOneRange.updateRange(someRange, someNewRange)
+            val newSchedule = scheduleWithOneRange.updateRange(someRange, someNewRange)
 
             assertAll {
-                assertThat(scheduleWithOneRange).hasSize(1)
-                assertThat(scheduleWithOneRange.last()).isEqualTo(someNewRange)
+                assertThat(newSchedule).hasSize(1)
+                assertThat(newSchedule.last()).isEqualTo(someNewRange)
             }
         }
 
@@ -145,13 +145,13 @@ internal class TimeRangesScheduleTest {
             val newRange = TimeRange(from = LocalTime.of(16, 0), to = LocalTime.of(17, 0))
 
             val schedule = TimeRangesSchedule.of(range1, range2, range3)
-            schedule.updateRange(range2, newRange)
+            val newSchedule = schedule.updateRange(range2, newRange)
 
             assertAll {
-                assertThat(schedule).hasSize(3)
-                assertThat(schedule[0]).isEqualTo(range1)
-                assertThat(schedule[1]).isEqualTo(range3)
-                assertThat(schedule.last()).isEqualTo(newRange)
+                assertThat(newSchedule).hasSize(3)
+                assertThat(newSchedule[0]).isEqualTo(range1)
+                assertThat(newSchedule[1]).isEqualTo(range3)
+                assertThat(newSchedule.last()).isEqualTo(newRange)
             }
         }
     }
@@ -189,11 +189,11 @@ internal class TimeRangesScheduleTest {
             val schedule = TimeRangesSchedule.of(someRange, someOtherRange)
             check(schedule.canRemoveRanges) { "Test precondition failed: canRemoveRange is false" }
 
-            schedule.removeRange(someRange)
+            val newSchedule = schedule.removeRange(someRange)
 
             assertAll {
-                assertThat(schedule).hasSize(1)
-                assertThat(schedule.last()).isEqualTo(someOtherRange)
+                assertThat(newSchedule).hasSize(1)
+                assertThat(newSchedule.last()).isEqualTo(someOtherRange)
             }
         }
     }

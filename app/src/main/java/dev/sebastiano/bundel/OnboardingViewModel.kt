@@ -6,6 +6,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
+import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.storage.PreferenceStorage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ internal class OnboardingViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
 
-    val hoursSchedule = MutableStateFlow(emptyList<TimeRange>())
+    val hoursSchedule = MutableStateFlow(TimeRangesSchedule())
     val daysSchedule = MutableStateFlow(emptyMap<WeekDay, Boolean>())
     val crashReportingEnabledFlow = MutableStateFlow(false)
 
@@ -58,20 +59,18 @@ internal class OnboardingViewModel @Inject constructor(
         }
         Timber.d("Adding time range to schedule: $timeRange")
 
-        // TODO switch from List<TimeRange> to a smarter container that knows day boundaries, sorting, etc
-        val marksSchedule = hoursSchedule.value + timeRange
+        val newSchedule = hoursSchedule.value.appendTimeRange()
 
         viewModelScope.launch {
-            preferenceStorage.setScheduleActiveHours(marksSchedule)
-            hoursSchedule.emit(marksSchedule)
+            preferenceStorage.setScheduleActiveHours(newSchedule)
+            hoursSchedule.emit(newSchedule)
         }
     }
 
     fun onScheduleHoursRemoveTimeRange(timeRange: TimeRange) {
         Timber.d("Removing time range from schedule: $timeRange")
 
-        // TODO switch from List<TimeRange> to a smarter container that knows day boundaries, sorting, etc
-        val newSchedule = hoursSchedule.value - timeRange
+        val newSchedule = hoursSchedule.value.removeRange(timeRange)
 
         viewModelScope.launch {
             preferenceStorage.setScheduleActiveHours(newSchedule)
@@ -82,13 +81,7 @@ internal class OnboardingViewModel @Inject constructor(
     fun onScheduleHoursChangeTimeRange(old: TimeRange, new: TimeRange) {
         Timber.d("Changing time range in schedule from: $old, to: $new")
 
-        // TODO switch from List<TimeRange> to a smarter container that knows day boundaries, sorting, etc
-        val newSchedule = hoursSchedule.value.toMutableList()
-        val oldIndex = newSchedule.indexOf(old)
-        require(oldIndex >= 0) { "Trying to remove time range not in schedule: $old" }
-
-        newSchedule.remove(old)
-        newSchedule.add(oldIndex, new)
+        val newSchedule = hoursSchedule.value.updateRange(old, new)
 
         viewModelScope.launch {
             preferenceStorage.setScheduleActiveHours(newSchedule)

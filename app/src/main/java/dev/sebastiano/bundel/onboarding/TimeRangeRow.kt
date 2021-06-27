@@ -94,7 +94,7 @@ internal fun TimeRangeRow(
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
-    onRemoved: ((TimeRange) -> Unit)? = {},
+    onRemoved: ((TimeRange) -> Unit) = {},
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
     val timeFormatter = DateTimeFormatterBuilder()
@@ -114,7 +114,6 @@ internal fun TimeRangeRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (canBeRemoved && timeRange != null) {
-                checkNotNull(onRemoved) { "Time range with canBeRemoved true requires a onRemove callback" }
                 IconButton(onClick = { onRemoved(timeRange) }) {
                     Icon(Icons.Rounded.Clear, contentDescription = "Remove")
                 }

@@ -7,7 +7,7 @@ private const val MINIMUM_RANGE_DURATION_IN_MINUTES = 1L
 private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_MINUTE_OF_DAY.minusMinutes(MINIMUM_RANGE_DURATION_IN_MINUTES)
 
 internal class TimeRangesSchedule private constructor(
-    private val ranges: MutableList<TimeRange> = mutableListOf()
+    private val ranges: List<TimeRange> = listOf()
 ) {
 
     val canAppendAnotherRange: Boolean
@@ -16,11 +16,12 @@ internal class TimeRangesSchedule private constructor(
     val canRemoveRanges: Boolean
         get() = size > 1
 
-    init {
-        checkAndSortRanges()
-    }
+    val timeRanges: List<TimeRange> = ranges
 
-    fun appendTimeRange() {
+    val size: Int
+        get() = ranges.size
+
+    fun appendTimeRange(): TimeRangesSchedule {
         check(canAppendAnotherRange) { "Trying to add a time range when canAppendAnotherRange is false" }
 
         val lastTo = last().to
@@ -28,49 +29,35 @@ internal class TimeRangesSchedule private constructor(
             from = lastTo.plusMinutes(1),
             to = lastTo.plusHours(1)
         )
-        ranges.add(timeRange)
-        checkAndSortRanges()
+        return of(ranges + timeRange)
     }
 
     operator fun get(index: Int) = ranges[index]
 
-    fun updateRange(old: TimeRange, new: TimeRange) {
+    fun updateRange(old: TimeRange, new: TimeRange): TimeRangesSchedule {
         val oldIndex = ranges.indexOf(old)
         require(oldIndex >= 0) { "Range not found: $old" }
 
-        ranges.removeAt(oldIndex)
-        ranges.add(oldIndex, new)
+        val newRanges = ranges.toMutableList()
+        newRanges.removeAt(oldIndex)
+        newRanges.add(oldIndex, new)
 
-        checkAndSortRanges()
+        return of(newRanges)
     }
 
-    private fun checkAndSortRanges() {
-        require(ranges.isNotEmpty()) { "There needs to be at least one range in the schedule" }
-
-        // Sort by start time
-        ranges.sortBy { it.from }
-
-        for (index in 1 until ranges.size) {
-            val current = ranges[index]
-            val previous = ranges[index - 1]
-
-            require(current.from > previous.to) { "Range at position $index start overlaps previous range" }
-        }
-    }
-
-    fun removeRange(range: TimeRange) {
+    fun removeRange(range: TimeRange): TimeRangesSchedule {
         check(canRemoveRanges) { "Trying to remove a range when there is only one range left in the schedule" }
 
         val oldIndex = ranges.indexOf(range)
         require(oldIndex >= 0) { "Range not found: $range" }
 
-        ranges.removeAt(oldIndex)
+        val newRanges = ranges.toMutableList()
+        newRanges.removeAt(oldIndex)
+
+        return of(newRanges)
     }
 
     fun last() = ranges.last()
-
-    val size: Int
-        get() = ranges.size
 
     companion object Factory {
 
@@ -79,8 +66,23 @@ internal class TimeRangesSchedule private constructor(
             TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0))
         )
 
-        fun of(vararg ranges: TimeRange) =
-            TimeRangesSchedule(ranges.toMutableList())
+        fun of(ranges: List<TimeRange>): TimeRangesSchedule = of(*ranges.toTypedArray())
+
+        fun of(vararg ranges: TimeRange): TimeRangesSchedule {
+            require(ranges.isNotEmpty()) { "There needs to be at least one range in the schedule" }
+
+            // Sort by start time
+            val sortedRanges = ranges.sortedBy { it.from }
+
+            for (index in 1 until sortedRanges.size) {
+                val current = sortedRanges[index]
+                val previous = sortedRanges[index - 1]
+
+                require(current.from > previous.to) { "Range at position $index start overlaps previous range" }
+            }
+
+            return TimeRangesSchedule(sortedRanges.toList())
+        }
 
         operator fun invoke() = of(*DEFAULT_RANGES)
     }

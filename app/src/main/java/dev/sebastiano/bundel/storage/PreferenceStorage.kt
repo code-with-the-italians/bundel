@@ -4,6 +4,7 @@ import android.content.Context
 import dev.sebastiano.bundel.preferences.schedule.DaysScheduleSerializer
 import dev.sebastiano.bundel.preferences.schedule.HoursScheduleSerializer
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
+import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,8 +22,8 @@ internal interface PreferenceStorage {
     suspend fun getScheduleActiveDays(): Map<WeekDay, Boolean>
     suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean
 
-    suspend fun getScheduleActiveHours(): List<TimeRange>
-    suspend fun setScheduleActiveHours(hoursSchedule: List<TimeRange>): Boolean
+    suspend fun getScheduleActiveHours(): TimeRangesSchedule
+    suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean
 }
 
 internal class SharedPreferencesStorage @Inject constructor(context: Context) : PreferenceStorage {
@@ -56,14 +57,14 @@ internal class SharedPreferencesStorage @Inject constructor(context: Context) : 
         storage.edit().putString(Keys.DAYS_SCHEDULE, DaysScheduleSerializer.serializeToString(daysSchedule)).commit()
     }
 
-    override suspend fun getScheduleActiveHours(): List<TimeRange> = withContext(Dispatchers.IO) {
+    override suspend fun getScheduleActiveHours(): TimeRangesSchedule = withContext(Dispatchers.IO) {
         val rawValue = storage.getString(Keys.HOURS_SCHEDULE, null)
             ?: HoursScheduleSerializer.serializeToString(DEFAULT_HOURS_SCHEDULE)
 
         HoursScheduleSerializer.deserializeFromString(rawValue)
     }
 
-    override suspend fun setScheduleActiveHours(hoursSchedule: List<TimeRange>): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean = withContext(Dispatchers.IO) {
         storage.edit().putString(Keys.HOURS_SCHEDULE, HoursScheduleSerializer.serializeToString(hoursSchedule)).commit()
     }
 
@@ -79,11 +80,6 @@ internal class SharedPreferencesStorage @Inject constructor(context: Context) : 
 
         private val DEFAULT_DAYS_SCHEDULE = WeekDay.values().map { it to true }.toMap()
 
-        private val DEFAULT_HOURS_SCHEDULE = listOf(
-            TimeRange(
-                from = LocalTime.of(9, 0),
-                to = LocalTime.of(13, 0)
-            )
-        )
+        private val DEFAULT_HOURS_SCHEDULE = TimeRangesSchedule()
     }
 }
