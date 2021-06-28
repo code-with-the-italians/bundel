@@ -20,7 +20,7 @@ internal class TimePickerModelTest {
     inner class FromBoundaryChecks {
 
         @Test
-        internal fun `should allow increasing FROM HOUR when doesn't overlap with TO`() {
+        internal fun `should allow incrementing FROM HOUR when doesn't overlap with TO`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.FROM,
@@ -30,7 +30,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should allow increasing FROM MINUTE when doesn't overlap with TO`() {
+        internal fun `should allow incrementing FROM MINUTE when doesn't overlap with TO`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.FROM,
@@ -40,7 +40,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow increasing FROM HOUR when overlaps with TO`() {
+        internal fun `should NOT allow incrementing FROM HOUR when overlaps with TO`() {
             val model = TimePickerModel(
                 timeRange = TimeRange(
                     from = LocalTime.of(10, 0),
@@ -53,7 +53,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow increasing FROM MINUTE when overlaps with TO`() {
+        internal fun `should NOT allow incrementing FROM MINUTE when overlaps with TO`() {
             val model = TimePickerModel(
                 timeRange = TimeRange(
                     from = LocalTime.of(10, 0),
@@ -66,7 +66,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow decreasing FROM HOUR when overlaps with minimumAllowableFrom`() {
+        internal fun `should NOT allow decrementing FROM HOUR when overlaps with minimumAllowableFrom`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.FROM,
@@ -77,7 +77,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow decreasing FROM MINUTE when overlaps with minimumAllowableFrom`() {
+        internal fun `should NOT allow decrementing FROM MINUTE when overlaps with minimumAllowableFrom`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.FROM,
@@ -92,7 +92,7 @@ internal class TimePickerModelTest {
     inner class ToBoundaryChecks {
 
         @Test
-        internal fun `should allow increasing TO HOUR when doesn't overlap with FROM`() {
+        internal fun `should allow incrementing TO HOUR when doesn't overlap with FROM`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.TO,
@@ -102,7 +102,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should allow increasing TO MINUTE when doesn't overlap with FROM`() {
+        internal fun `should allow incrementing TO MINUTE when doesn't overlap with FROM`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.TO,
@@ -112,7 +112,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow decreasing TO HOUR when overlaps with FROM`() {
+        internal fun `should NOT allow decrementing TO HOUR when overlaps with FROM`() {
             val model = TimePickerModel(
                 timeRange = TimeRange(
                     from = LocalTime.of(10, 0),
@@ -125,7 +125,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow decreasing TO MINUTE when overlaps with FROM`() {
+        internal fun `should NOT allow decrementing TO MINUTE when overlaps with FROM`() {
             val model = TimePickerModel(
                 timeRange = TimeRange(
                     from = LocalTime.of(10, 0),
@@ -138,7 +138,33 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow increasing TO HOUR when overlaps with maximumAllowableTo`() {
+        internal fun `should NOT allow decrementing TO HOUR when overlaps with FROM that is set to midnight`() {
+            val model = TimePickerModel(
+                timeRange = TimeRange(
+                    from = LocalTime.of(0, 0),
+                    to = LocalTime.of(1, 0)
+                ),
+                rangeExtremity = ExpandedRangeExtremity.TO,
+                partOfHour = PartOfHour.HOUR
+            )
+            assertThat(model.canDecrement).isFalse()
+        }
+
+        @Test
+        internal fun `should NOT allow decrementing TO MINUTE when overlaps with FROM that is set to midnight`() {
+            val model = TimePickerModel(
+                timeRange = TimeRange(
+                    from = LocalTime.of(0, 0),
+                    to = LocalTime.of(0, 1)
+                ),
+                rangeExtremity = ExpandedRangeExtremity.TO,
+                partOfHour = PartOfHour.MINUTE
+            )
+            assertThat(model.canDecrement).isFalse()
+        }
+
+        @Test
+        internal fun `should NOT allow incrementing TO HOUR when overlaps with maximumAllowableTo`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.TO,
@@ -149,7 +175,7 @@ internal class TimePickerModelTest {
         }
 
         @Test
-        internal fun `should NOT allow increasing TO MINUTE when overlaps with maximumAllowableTo`() {
+        internal fun `should NOT allow incrementing TO MINUTE when overlaps with maximumAllowableTo`() {
             val model = TimePickerModel(
                 timeRange = timeRange,
                 rangeExtremity = ExpandedRangeExtremity.TO,
