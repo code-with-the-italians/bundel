@@ -55,12 +55,12 @@ internal data class TimeRange(
     val canDecrementToMinutes: Boolean
         get() {
             val newTo = to.minusMinutes(1)
-            return newTo > from
+            return newTo > from && to.minute > 0
         }
 
     val canDecrementToHours: Boolean
         get() {
             val newTo = to.minusHours(1)
-            return newTo > from
+            return newTo > from && to.hour > 0
         }
 }

@@ -146,19 +146,25 @@ internal class TimeRangeTest {
     inner class ToBoundariesCheck {
 
         @Test
-        internal fun `should NOT allow decrementing 'to' HOURS when from is midnight and to is set to 01_00 or earlier`() {
+        internal fun `should NOT allow decrementing 'to' HOURS when from is midnight and to is set to 00_01`() {
+            assertThat(timeRange(from = midnight, to = midnight.plusMinutes(1)))
+                .prop(TimeRange::canDecrementToHours).isFalse()
+        }
+
+        @Test
+        internal fun `should NOT allow decrementing 'to' HOURS when from is midnight and to is set to 01_00`() {
             assertThat(timeRange(from = midnight, to = midnight.plusHours(1)))
                 .prop(TimeRange::canDecrementToHours).isFalse()
         }
 
         @Test
-        internal fun `should NOT allow decrementing 'to' MINUTES when from is midnight and to is set to 00_01 or earlier`() {
+        internal fun `should NOT allow decrementing 'to' MINUTES when from is midnight and to is set to 00_01`() {
             assertThat(timeRange(from = midnight, to = midnight.plusMinutes(1)))
                 .prop(TimeRange::canDecrementToMinutes).isFalse()
         }
 
         @Test
-        internal fun `should NOT allow decrementing 'to' HOURS when set to from + 1h or earlier`() {
+        internal fun `should NOT allow decrementing 'to' HOURS when set to from + 1h`() {
             assertThat(timeRange(from = anyTime, to = anyTime.plusHours(1)))
                 .prop(TimeRange::canDecrementToHours).isFalse()
         }
@@ -194,13 +200,13 @@ internal class TimeRangeTest {
         }
 
         @Test
-        internal fun `should allow incrementing 'to' HOURS when it's it's 22_59 or earlier`() {
+        internal fun `should allow incrementing 'to' HOURS when it's it's 22_59`() {
             assertThat(timeRange(from = anyTime, to = elevenPm.minusMinutes(1)))
                 .prop(TimeRange::canIncrementToHours).isTrue()
         }
 
         @Test
-        internal fun `should allow incrementing 'to' MINUTES when it's it's 23_58 or earlier`() {
+        internal fun `should allow incrementing 'to' MINUTES when it's it's 23_58`() {
             assertThat(timeRange(from = anyTime, to = justBeforeMidnight.minusMinutes(1)))
                 .prop(TimeRange::canIncrementToMinutes).isTrue()
         }

@@ -79,7 +79,7 @@ internal class TimeRangesSchedule private constructor(
                 val current = sortedRanges[index]
                 val previous = sortedRanges[index - 1]
 
-                require(current.from > previous.to) { "Range at position $index start overlaps previous range" }
+                require(current.from > previous.to) { "The FROM of range at position $index ($current) overlaps previous range ($previous)" }
             }
 
             return TimeRangesSchedule(sortedRanges.toList())
