@@ -79,6 +79,7 @@ detekt {
 }
 
 dependencies {
+    implementation(project(":protobufs"))
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
     implementation(libs.androidx.activity.activityCompose)

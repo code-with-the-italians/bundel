@@ -6,12 +6,14 @@ import dev.sebastiano.bundel.preferences.schedule.HoursScheduleSerializer
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal interface PreferenceStorage {
 
     suspend fun isCrashlyticsEnabled(): Boolean
+    fun isCrashlyticsEnabledFlow(): Flow<Boolean>
     suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean
 
     suspend fun isOnboardingSeen(): Boolean
@@ -27,6 +29,10 @@ internal interface PreferenceStorage {
 internal class SharedPreferencesStorage @Inject constructor(context: Context) : PreferenceStorage {
 
     private val storage by lazy { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
+
+    override fun isCrashlyticsEnabledFlow(): Flow<Boolean> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun isCrashlyticsEnabled(): Boolean = withContext(Dispatchers.IO) {
         storage.getBoolean(Keys.CRASHLYTICS_ENABLED, false)

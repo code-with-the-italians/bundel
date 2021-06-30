@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_package = "dev.sebastiano.bundel.proto";
+option java_multiple_files = true;
+
+message BundelPreferences {
+
+    bool isCrashlyticsEnabled = 1;
+    bool isOnboardingSeen = 2;
+
+//    enum WeekDay {
+//        MONDAY = 0;
+//        TUESDAY = 1;
+//        WEDNESDAY = 2;
+//        THURSDAY = 3;
+//        FRIDAY = 4;
+//        SATURDAY = 5;
+//        SUNDAY = 6;
+//    }
+
+    map<string, bool> scheduleDays = 3;
+
+    message ProtoTimeRange {
+        int64 from = 1;
+        int64 to = 2;
+    }
+
+
+}
