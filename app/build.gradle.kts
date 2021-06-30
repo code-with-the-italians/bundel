@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
+    implementation(libs.bundles.datastore)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)

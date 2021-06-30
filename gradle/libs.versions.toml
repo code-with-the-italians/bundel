@@ -6,6 +6,7 @@ assertk="0.24"
 coil="1.2.2"
 compose="1.0.0-beta09"
 daggerHilt="2.37"
+datastore="1.0.0-beta02"
 datetime-dialogs="0.4.3"
 desugar="1.1.5"
 gradlePlugins-agp="7.0.0-beta03"
@@ -20,6 +21,7 @@ kotlin="1.5.10"
 lifecycle="2.4.0-alpha02"
 lifecycleViewmodelCompose="1.0.0-alpha07"
 navigationCompose="2.4.0-alpha03"
+protobuf="3.10.0"
 room="2.4.0-alpha03"
 timber="4.7.1"
 
@@ -33,6 +35,7 @@ androidx-compose-materialIconsExtended={ module="androidx.compose.material:mater
 androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
 androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
 androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
+androidx-datastore={ module="androidx.datastore:datastore", version.ref="datastore" }
 androidx-hilt-hiltCommon={ module="androidx.hilt:hilt-common", version.ref="hilt" }
 androidx-hilt-hiltCompiler={ module="androidx.hilt:hilt-compiler", version.ref="hilt" }
 androidx-hilt-hiltLifecycleViewmodel={ module="androidx.hilt:hilt-lifecycle-viewmodel", version.ref="hiltLifecycleViewmodel" }
@@ -55,6 +58,7 @@ google-dagger-dagger={ module="com.google.dagger:dagger", version.ref="daggerHil
 google-dagger-daggerCompiler={ module="com.google.dagger:dagger-compiler", version.ref="daggerHilt" }
 google-dagger-hiltAndroid={ module="com.google.dagger:hilt-android", version.ref="daggerHilt" }
 google-dagger-hiltCompiler={ module="com.google.dagger:hilt-compiler", version.ref="daggerHilt" }
+google-protobuf-javalite={ module="com.google.protobuf:protobuf-javalite", version.ref="protobuf" }
 gradlePlugins-android={ module="com.android.tools.build:gradle", version.ref="gradlePlugins-agp" }
 gradlePlugins-crashlytics={ module="com.google.firebase:firebase-crashlytics-gradle", version.ref="gradlePlugins-crashlytics" }
 gradlePlugins-gms={ module="com.google.gms:google-services", version.ref="gradlePlugins-gms" }
@@ -69,6 +73,7 @@ junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.
 [bundles]
 accompanist=["google-accompanistCoil", "google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]
 compose=["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
+datastore=["google-protobuf-javalite", "androidx-datastore"]
 hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
 hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
 lifecycle=["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
