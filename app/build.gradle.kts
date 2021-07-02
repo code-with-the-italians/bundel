@@ -1,11 +1,13 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
 import io.gitlab.arturbosch.detekt.Detekt
+import com.google.protobuf.gradle.*
 
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.protobuf") version "0.8.12"
     id("io.gitlab.arturbosch.detekt")
     id("org.jmailen.kotlinter")
     id("com.google.gms.google-services")
@@ -87,6 +89,7 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
+    implementation(libs.bundles.datastore)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
@@ -104,6 +107,21 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
     testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins{
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 tasks {
