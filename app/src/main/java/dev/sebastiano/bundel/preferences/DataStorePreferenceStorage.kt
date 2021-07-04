@@ -1,4 +1,4 @@
-package dev.sebastiano.bundel.storage
+package dev.sebastiano.bundel.preferences
 
 import androidx.datastore.core.DataStore
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.IOException
-import java.time.Instant
 import java.time.LocalTime
 
 internal class DataStorePreferenceStorage(
