@@ -20,9 +20,12 @@ message BundelPreferences {
 
     map<string, bool> scheduleDays = 3;
 
-    message ProtoTimeRange {
-        int64 from = 1;
-        int64 to = 2;
-    }
+    repeated ProtoTimeRange timeRanges = 4;
 
+    bool isMigratedFromSharedPrefs = 5;
+
+    message ProtoTimeRange {
+        int32 from = 1;
+        int32 to = 2;
+    }
 }

@@ -72,7 +72,7 @@ internal class SharedPreferencesStorage @Inject constructor(context: Context) : 
         storage.edit().putString(Keys.HOURS_SCHEDULE, HoursScheduleSerializer.serializeToString(hoursSchedule)).commit()
     }
 
-    private object Keys {
+    internal object Keys {
 
         const val CRASHLYTICS_ENABLED = "crashlytics"
         const val ONBOARDING_SEEN = "onboarding_seen"
