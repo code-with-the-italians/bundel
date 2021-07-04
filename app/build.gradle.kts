@@ -102,7 +102,6 @@ dependencies {
 
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.bundles.firebase)
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     kapt(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
