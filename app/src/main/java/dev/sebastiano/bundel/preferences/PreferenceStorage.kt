@@ -6,16 +6,15 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface PreferenceStorage {
 
-    suspend fun isCrashlyticsEnabled(): Boolean
-    fun isCrashlyticsEnabledFlow(): Flow<Boolean>
+    fun isCrashlyticsEnabled(): Flow<Boolean>
     suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean
 
     suspend fun isOnboardingSeen(): Boolean
     suspend fun setIsOnboardingSeen(enabled: Boolean): Boolean
 
-    suspend fun getScheduleActiveDays(): Map<WeekDay, Boolean>
+    fun getScheduleActiveDays(): Flow<Map<WeekDay, Boolean>>
     suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean
 
-    suspend fun getScheduleActiveHours(): TimeRangesSchedule
+    fun getScheduleActiveHours(): Flow<TimeRangesSchedule>
     suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean
 }

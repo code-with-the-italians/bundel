@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // TODO reevaluate this, we shouldn't leak this into the activity
         val startDestination = runBlocking {
             if (preferenceStorage.isOnboardingSeen()) {
                 NavigationRoute.MainScreen.route
@@ -201,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
-        val crashReportingEnabled by viewModel.crashReportingEnabledFlow.collectAsState()
+        val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
 
         BundelOnboardingTheme {
             OnboardingScreen(

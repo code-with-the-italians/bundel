@@ -17,10 +17,7 @@ internal class DataStorePreferenceStorage(
     private val dataStore: DataStore<BundelPreferences>
 ) : PreferenceStorage {
 
-    override suspend fun isCrashlyticsEnabled(): Boolean =
-        dataStore.data.first().isCrashlyticsEnabled
-
-    override fun isCrashlyticsEnabledFlow(): Flow<Boolean> =
+    override fun isCrashlyticsEnabled(): Flow<Boolean> =
         dataStore.data.map { it.isCrashlyticsEnabled }
             .catch { throwable ->
                 when (throwable) {
@@ -55,11 +52,12 @@ internal class DataStorePreferenceStorage(
             false
         }
 
-    override suspend fun getScheduleActiveDays(): Map<WeekDay, Boolean> {
-        val rawMap = dataStore.data.first().scheduleDaysMap
-        return rawMap.mapKeys { WeekDay.valueOf(it.key) }.toMap()
-            .takeIf { it.isNotEmpty() } ?: DEFAULT_DAYS_SCHEDULE
-    }
+    override fun getScheduleActiveDays(): Flow<Map<WeekDay, Boolean>> =
+        dataStore.data.map { it.scheduleDaysMap }
+            .map { rawMap ->
+                rawMap.mapKeys { WeekDay.valueOf(it.key) }.toMap()
+                    .takeIf { it.isNotEmpty() } ?: DEFAULT_DAYS_SCHEDULE
+            }
 
     override suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean =
         try {
@@ -73,13 +71,13 @@ internal class DataStorePreferenceStorage(
             false
         }
 
-    override suspend fun getScheduleActiveHours(): TimeRangesSchedule {
-        val rawList = dataStore.data.first().timeRangesList
-            .map { TimeRange(LocalTime.ofSecondOfDay(it.from.toLong()), LocalTime.ofSecondOfDay(it.to.toLong())) }
-            .takeIf { it.isNotEmpty() } ?: DEFAULT_HOURS_SCHEDULE.timeRanges
-
-        return TimeRangesSchedule.of(rawList)
-    }
+    override fun getScheduleActiveHours(): Flow<TimeRangesSchedule> =
+        dataStore.data.map { it.timeRangesList }
+            .map { rawRanges ->
+                rawRanges.map { TimeRange(LocalTime.ofSecondOfDay(it.from.toLong()), LocalTime.ofSecondOfDay(it.to.toLong())) }
+                    .takeIf { it.isNotEmpty() } ?: DEFAULT_HOURS_SCHEDULE.timeRanges
+            }
+            .map { TimeRangesSchedule.of(it) }
 
     override suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean =
         try {

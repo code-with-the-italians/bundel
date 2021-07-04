@@ -5,11 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sebastiano.bundel.preferences.schedule.TimeRange
-import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.preferences.PreferenceStorage
-import kotlinx.coroutines.flow.MutableStateFlow
+import dev.sebastiano.bundel.preferences.schedule.TimeRange
+import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,17 +18,9 @@ internal class OnboardingViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage
 ) : ViewModel() {
 
-    val hoursSchedule = MutableStateFlow(TimeRangesSchedule())
-    val daysSchedule = MutableStateFlow(emptyMap<WeekDay, Boolean>())
-    val crashReportingEnabledFlow = MutableStateFlow(false)
-
-    init {
-        viewModelScope.launch {
-            crashReportingEnabledFlow.emit(preferenceStorage.isCrashlyticsEnabled())
-            daysSchedule.emit(preferenceStorage.getScheduleActiveDays())
-            hoursSchedule.emit(preferenceStorage.getScheduleActiveHours())
-        }
-    }
+    val hoursSchedule = preferenceStorage.getScheduleActiveHours()
+    val daysSchedule = preferenceStorage.getScheduleActiveDays()
+    val crashReportingEnabledFlowrina = preferenceStorage.isCrashlyticsEnabled()
 
     fun setCrashReportingEnabled(enabled: Boolean) {
         Timber.d("Crashlytics is enabled: $enabled")
@@ -37,52 +28,45 @@ internal class OnboardingViewModel @Inject constructor(
 
         viewModelScope.launch {
             preferenceStorage.setIsCrashlyticsEnabled(enabled)
-            crashReportingEnabledFlow.emit(enabled)
         }
     }
 
     fun onScheduleDayActiveChanged(day: WeekDay, active: Boolean) {
         Timber.d("Schedule day ${day.name} active changed: $active")
 
-        val daysScheduleValue = daysSchedule.value.toMutableMap()
-        daysScheduleValue[day] = active
-
         viewModelScope.launch {
+            val daysScheduleValue = daysSchedule.first().toMutableMap()
+            daysScheduleValue[day] = active
             preferenceStorage.setScheduleActiveDays(daysScheduleValue)
-            daysSchedule.emit(daysScheduleValue)
         }
     }
 
     fun onScheduleHoursAddTimeRange() {
         Timber.d("Adding time range to schedule")
 
-        val newSchedule = hoursSchedule.value.appendTimeRange()
-
         viewModelScope.launch {
+            val newSchedule = hoursSchedule.first().appendTimeRange()
             preferenceStorage.setScheduleActiveHours(newSchedule)
-            hoursSchedule.emit(newSchedule)
         }
     }
 
     fun onScheduleHoursRemoveTimeRange(timeRange: TimeRange) {
         Timber.d("Removing time range from schedule: $timeRange")
 
-        val newSchedule = hoursSchedule.value.removeRange(timeRange)
 
         viewModelScope.launch {
+            val newSchedule = hoursSchedule.first().removeRange(timeRange)
             preferenceStorage.setScheduleActiveHours(newSchedule)
-            hoursSchedule.emit(newSchedule)
         }
     }
 
     fun onScheduleHoursChangeTimeRange(old: TimeRange, new: TimeRange) {
         Timber.d("Changing time range in schedule from: $old, to: $new")
 
-        val newSchedule = hoursSchedule.value.updateRange(old, new)
 
         viewModelScope.launch {
+            val newSchedule = hoursSchedule.first().updateRange(old, new)
             preferenceStorage.setScheduleActiveHours(newSchedule)
-            hoursSchedule.emit(newSchedule)
         }
     }
 }

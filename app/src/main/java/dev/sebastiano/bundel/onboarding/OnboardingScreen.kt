@@ -193,11 +193,11 @@ private fun ColumnScope.OnboardingPager(
             0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
             1 -> NotificationsAccessPage(onSettingsIntentClick, needsPermission)
             2 -> {
-                val activeDays by viewModel.daysSchedule.collectAsState()
+                val activeDays by viewModel.daysSchedule.collectAsState(emptyMap())
                 ScheduleDaysPage(activeDays) { day, active -> viewModel.onScheduleDayActiveChanged(day, active) }
             }
             3 -> {
-                val hoursSchedule by viewModel.hoursSchedule.collectAsState()
+                val hoursSchedule by viewModel.hoursSchedule.collectAsState(TimeRangesSchedule())
                 ScheduleHoursPage(
                     schedule = hoursSchedule,
                     onAddTimeRange = { viewModel.onScheduleHoursAddTimeRange() },
