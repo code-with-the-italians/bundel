@@ -1,4 +1,8 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.plugins
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
@@ -6,6 +10,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.protobuf") version "0.8.16"
     id("io.gitlab.arturbosch.detekt")
     id("org.jmailen.kotlinter")
     id("com.google.gms.google-services")
@@ -79,7 +84,6 @@ detekt {
 }
 
 dependencies {
-    implementation(project(":protobufs"))
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
     implementation(libs.androidx.activity.activityCompose)
@@ -106,6 +110,21 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
     testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 tasks {

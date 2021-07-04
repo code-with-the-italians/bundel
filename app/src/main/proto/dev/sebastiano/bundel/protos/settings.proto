@@ -25,5 +25,4 @@ message BundelPreferences {
         int64 to = 2;
     }
 
-
 }
