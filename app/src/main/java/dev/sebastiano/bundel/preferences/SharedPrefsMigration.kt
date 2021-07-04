@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImports") // TODO bug in detekt 1.17.1 flags unused import incorrectly
+
 package dev.sebastiano.bundel.preferences
 
 import android.content.Context
@@ -21,36 +23,23 @@ internal fun sharedPrefsMigration(context: Context) = SharedPreferencesMigration
     if (bundelPrefs.isMigratedFromSharedPrefs) return@SharedPreferencesMigration bundelPrefs
 
     Timber.i("Migrating shared prefs to datastore...")
+
+    val timeRanges = sharedPreferencesView.getString(Keys.HOURS_SCHEDULE)
+        ?.let {
+            HoursScheduleSerializer.deserializeFromString(it)
+                .timeRanges
+        } ?: DataStorePreferenceStorage.DEFAULT_HOURS_SCHEDULE.timeRanges
+
+    val daysMap = sharedPreferencesView.getString(Keys.DAYS_SCHEDULE)
+        ?.let { DaysScheduleSerializer.deserializeFromString(it) }
+        ?: DataStorePreferenceStorage.DEFAULT_DAYS_SCHEDULE
+
     bundelPrefs.toBuilder()
         .clearTimeRanges()
-        .addAllTimeRanges(
-            (
-                sharedPreferencesView.getString(Keys.HOURS_SCHEDULE)
-                    ?.let
-                    {
-                        HoursScheduleSerializer.deserializeFromString(it)
-                            .timeRanges
-                    } ?: DataStorePreferenceStorage.DEFAULT_HOURS_SCHEDULE.timeRanges
-                )
-                .toProtoTimeRanges()
-        )
+        .addAllTimeRanges(timeRanges.toProtoTimeRanges())
         .clearScheduleDays()
-        .putAllScheduleDays(
-            (
-                sharedPreferencesView.getString(Keys.DAYS_SCHEDULE)
-                    ?.let
-                    { DaysScheduleSerializer.deserializeFromString(it) }
-                    ?: DataStorePreferenceStorage.DEFAULT_DAYS_SCHEDULE
-                )
-                .mapKeys
-                { it.key.name }
-        )
-        .setIsCrashlyticsEnabled(
-            sharedPreferencesView.getBoolean(
-                Keys.CRASHLYTICS_ENABLED,
-                defValue = false
-            )
-        )
+        .putAllScheduleDays(daysMap.mapKeys { it.key.name })
+        .setIsCrashlyticsEnabled(sharedPreferencesView.getBoolean(Keys.CRASHLYTICS_ENABLED, defValue = false))
         .setIsOnboardingSeen(sharedPreferencesView.getBoolean(Keys.ONBOARDING_SEEN, defValue = false))
         .setIsMigratedFromSharedPrefs(true)
         .build()

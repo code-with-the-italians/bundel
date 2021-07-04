@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImports") // TODO bug in detekt 1.17.1 flags unused import incorrectly
+
 package dev.sebastiano.bundel.preferences
 
 import androidx.datastore.core.DataStore

@@ -10,12 +10,12 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
-    id("com.google.protobuf") version "0.8.16"
+    id("com.google.protobuf")
     id("io.gitlab.arturbosch.detekt")
     id("org.jmailen.kotlinter")
-    id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("de.mannodermaus.android-junit5")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -100,8 +100,8 @@ dependencies {
     implementation(libs.io.github.vanpra.dialogs.datetime)
     implementation(libs.jakes.timber.timber)
 
-    implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.bundles.firebase)
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     kapt(libs.androidx.room.roomCompiler)
@@ -114,7 +114,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.10.0"
+        artifact = "com.google.protobuf:protoc:${project.libs.versions.protobuf.get()}"
     }
     generateProtoTasks {
         all().forEach { task ->
