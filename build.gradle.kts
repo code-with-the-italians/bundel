@@ -21,6 +21,10 @@ buildscript {
     }
 }
 
+apply(plugin = "com.github.ben-manes.versions")
+apply(plugin = "io.gitlab.arturbosch.detekt")
+apply(plugin = "org.jmailen.kotlinter")
+
 allprojects {
     buildscript {
         repositories {
