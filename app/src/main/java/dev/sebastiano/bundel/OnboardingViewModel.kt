@@ -53,7 +53,6 @@ internal class OnboardingViewModel @Inject constructor(
     fun onScheduleHoursRemoveTimeRange(timeRange: TimeRange) {
         Timber.d("Removing time range from schedule: $timeRange")
 
-
         viewModelScope.launch {
             val newSchedule = hoursSchedule.first().removeRange(timeRange)
             preferenceStorage.setScheduleActiveHours(newSchedule)
@@ -62,7 +61,6 @@ internal class OnboardingViewModel @Inject constructor(
 
     fun onScheduleHoursChangeTimeRange(old: TimeRange, new: TimeRange) {
         Timber.d("Changing time range in schedule from: $old, to: $new")
-
 
         viewModelScope.launch {
             val newSchedule = hoursSchedule.first().updateRange(old, new)

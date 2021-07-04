@@ -17,28 +17,31 @@ internal fun sharedPrefsMigration(context: Context) = SharedPreferencesMigration
         Keys.DAYS_SCHEDULE,
         Keys.HOURS_SCHEDULE
     )
-)
-{ sharedPreferencesView: SharedPreferencesView, bundelPrefs: BundelPreferences ->
+) { sharedPreferencesView: SharedPreferencesView, bundelPrefs: BundelPreferences ->
     if (bundelPrefs.isMigratedFromSharedPrefs) return@SharedPreferencesMigration bundelPrefs
 
     Timber.i("Migrating shared prefs to datastore...")
     bundelPrefs.toBuilder()
         .clearTimeRanges()
         .addAllTimeRanges(
-            (sharedPreferencesView.getString(Keys.HOURS_SCHEDULE)
-                ?.let
-                {
-                    HoursScheduleSerializer.deserializeFromString(it)
-                        .timeRanges
-                } ?: DataStorePreferenceStorage.DEFAULT_HOURS_SCHEDULE.timeRanges)
+            (
+                sharedPreferencesView.getString(Keys.HOURS_SCHEDULE)
+                    ?.let
+                    {
+                        HoursScheduleSerializer.deserializeFromString(it)
+                            .timeRanges
+                    } ?: DataStorePreferenceStorage.DEFAULT_HOURS_SCHEDULE.timeRanges
+                )
                 .toProtoTimeRanges()
         )
         .clearScheduleDays()
         .putAllScheduleDays(
-            (sharedPreferencesView.getString(Keys.DAYS_SCHEDULE)
-                ?.let
-                { DaysScheduleSerializer.deserializeFromString(it) }
-                ?: DataStorePreferenceStorage.DEFAULT_DAYS_SCHEDULE)
+            (
+                sharedPreferencesView.getString(Keys.DAYS_SCHEDULE)
+                    ?.let
+                    { DaysScheduleSerializer.deserializeFromString(it) }
+                    ?: DataStorePreferenceStorage.DEFAULT_DAYS_SCHEDULE
+                )
                 .mapKeys
                 { it.key.name }
         )

@@ -7,10 +7,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.sebastiano.bundel.preferences.sharedPrefsMigration
-import dev.sebastiano.bundel.storage.BundelPreferencesSerializer
 import dev.sebastiano.bundel.preferences.DataStorePreferenceStorage
 import dev.sebastiano.bundel.preferences.PreferenceStorage
+import dev.sebastiano.bundel.preferences.sharedPrefsMigration
+import dev.sebastiano.bundel.storage.BundelPreferencesSerializer
 import javax.inject.Singleton
 
 @Module

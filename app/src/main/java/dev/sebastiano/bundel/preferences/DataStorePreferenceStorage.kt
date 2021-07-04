@@ -35,8 +35,8 @@ internal class DataStorePreferenceStorage(
         try {
             dataStore.updateData { it.toBuilder().setIsCrashlyticsEnabled(enabled).build() }
             true
-        } catch (e: Exception) {
-            Timber.e(e)
+        } catch (ignored: IOException) {
+            Timber.e(ignored)
             false
         }
 
@@ -47,8 +47,8 @@ internal class DataStorePreferenceStorage(
         try {
             dataStore.updateData { it.toBuilder().setIsOnboardingSeen(enabled).build() }
             true
-        } catch (e: Exception) {
-            Timber.e(e)
+        } catch (ignored: IOException) {
+            Timber.e(ignored)
             false
         }
 
@@ -67,7 +67,8 @@ internal class DataStorePreferenceStorage(
                     .build()
             }
             true
-        } catch (e: Exception) {
+        } catch (ignored: IOException) {
+            Timber.e(ignored)
             false
         }
 
@@ -91,7 +92,8 @@ internal class DataStorePreferenceStorage(
                     .build()
             }
             true
-        } catch (e: Exception) {
+        } catch (ignored: IOException) {
+            Timber.e(ignored)
             false
         }
 
