@@ -1,4 +1,8 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
+import com.google.protobuf.gradle.generateProtoTasks
+import com.google.protobuf.gradle.plugins
+import com.google.protobuf.gradle.protobuf
+import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
@@ -6,11 +10,12 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("com.google.protobuf")
     id("io.gitlab.arturbosch.detekt")
     id("org.jmailen.kotlinter")
-    id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("de.mannodermaus.android-junit5")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -87,6 +92,7 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
+    implementation(libs.bundles.datastore)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
@@ -94,9 +100,8 @@ dependencies {
     implementation(libs.io.github.vanpra.dialogs.datetime)
     implementation(libs.jakes.timber.timber)
 
-    implementation(platform("com.google.firebase:firebase-bom:28.1.0"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation(platform(libs.google.firebase.bom))
+    implementation(libs.bundles.firebase)
 
     kapt(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
@@ -104,6 +109,21 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
     testRuntimeOnly(libs.junit.jupiter.engine)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${project.libs.versions.protobuf.get()}"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.plugins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
 
 tasks {

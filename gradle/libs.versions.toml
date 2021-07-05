@@ -6,12 +6,18 @@ assertk="0.24"
 coil="1.2.2"
 compose="1.0.0-beta09"
 daggerHilt="2.37"
+datastore="1.0.0-beta02"
 datetime-dialogs="0.4.3"
 desugar="1.1.5"
-gradlePlugins-agp="7.0.0-beta03"
-gradlePlugins-crashlytics="2.7.0"
+gradlePlugins-agp="7.0.0-beta05"
+gradlePlugins-crashlytics="2.7.1"
+gradlePlugins-detekt="1.17.1"
 gradlePlugins-gms="4.3.8"
 gradlePlugins-junit5="1.7.1.1"
+gradlePlugins-kotlinter="3.4.5"
+gradlePlugins-protobuf="0.8.16"
+gradlePlugins-versionsBenManes="0.39.0"
+firebaseBom="28.2.0"
 junit="5.7.2"
 hilt="1.0.0"
 hiltLifecycleViewmodel="1.0.0-alpha03"
@@ -20,6 +26,7 @@ kotlin="1.5.10"
 lifecycle="2.4.0-alpha02"
 lifecycleViewmodelCompose="1.0.0-alpha07"
 navigationCompose="2.4.0-alpha03"
+protobuf="3.10.0"
 room="2.4.0-alpha03"
 timber="4.7.1"
 
@@ -33,6 +40,7 @@ androidx-compose-materialIconsExtended={ module="androidx.compose.material:mater
 androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
 androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
 androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
+androidx-datastore={ module="androidx.datastore:datastore", version.ref="datastore" }
 androidx-hilt-hiltCommon={ module="androidx.hilt:hilt-common", version.ref="hilt" }
 androidx-hilt-hiltCompiler={ module="androidx.hilt:hilt-compiler", version.ref="hilt" }
 androidx-hilt-hiltLifecycleViewmodel={ module="androidx.hilt:hilt-lifecycle-viewmodel", version.ref="hiltLifecycleViewmodel" }
@@ -55,12 +63,20 @@ google-dagger-dagger={ module="com.google.dagger:dagger", version.ref="daggerHil
 google-dagger-daggerCompiler={ module="com.google.dagger:dagger-compiler", version.ref="daggerHilt" }
 google-dagger-hiltAndroid={ module="com.google.dagger:hilt-android", version.ref="daggerHilt" }
 google-dagger-hiltCompiler={ module="com.google.dagger:hilt-compiler", version.ref="daggerHilt" }
+google-firebase-bom={ module="com.google.firebase:firebase-bom", version.ref="firebaseBom" }
+google-firebase-analytics-ktx={ module="com.google.firebase:firebase-analytics-ktx" }
+google-firebase-crashlytics-ktx={ module="com.google.firebase:firebase-crashlytics-ktx" }
+google-protobuf-javalite={ module="com.google.protobuf:protobuf-javalite", version.ref="protobuf" }
 gradlePlugins-android={ module="com.android.tools.build:gradle", version.ref="gradlePlugins-agp" }
 gradlePlugins-crashlytics={ module="com.google.firebase:firebase-crashlytics-gradle", version.ref="gradlePlugins-crashlytics" }
+gradlePlugins-detekt={ module="io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref="gradlePlugins-detekt" }
 gradlePlugins-gms={ module="com.google.gms:google-services", version.ref="gradlePlugins-gms" }
 gradlePlugins-hilt={ module="com.google.dagger:hilt-android-gradle-plugin", version.ref="daggerHilt" }
 gradlePlugins-junit5={ module="de.mannodermaus.gradle.plugins:android-junit5", version.ref="gradlePlugins-junit5" }
 gradlePlugins-kotlin={ module="org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref="kotlin" }
+gradlePlugins-kotlinter={ module="org.jmailen.gradle:kotlinter-gradle", version.ref="gradlePlugins-kotlinter" }
+gradlePlugins-protobuf={ module="gradle.plugin.com.google.protobuf:protobuf-gradle-plugin", version.ref="gradlePlugins-protobuf" }
+gradlePlugins-versionsBenManes={ module="com.github.ben-manes:gradle-versions-plugin", version.ref="gradlePlugins-versionsBenManes" }
 io-github-vanpra-dialogs-datetime={ module="io.github.vanpra.compose-material-dialogs:datetime", version.ref="datetime-dialogs" }
 jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
 junit-jupiter-api={ module="org.junit.jupiter:junit-jupiter-api", version.ref="junit"}
@@ -69,6 +85,8 @@ junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.
 [bundles]
 accompanist=["google-accompanistCoil", "google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]
 compose=["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
+datastore=["google-protobuf-javalite", "androidx-datastore"]
+firebase=["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
 hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
 hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
 lifecycle=["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]

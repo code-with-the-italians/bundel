@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_package = "dev.sebastiano.bundel.proto";
+option java_multiple_files = true;
+
+message BundelPreferences {
+
+    bool isCrashlyticsEnabled = 1;
+    bool isOnboardingSeen = 2;
+
+    map<string, bool> scheduleDays = 3;
+
+    repeated ProtoTimeRange timeRanges = 4;
+
+    bool isMigratedFromSharedPrefs = 5;
+
+    message ProtoTimeRange {
+        int32 from = 1;
+        int32 to = 2;
+    }
+}

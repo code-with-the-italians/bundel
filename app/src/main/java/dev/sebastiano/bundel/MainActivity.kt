@@ -45,7 +45,7 @@ import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Com
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
-import dev.sebastiano.bundel.storage.PreferenceStorage
+import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.storage.RobertoRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -68,13 +68,14 @@ class MainActivity : AppCompatActivity() {
     internal lateinit var repository: RobertoRepository
 
     @Inject
-    internal lateinit var preferenceStorage: PreferenceStorage
+    internal lateinit var preferences: Preferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // TODO reevaluate this, we shouldn't leak this into the activity
         val startDestination = runBlocking {
-            if (preferenceStorage.isOnboardingSeen()) {
+            if (preferences.isOnboardingSeen()) {
                 NavigationRoute.MainScreen.route
             } else {
                 NavigationRoute.Onboarding.route
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                         OnboardingScreen(
                             onSettingsIntentClick = { showNotificationsPreferences() },
                             onDismissClicked = {
-                                scope.launch { preferenceStorage.setIsOnboardingSeen(true) }
+                                scope.launch { preferences.setIsOnboardingSeen(true) }
                                 navController.navigate(
                                     route = NavigationRoute.MainScreen.route,
                                     navOptions = NavOptions.Builder()
@@ -201,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
-        val crashReportingEnabled by viewModel.crashReportingEnabledFlow.collectAsState()
+        val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
 
         BundelOnboardingTheme {
             OnboardingScreen(
