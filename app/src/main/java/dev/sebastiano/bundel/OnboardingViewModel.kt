@@ -18,8 +18,8 @@ internal class OnboardingViewModel @Inject constructor(
     private val preferences: Preferences
 ) : ViewModel() {
 
-    val hoursSchedule = preferences.getScheduleActiveHours()
-    val daysSchedule = preferences.getScheduleActiveDays()
+    val timeRangesScheduleFlow = preferences.getTimeRangesSchedule()
+    val daysScheduleFlow = preferences.getDaysSchedule()
     val crashReportingEnabledFlowrina = preferences.isCrashlyticsEnabled()
 
     fun setCrashReportingEnabled(enabled: Boolean) {
@@ -31,40 +31,40 @@ internal class OnboardingViewModel @Inject constructor(
         }
     }
 
-    fun onScheduleDayActiveChanged(day: WeekDay, active: Boolean) {
-        Timber.d("Schedule day ${day.name} active changed: $active")
+    fun onDaysScheduleChangeWeekDay(weekDay: WeekDay, active: Boolean) {
+        Timber.d("Schedule day ${weekDay.name} active changed: $active")
 
         viewModelScope.launch {
-            val daysScheduleValue = daysSchedule.first().toMutableMap()
-            daysScheduleValue[day] = active
-            preferences.setScheduleActiveDays(daysScheduleValue)
+            val daysScheduleValue = daysScheduleFlow.first().toMutableMap()
+            daysScheduleValue[weekDay] = active
+            preferences.setDaysSchedule(daysScheduleValue)
         }
     }
 
-    fun onScheduleHoursAddTimeRange() {
+    fun onTimeRangesScheduleAddTimeRange() {
         Timber.d("Adding time range to schedule")
 
         viewModelScope.launch {
-            val newSchedule = hoursSchedule.first().appendTimeRange()
-            preferences.setScheduleActiveHours(newSchedule)
+            val newSchedule = timeRangesScheduleFlow.first().appendTimeRange()
+            preferences.setTimeRangesSchedule(newSchedule)
         }
     }
 
-    fun onScheduleHoursRemoveTimeRange(timeRange: TimeRange) {
+    fun onTimeRangesScheduleRemoveTimeRange(timeRange: TimeRange) {
         Timber.d("Removing time range from schedule: $timeRange")
 
         viewModelScope.launch {
-            val newSchedule = hoursSchedule.first().removeRange(timeRange)
-            preferences.setScheduleActiveHours(newSchedule)
+            val newSchedule = timeRangesScheduleFlow.first().removeRange(timeRange)
+            preferences.setTimeRangesSchedule(newSchedule)
         }
     }
 
-    fun onScheduleHoursChangeTimeRange(old: TimeRange, new: TimeRange) {
+    fun onTimeRangesScheduleChangeTimeRange(old: TimeRange, new: TimeRange) {
         Timber.d("Changing time range in schedule from: $old, to: $new")
 
         viewModelScope.launch {
-            val newSchedule = hoursSchedule.first().updateRange(old, new)
-            preferences.setScheduleActiveHours(newSchedule)
+            val newSchedule = timeRangesScheduleFlow.first().updateRange(old, new)
+            preferences.setTimeRangesSchedule(newSchedule)
         }
     }
 }

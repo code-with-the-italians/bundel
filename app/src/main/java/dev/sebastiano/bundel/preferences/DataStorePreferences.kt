@@ -33,48 +33,45 @@ internal class DataStorePreferences(
                 }
             }
 
-    override suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean =
+    override suspend fun setIsCrashlyticsEnabled(enabled: Boolean) {
         try {
             dataStore.updateData { it.toBuilder().setIsCrashlyticsEnabled(enabled).build() }
-            true
         } catch (ignored: IOException) {
-            Timber.e(ignored)
-            false
+            Timber.e(ignored, "Unable to store new isCrashlyticsEnabled value: $enabled")
         }
+    }
 
     override suspend fun isOnboardingSeen(): Boolean =
         dataStore.data.first().isOnboardingSeen
 
-    override suspend fun setIsOnboardingSeen(enabled: Boolean): Boolean =
+    override suspend fun setIsOnboardingSeen(onboardingSeen: Boolean) {
         try {
-            dataStore.updateData { it.toBuilder().setIsOnboardingSeen(enabled).build() }
-            true
+            dataStore.updateData { it.toBuilder().setIsOnboardingSeen(onboardingSeen).build() }
         } catch (ignored: IOException) {
-            Timber.e(ignored)
-            false
+            Timber.e(ignored, "Unable to store new isOnboardingSeen value: $onboardingSeen")
         }
+    }
 
-    override fun getScheduleActiveDays(): Flow<Map<WeekDay, Boolean>> =
+    override fun getDaysSchedule(): Flow<Map<WeekDay, Boolean>> =
         dataStore.data.map { it.scheduleDaysMap }
             .map { rawMap ->
                 rawMap.mapKeys { WeekDay.valueOf(it.key) }.toMap()
                     .takeIf { it.isNotEmpty() } ?: DEFAULT_DAYS_SCHEDULE
             }
 
-    override suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean =
+    override suspend fun setDaysSchedule(daysSchedule: Map<WeekDay, Boolean>) {
         try {
             dataStore.updateData { preferences ->
                 preferences.toBuilder()
                     .putAllScheduleDays(daysSchedule.mapKeys { it.key.name })
                     .build()
             }
-            true
         } catch (ignored: IOException) {
-            Timber.e(ignored)
-            false
+            Timber.e(ignored, "Unable to store new daysSchedule value: $daysSchedule")
         }
+    }
 
-    override fun getScheduleActiveHours(): Flow<TimeRangesSchedule> =
+    override fun getTimeRangesSchedule(): Flow<TimeRangesSchedule> =
         dataStore.data.map { it.timeRangesList }
             .map { rawRanges ->
                 rawRanges.map { TimeRange(LocalTime.ofSecondOfDay(it.from.toLong()), LocalTime.ofSecondOfDay(it.to.toLong())) }
@@ -82,10 +79,10 @@ internal class DataStorePreferences(
             }
             .map { TimeRangesSchedule.of(it) }
 
-    override suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean =
+    override suspend fun setTimeRangesSchedule(timeRangesSchedule: TimeRangesSchedule) {
         try {
             dataStore.updateData { preferences ->
-                val protoTimeRanges = hoursSchedule.timeRanges
+                val protoTimeRanges = timeRangesSchedule.timeRanges
                     .toProtoTimeRanges()
 
                 preferences.toBuilder()
@@ -93,11 +90,10 @@ internal class DataStorePreferences(
                     .addAllTimeRanges(protoTimeRanges)
                     .build()
             }
-            true
         } catch (ignored: IOException) {
-            Timber.e(ignored)
-            false
+            Timber.e(ignored, "Unable to store new timeRangesSchedule value: $timeRangesSchedule")
         }
+    }
 
     companion object {
 

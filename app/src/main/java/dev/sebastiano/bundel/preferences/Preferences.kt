@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 internal interface Preferences {
 
     fun isCrashlyticsEnabled(): Flow<Boolean>
-    suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean
+    suspend fun setIsCrashlyticsEnabled(enabled: Boolean)
 
     suspend fun isOnboardingSeen(): Boolean
-    suspend fun setIsOnboardingSeen(enabled: Boolean): Boolean
+    suspend fun setIsOnboardingSeen(onboardingSeen: Boolean)
 
-    fun getScheduleActiveDays(): Flow<Map<WeekDay, Boolean>>
-    suspend fun setScheduleActiveDays(daysSchedule: Map<WeekDay, Boolean>): Boolean
+    fun getDaysSchedule(): Flow<Map<WeekDay, Boolean>>
+    suspend fun setDaysSchedule(daysSchedule: Map<WeekDay, Boolean>)
 
-    fun getScheduleActiveHours(): Flow<TimeRangesSchedule>
-    suspend fun setScheduleActiveHours(hoursSchedule: TimeRangesSchedule): Boolean
+    fun getTimeRangesSchedule(): Flow<TimeRangesSchedule>
+    suspend fun setTimeRangesSchedule(timeRangesSchedule: TimeRangesSchedule)
 }
