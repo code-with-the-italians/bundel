@@ -4,7 +4,7 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.flow.Flow
 
-internal interface PreferenceStorage {
+internal interface Preferences {
 
     fun isCrashlyticsEnabled(): Flow<Boolean>
     suspend fun setIsCrashlyticsEnabled(enabled: Boolean): Boolean

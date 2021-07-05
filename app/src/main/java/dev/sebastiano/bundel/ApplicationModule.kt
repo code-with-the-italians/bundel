@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.sebastiano.bundel.preferences.DataStorePreferenceStorage
-import dev.sebastiano.bundel.preferences.PreferenceStorage
+import dev.sebastiano.bundel.preferences.DataStorePreferences
+import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.sharedPrefsMigration
 import dev.sebastiano.bundel.storage.BundelPreferencesSerializer
 import javax.inject.Singleton
@@ -27,5 +27,5 @@ internal class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providePreferenceStorage(@ApplicationContext context: Context): PreferenceStorage = DataStorePreferenceStorage(context.dataStore)
+    fun providePreferences(@ApplicationContext context: Context): Preferences = DataStorePreferences(context.dataStore)
 }

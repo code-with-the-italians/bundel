@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sebastiano.bundel.preferences.PreferenceStorage
+import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.flow.first
@@ -15,19 +15,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class OnboardingViewModel @Inject constructor(
-    private val preferenceStorage: PreferenceStorage
+    private val preferences: Preferences
 ) : ViewModel() {
 
-    val hoursSchedule = preferenceStorage.getScheduleActiveHours()
-    val daysSchedule = preferenceStorage.getScheduleActiveDays()
-    val crashReportingEnabledFlowrina = preferenceStorage.isCrashlyticsEnabled()
+    val hoursSchedule = preferences.getScheduleActiveHours()
+    val daysSchedule = preferences.getScheduleActiveDays()
+    val crashReportingEnabledFlowrina = preferences.isCrashlyticsEnabled()
 
     fun setCrashReportingEnabled(enabled: Boolean) {
         Timber.d("Crashlytics is enabled: $enabled")
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(enabled)
 
         viewModelScope.launch {
-            preferenceStorage.setIsCrashlyticsEnabled(enabled)
+            preferences.setIsCrashlyticsEnabled(enabled)
         }
     }
 
@@ -37,7 +37,7 @@ internal class OnboardingViewModel @Inject constructor(
         viewModelScope.launch {
             val daysScheduleValue = daysSchedule.first().toMutableMap()
             daysScheduleValue[day] = active
-            preferenceStorage.setScheduleActiveDays(daysScheduleValue)
+            preferences.setScheduleActiveDays(daysScheduleValue)
         }
     }
 
@@ -46,7 +46,7 @@ internal class OnboardingViewModel @Inject constructor(
 
         viewModelScope.launch {
             val newSchedule = hoursSchedule.first().appendTimeRange()
-            preferenceStorage.setScheduleActiveHours(newSchedule)
+            preferences.setScheduleActiveHours(newSchedule)
         }
     }
 
@@ -55,7 +55,7 @@ internal class OnboardingViewModel @Inject constructor(
 
         viewModelScope.launch {
             val newSchedule = hoursSchedule.first().removeRange(timeRange)
-            preferenceStorage.setScheduleActiveHours(newSchedule)
+            preferences.setScheduleActiveHours(newSchedule)
         }
     }
 
@@ -64,7 +64,7 @@ internal class OnboardingViewModel @Inject constructor(
 
         viewModelScope.launch {
             val newSchedule = hoursSchedule.first().updateRange(old, new)
-            preferenceStorage.setScheduleActiveHours(newSchedule)
+            preferences.setScheduleActiveHours(newSchedule)
         }
     }
 }

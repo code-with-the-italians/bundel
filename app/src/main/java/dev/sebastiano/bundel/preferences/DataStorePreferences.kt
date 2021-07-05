@@ -15,9 +15,9 @@ import timber.log.Timber
 import java.io.IOException
 import java.time.LocalTime
 
-internal class DataStorePreferenceStorage(
+internal class DataStorePreferences(
     private val dataStore: DataStore<BundelPreferences>
-) : PreferenceStorage {
+) : Preferences {
 
     override fun isCrashlyticsEnabled(): Flow<Boolean> =
         dataStore.data.map { it.isCrashlyticsEnabled }

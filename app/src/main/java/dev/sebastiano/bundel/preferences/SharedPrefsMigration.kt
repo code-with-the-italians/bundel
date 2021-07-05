@@ -28,11 +28,11 @@ internal fun sharedPrefsMigration(context: Context) = SharedPreferencesMigration
         ?.let {
             HoursScheduleSerializer.deserializeFromString(it)
                 .timeRanges
-        } ?: DataStorePreferenceStorage.DEFAULT_HOURS_SCHEDULE.timeRanges
+        } ?: DataStorePreferences.DEFAULT_HOURS_SCHEDULE.timeRanges
 
     val daysMap = sharedPreferencesView.getString(Keys.DAYS_SCHEDULE)
         ?.let { DaysScheduleSerializer.deserializeFromString(it) }
-        ?: DataStorePreferenceStorage.DEFAULT_DAYS_SCHEDULE
+        ?: DataStorePreferences.DEFAULT_DAYS_SCHEDULE
 
     bundelPrefs.toBuilder()
         .clearTimeRanges()
