@@ -8,6 +8,8 @@ If you're camera shy, but still want to contribute, please open an issue or [get
 We'll figure out a way to accept your contributions while still maintaining our mission, which is to walk our audience through the
 whole process of writing an app.
 
+ℹ️ **Note:** if you're having issues building the app, please look at the [FAQs](#frequently-asked-questions) below.
+
 # How to contribute
 
 Prerequisites:
@@ -72,17 +74,24 @@ on what we're actually doing, not wandering off into too much imaginary stuff.
 
 # Frequently Asked Questions
 
-## I can't build the app because it asks for google-services.json
+## I can't build the app because it is missing a `google-services.json` file
+That file is required for Crashlytics, which the app uses to report issues to the authors. If you want to build and run the app, you need to obtain your own copy from Firebase:
 
-1. Create a project on [Firebase console](https://console.firebase.google.com/) using the package name, `dev.sebastiano.bundel` in the AndroidManifest.xml file. Use this [guide](https://firebase.google.com/docs/android/setup).
-1. Follow the instructions, download the google-services.json file and put it in `app` folder.
-1. Enable Crashlytics on Firebase console
+ 1. Create a project on [Firebase console](https://console.firebase.google.com/) using the package name `dev.sebastiano.bundel`. Refer to [this guide](https://firebase.google.com/docs/android/setup) for further details.
+ 2. Follow the instructions, download the `google-services.json` file and put it in the `app` folder.
+ 3. Enable Crashlytics on the Firebase console.
 
-NOTE: the dummy-google-services.json in the project is used by CI or if you need to do static analysis
+### Using dummy data
+The [`dummy-google-services.json`](https://github.com/rock3r/bundel/blob/main/build-config/dummy-data/dummy-google-services.json) is enough if you just need to be able to build the app, but don't need to actually run it. That's what the CI uses in order to run the tests and static analysis checks.
+
+If you don't need the app to be fully functional but just want a way to make it build for analysis:
+ 1. Copy the [`build-config/dummy-data/dummy-google-services.json`](https://github.com/rock3r/bundel/blob/main/build-config/dummy-data/dummy-google-services.json) file into the [`app/`](https://github.com/rock3r/bundel/tree/main/app) folder
+ 2. Rename the `dummy-google-services.json` file to `google-services.json`
+ 3. Run static analysis or any checks you want, but remember, the resulting apk is **not ok** to distribute to users. You need to generate a proper `google-services.json` from the Firebase Console as described above, to create an apk that works for end users.
 
 ## What testing tool do you use to generate notifications?
 
-From the [first stream episode on YouTube](https://www.youtube.com/watch?v=H6jEZY0gxg8&t=1357s) here is the link to the [notification generator](https://github.com/googlecreativelab/digital-wellbeing-experiments-toolkit/tree/master/notifications/notification-generator). Build this project and run on your device and it generates notifications.
+From the [first stream episode on YouTube](https://www.youtube.com/watch?v=H6jEZY0gxg8&t=1357s), here is the link to the [notification generator](https://github.com/googlecreativelab/digital-wellbeing-experiments-toolkit/tree/master/notifications/notification-generator). Build this project and run it on your device; it generates notifications at reggular intervals.
 
 # Inspiration
 This guide is inspired to [Juno Suárez' contribution guidelines](https://github.com/junosuarez/CONTRIBUTING.md/blob/master/CONTRIBUTING.md),
