@@ -132,11 +132,11 @@ tasks {
         jvmTarget = "1.8"
     }
 
-    val lintOutput = project.layout.buildDirectory.file("reports/androidLint")
+    val lintReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")
     afterEvaluate {
         // Needs to be in afterEvaluate because it's not created yet otherwise
         named<AndroidLintTask>("lintRelease") {
-            sarifReportOutputFile.set(lintOutput)
+            sarifReportOutputFile.set(lintReleaseSarifOutput)
         }
     }
 
@@ -159,7 +159,7 @@ tasks {
         from(detekt.get().sarifReportFile) {
             rename { "detekt.sarif" }
         }
-        from(lintOutput) {
+        from(lintReleaseSarifOutput) {
             rename { "android-lint.sarif" }
         }
 
