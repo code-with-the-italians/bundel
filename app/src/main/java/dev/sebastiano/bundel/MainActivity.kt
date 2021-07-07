@@ -202,15 +202,12 @@ class MainActivity : AppCompatActivity() {
         onSettingsIntentClick: () -> Unit,
         onDismissClicked: () -> Unit,
     ) {
-        val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
-
         BundelOnboardingTheme {
             OnboardingScreen(
+                viewModel = viewModel,
                 needsPermission = needsNotificationsPermission,
                 onSettingsIntentClick = onSettingsIntentClick,
-                onOnboardingDoneClicked = onDismissClicked,
-                crashReportingEnabled = crashReportingEnabled,
-                onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
+                onOnboardingDoneClicked = onDismissClicked
             )
         }
     }

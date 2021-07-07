@@ -50,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -71,74 +70,60 @@ import java.util.Locale
 
 @Preview(name = "Onboarding screen (needs permission)", showSystemUi = true)
 @Composable
-internal fun OnboardingScreenNeedsPermissionPreview() {
+internal fun OnboardingScreenPreview() {
     BundelOnboardingTheme {
-        OnboardingScreen(
-            true,
-            onSettingsIntentClick = { },
-            onOnboardingDoneClicked = { },
-            false,
-            {}
-        )
+        OnboardingScreen()
     }
 }
 
 @Preview(name = "Onboarding screen (needs permission, dark theme)", showSystemUi = true)
 @Composable
-internal fun OnboardingDarkScreenNeedsPermissionPreview() {
+internal fun OnboardingScreenDarkThemePreview() {
     BundelOnboardingTheme(darkModeOverride = true) {
-        OnboardingScreen(
-            true,
-            onSettingsIntentClick = { },
-            onOnboardingDoneClicked = { },
-            false,
-            {}
-        )
-    }
-}
-
-@Preview(name = "Onboarding screen (dismiss only)", showSystemUi = true)
-@Composable
-internal fun OnboardingScreenDismissOnlyPreview() {
-    BundelOnboardingTheme {
-        OnboardingScreen(
-            false,
-            onSettingsIntentClick = { },
-            onOnboardingDoneClicked = { },
-            true,
-            {}
-        )
-    }
-}
-
-@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
-@Composable
-private fun ScheduleDaysPagePreview() {
-    BundelOnboardingTheme {
-        ScheduleDaysPage(WeekDay.values().map { it to true }.toMap()) { _, _ -> }
-    }
-}
-
-@Suppress("MagicNumber") // It's a preview
-@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
-@Composable
-private fun ScheduleHoursPagePreview() {
-    BundelOnboardingTheme {
-        ScheduleHoursPage(
-            schedule = TimeRangesSchedule(),
-            onAddTimeRange = {},
-            onRemoveTimeRange = {}
-        ) { _, _ -> }
+        OnboardingScreen()
     }
 }
 
 @Composable
 internal fun OnboardingScreen(
+    viewModel: OnboardingViewModel,
     needsPermission: Boolean,
     onSettingsIntentClick: () -> Unit,
-    onOnboardingDoneClicked: () -> Unit,
-    crashReportingEnabled: Boolean,
-    onCrashlyticsEnabledChanged: (Boolean) -> Unit
+    onOnboardingDoneClicked: () -> Unit
+) {
+    val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
+    val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
+    val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
+
+    OnboardingScreen(
+        needsPermission = needsPermission,
+        introPageState = IntroPageState(
+            crashReportingEnabled = crashReportingEnabled,
+            onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
+        ),
+        notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onSettingsIntentClick),
+        daysSchedulePageState = DaysSchedulePageState(
+            daysSchedule = daysSchedule,
+            onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) }
+        ),
+        hoursSchedulePageState = HoursSchedulePageState(
+            timeRangesSchedule = timeRangesSchedule,
+            onAddTimeRange = { viewModel.onTimeRangesScheduleAddTimeRange() },
+            onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
+            onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
+        ),
+        onOnboardingDoneClicked = onOnboardingDoneClicked,
+    )
+}
+
+@Composable
+internal fun OnboardingScreen(
+    needsPermission: Boolean = false,
+    introPageState: IntroPageState = IntroPageState(),
+    notificationsAccessPageState: NotificationsAccessPageState = NotificationsAccessPageState(),
+    daysSchedulePageState: DaysSchedulePageState = DaysSchedulePageState(),
+    hoursSchedulePageState: HoursSchedulePageState = HoursSchedulePageState(),
+    onOnboardingDoneClicked: () -> Unit = {}
 ) {
     Surface {
         Column(
@@ -162,13 +147,15 @@ internal fun OnboardingScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             val pagerState = rememberPagerState(pageCount = 5)
-            OnboardingPager(
-                onSettingsIntentClick = onSettingsIntentClick,
-                crashReportingEnabled = crashReportingEnabled,
-                onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
-                pagerState = pagerState,
-                needsPermission = needsPermission
-            )
+            val onboardingPagerState = OnboardingPagerState(
+                pagerState,
+                introPageState,
+                notificationsAccessPageState,
+                daysSchedulePageState,
+                hoursSchedulePageState
+            )               // Do we need to remember this? WHO KNOWS
+
+            OnboardingPager(state = onboardingPagerState)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -177,45 +164,39 @@ internal fun OnboardingScreen(
     }
 }
 
-@Composable
-private fun ColumnScope.OnboardingPager(
-    onSettingsIntentClick: () -> Unit,
-    crashReportingEnabled: Boolean,
-    onCrashlyticsEnabledChanged: (Boolean) -> Unit,
-    pagerState: PagerState,
-    needsPermission: Boolean
-) {
-    val viewModel = viewModel<OnboardingViewModel>()
+internal data class OnboardingPagerState(
+    val pagerState: PagerState,
+    val introPageState: IntroPageState,
+    val notificationsAccessPageState: NotificationsAccessPageState,
+    val daysSchedulePageState: DaysSchedulePageState,
+    val hoursSchedulePageState: HoursSchedulePageState
+)
 
+@Composable
+private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
     @Suppress("MagicNumber") // Yolo, page indices
-    HorizontalPager(pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
+    HorizontalPager(state.pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
         when (pageIndex) {
-            0 -> IntroPage(crashReportingEnabled, onCrashlyticsEnabledChanged)
-            1 -> NotificationsAccessPage(onSettingsIntentClick, needsPermission)
-            2 -> {
-                val activeDays by viewModel.daysScheduleFlow.collectAsState(emptyMap())
-                ScheduleDaysPage(activeDays) { day, active -> viewModel.onDaysScheduleChangeWeekDay(day, active) }
-            }
-            3 -> {
-                val hoursSchedule by viewModel.timeRangesScheduleFlow.collectAsState(TimeRangesSchedule())
-                ScheduleHoursPage(
-                    schedule = hoursSchedule,
-                    onAddTimeRange = { viewModel.onTimeRangesScheduleAddTimeRange() },
-                    onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
-                    onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
-                )
-            }
+            0 -> IntroPage(state.introPageState)
+            1 -> NotificationsAccessPage(state.notificationsAccessPageState)
+            2 -> DaysSchedulePage(state.daysSchedulePageState)
+            3 -> ScheduleHoursPage(state.hoursSchedulePageState)
             4 -> AllSetPage()
             else -> error("Too many pages")
         }
     }
 }
 
-@Composable
-fun IntroPage(
-    crashReportingEnabled: Boolean,
-    onCrashlyticsEnabledChanged: (Boolean) -> Unit
+internal class IntroPageState(
+    val crashReportingEnabled: Boolean,
+    val onCrashlyticsEnabledChanged: (Boolean) -> Unit
 ) {
+
+    constructor() : this(crashReportingEnabled = false, onCrashlyticsEnabledChanged = { })
+}
+
+@Composable
+private fun IntroPage(pageState: IntroPageState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -237,8 +218,8 @@ fun IntroPage(
         Spacer(modifier = Modifier.height(24.dp))
 
         CrashlyticsSwitch(
-            crashReportingEnabled = crashReportingEnabled,
-            onCrashlyticsEnabledChanged = onCrashlyticsEnabledChanged,
+            crashReportingEnabled = pageState.crashReportingEnabled,
+            onCrashlyticsEnabledChanged = pageState.onCrashlyticsEnabledChanged,
             modifier = Modifier.padding(vertical = singlePadding(), horizontal = 16.dp)
         )
     }
@@ -273,8 +254,16 @@ private fun CrashlyticsSwitch(
     }
 }
 
+internal class NotificationsAccessPageState(
+    val needsPermission: Boolean,
+    val onSettingsIntentClick: () -> Unit
+) {
+
+    constructor() : this(needsPermission = true, onSettingsIntentClick = {})
+}
+
 @Composable
-private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPermission: Boolean) {
+private fun NotificationsAccessPage(pageState: NotificationsAccessPageState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -288,7 +277,7 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
 
         Spacer(Modifier.height(24.dp))
 
-        if (needsPermission) {
+        if (pageState.needsPermission) {
             Text(
                 text = stringResource(R.string.notifications_permission_explanation),
                 textAlign = TextAlign.Center,
@@ -297,7 +286,7 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
 
             Spacer(Modifier.height(24.dp))
 
-            Button(onClick = onSettingsIntentClick) {
+            Button(onClick = pageState.onSettingsIntentClick) {
                 Text(stringResource(R.string.button_notifications_access_prompt))
             }
         } else {
@@ -320,11 +309,24 @@ private fun NotificationsAccessPage(onSettingsIntentClick: () -> Unit, needsPerm
     }
 }
 
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
-private fun ScheduleDaysPage(
-    activeDays: Map<WeekDay, Boolean>,
-    onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
+private fun DaysSchedulePagePreview() {
+    BundelOnboardingTheme {
+        DaysSchedulePage(DaysSchedulePageState())
+    }
+}
+
+internal class DaysSchedulePageState(
+    val daysSchedule: Map<WeekDay, Boolean>,
+    val onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
 ) {
+
+    constructor() : this(daysSchedule = WeekDay.values().map { it to true }.toMap(), onDayCheckedChange = { _, _ -> })
+}
+
+@Composable
+private fun DaysSchedulePage(pageState: DaysSchedulePageState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -352,12 +354,12 @@ private fun ScheduleDaysPage(
             mainAxisSpacing = singlePadding(),
             crossAxisSpacing = singlePadding()
         ) {
-            for (weekDay in activeDays.keys) {
+            for (weekDay in pageState.daysSchedule.keys) {
                 MaterialChip(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     checkedBackgroundColor = MaterialTheme.colors.onSurface,
-                    checked = checkNotNull(activeDays[weekDay]) { "Checked state missing for day $weekDay" },
-                    onCheckedChanged = { checked -> onDayCheckedChange(weekDay, checked) }
+                    checked = checkNotNull(pageState.daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
+                    onCheckedChanged = { checked -> pageState.onDayCheckedChange(weekDay, checked) }
                 ) {
                     Text(
                         text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
@@ -377,13 +379,32 @@ private fun ScheduleDaysPage(
     }
 }
 
+@Suppress("MagicNumber") // It's a preview
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
-private fun ScheduleHoursPage(
-    schedule: TimeRangesSchedule,
-    onAddTimeRange: () -> Unit,
-    onRemoveTimeRange: (timeRange: TimeRange) -> Unit,
-    onChangeTimeRange: (old: TimeRange, new: TimeRange) -> Unit
+private fun HoursSchedulePagePreview() {
+    BundelOnboardingTheme {
+        ScheduleHoursPage(HoursSchedulePageState())
+    }
+}
+
+internal class HoursSchedulePageState(
+    val timeRangesSchedule: TimeRangesSchedule,
+    val onAddTimeRange: () -> Unit,
+    val onRemoveTimeRange: (timeRange: TimeRange) -> Unit,
+    val onChangeTimeRange: (old: TimeRange, new: TimeRange) -> Unit
 ) {
+
+    constructor() : this(
+        timeRangesSchedule = TimeRangesSchedule(),
+        onAddTimeRange = {},
+        onRemoveTimeRange = {},
+        onChangeTimeRange = { _, _ -> }
+    )
+}
+
+@Composable
+private fun ScheduleHoursPage(hoursSchedulePageState: HoursSchedulePageState) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -410,7 +431,7 @@ private fun ScheduleHoursPage(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            val items = schedule.timeRanges.withIndex().toList()
+            val items = hoursSchedulePageState.timeRangesSchedule.timeRanges.withIndex().toList()
 
             items(items = items) { (index, timeRange) ->
                 val minimumAllowedFrom = if (index > 0) items[index - 1].value.to else null
@@ -418,13 +439,13 @@ private fun ScheduleHoursPage(
 
                 TimeRangeRow(
                     timeRange = timeRange,
-                    onRemoved = if (schedule.canRemoveRanges) {
-                        { onRemoveTimeRange(timeRange) }
+                    onRemoved = if (hoursSchedulePageState.timeRangesSchedule.canRemoveRanges) {
+                        { hoursSchedulePageState.onRemoveTimeRange(timeRange) }
                     } else {
                         { }
                     },
-                    canBeRemoved = schedule.canRemoveRanges,
-                    onTimeRangeChanged = { newTimeRange -> onChangeTimeRange(timeRange, newTimeRange) },
+                    canBeRemoved = hoursSchedulePageState.timeRangesSchedule.canRemoveRanges,
+                    onTimeRangeChanged = { newTimeRange -> hoursSchedulePageState.onChangeTimeRange(timeRange, newTimeRange) },
                     minimumAllowableFrom = minimumAllowedFrom,
                     maximumAllowableTo = maximumAllowedTo
                 )
@@ -432,9 +453,9 @@ private fun ScheduleHoursPage(
                 Spacer(modifier = Modifier.height(singlePadding()))
             }
 
-            if (schedule.canAppendAnotherRange) {
+            if (hoursSchedulePageState.timeRangesSchedule.canAppendAnotherRange) {
                 item {
-                    Box(modifier = Modifier.clickable { onAddTimeRange() }) {
+                    Box(modifier = Modifier.clickable { hoursSchedulePageState.onAddTimeRange() }) {
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
                             TimeRangeRow(timeRange = null, enabled = false)
                         }
