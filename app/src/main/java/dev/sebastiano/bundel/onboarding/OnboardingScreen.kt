@@ -2,6 +2,7 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -43,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -83,6 +85,18 @@ internal fun OnboardingScreenDarkThemePreview() {
         OnboardingScreen()
     }
 }
+
+internal enum class PembaaaOrientation {
+    LANDSCAPE,
+    PORTRAIT
+}
+
+@Composable
+internal fun currentOrientation(): PembaaaOrientation =
+    when (LocalConfiguration.current.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> PembaaaOrientation.LANDSCAPE
+        else -> PembaaaOrientation.PORTRAIT
+    }
 
 @Composable
 internal fun OnboardingScreen(
@@ -132,19 +146,8 @@ internal fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painterResource(R.drawable.ic_bundel_icon),
-                    contentDescription = stringResource(R.string.app_name),
-                    modifier = Modifier.size(72.dp)
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
+            val orientation = currentOrientation()
+            OnboardingHeader(orientation)
 
             val pagerState = rememberPagerState(pageCount = 5)
             val onboardingPagerState = OnboardingPagerState(
@@ -161,6 +164,54 @@ internal fun OnboardingScreen(
 
             ActionsRow(pagerState, needsPermission, onOnboardingDoneClicked)
         }
+    }
+}
+
+@Preview(name = "Onboarding header (landscape)", widthDp = 600, backgroundColor = 0xFF4CE062, showBackground = true)
+@Composable
+fun OnboardingHeaderLandscapePreview() {
+    BundelOnboardingTheme {
+        Column(Modifier.fillMaxWidth()) {
+            OnboardingHeader(orientation = PembaaaOrientation.LANDSCAPE)
+        }
+    }
+}
+
+@Suppress("unused") // We rely on being inside a Column
+@Composable
+private fun ColumnScope.OnboardingHeader(orientation: PembaaaOrientation) {
+    if (orientation == PembaaaOrientation.PORTRAIT) {
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(R.drawable.ic_bundel_icon),
+                contentDescription = stringResource(R.string.app_name),
+                modifier = Modifier.size(72.dp)
+            )
+            Spacer(modifier = Modifier.width(24.dp))
+            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+    } else {
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(R.drawable.ic_bundel_icon),
+                contentDescription = stringResource(R.string.app_name),
+                modifier = Modifier.size(48.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h3)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
