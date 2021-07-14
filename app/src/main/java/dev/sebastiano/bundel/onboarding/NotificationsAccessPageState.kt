@@ -11,6 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.currentOrientation
 
 internal class NotificationsAccessPageState(
     val needsPermission: Boolean,
@@ -21,25 +23,26 @@ internal class NotificationsAccessPageState(
 }
 
 @Composable
-internal fun NotificationsAccessPage(pageState: NotificationsAccessPageState) {
+internal fun NotificationsAccessPage(
+    pageState: NotificationsAccessPageState,
+    orientation: PembaaaOrientation = currentOrientation()
+) {
     Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+        modifier = Modifier.onboardingPageModifier(orientation),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
-        Text(
-                text = stringResource(id = R.string.notifications_permission_title),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.h5
-        )
+        if (orientation == PembaaaOrientation.Portrait) {
+            PageTitle(text = stringResource(id = R.string.onboarding_notifications_permission_title))
+        }
 
         Spacer(Modifier.height(24.dp))
 
         if (pageState.needsPermission) {
             Text(
-                    text = stringResource(R.string.notifications_permission_explanation),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                text = stringResource(R.string.notifications_permission_explanation),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
             )
 
             Spacer(Modifier.height(24.dp))
@@ -49,19 +52,19 @@ internal fun NotificationsAccessPage(pageState: NotificationsAccessPageState) {
             }
         } else {
             Icon(
-                    imageVector = Icons.Rounded.DoneOutline,
-                    contentDescription = stringResource(R.string.notifications_permission_done_image_content_description),
-                    tint = LocalContentColor.current,
-                    modifier = Modifier
-                            .size(72.dp)
+                imageVector = Icons.Rounded.DoneOutline,
+                contentDescription = stringResource(R.string.notifications_permission_done_image_content_description),
+                tint = LocalContentColor.current,
+                modifier = Modifier
+                    .size(72.dp)
             )
 
             Spacer(Modifier.height(16.dp))
 
             Text(
-                    text = stringResource(R.string.notifications_permission_all_done),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(16.dp)
+                text = stringResource(R.string.notifications_permission_all_done),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(16.dp)
             )
         }
     }

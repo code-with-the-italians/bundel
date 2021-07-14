@@ -2,11 +2,16 @@
 
 package dev.sebastiano.bundel.onboarding
 
-import android.content.res.Configuration
+import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,11 +38,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -49,36 +55,34 @@ import dev.sebastiano.bundel.OnboardingViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.currentOrientation
 import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Preview(name = "Onboarding screen", showSystemUi = true)
 @Composable
-internal fun OnboardingScreenPreview() {
+private fun OnboardingScreenPreview() {
     BundelOnboardingTheme {
         OnboardingScreen()
     }
 }
 
+@Preview(name = "Onboarding screen (landscape)", showSystemUi = true, device = Devices.NEXUS_5)
+@Composable
+private fun OnboardingScreenLandscapePreview() {
+    BundelOnboardingTheme {
+        OnboardingScreen(orientation = PembaaaOrientation.Landscape)
+    }
+}
+
 @Preview(name = "Onboarding screen (dark theme)", showSystemUi = true)
 @Composable
-internal fun OnboardingScreenDarkThemePreview() {
+private fun OnboardingScreenDarkThemePreview() {
     BundelOnboardingTheme(darkModeOverride = true) {
         OnboardingScreen()
     }
 }
-
-internal enum class PembaaaOrientation {
-    Landscape,
-    Portrait
-}
-
-@Composable
-internal fun currentOrientation(): PembaaaOrientation =
-    when (LocalConfiguration.current.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> PembaaaOrientation.Landscape
-        else -> PembaaaOrientation.Portrait
-    }
 
 @Composable
 internal fun OnboardingScreen(
@@ -119,6 +123,7 @@ internal fun OnboardingScreen(
     notificationsAccessPageState: NotificationsAccessPageState = NotificationsAccessPageState(),
     daysSchedulePageState: DaysSchedulePageState = DaysSchedulePageState(),
     hoursSchedulePageState: HoursSchedulePageState = HoursSchedulePageState(),
+    orientation: PembaaaOrientation = currentOrientation(),
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
     Surface {
@@ -128,17 +133,17 @@ internal fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            val orientation = currentOrientation()
-            OnboardingHeader(orientation)
-
             val pagerState = rememberPagerState(pageCount = 5)
             val onboardingPagerState = OnboardingPagerState(
-                pagerState,
-                introPageState,
-                notificationsAccessPageState,
-                daysSchedulePageState,
-                hoursSchedulePageState
+                pagerState = pagerState,
+                introPageState = introPageState,
+                notificationsAccessPageState = notificationsAccessPageState,
+                daysSchedulePageState = daysSchedulePageState,
+                hoursSchedulePageState = hoursSchedulePageState
             )               // Do we need to remember this? WHO KNOWS
+
+            val outOfStock = pagerState.targetPage ?: pagerState.currentPage
+            OnboardingHeader(orientation, outOfStock)
 
             OnboardingPager(state = onboardingPagerState)
 
@@ -149,19 +154,36 @@ internal fun OnboardingScreen(
     }
 }
 
+internal enum class OnboardingPage(
+    @StringRes val pageTitle: Int
+) {
+
+    Intro(R.string.onboarding_welcome_title),
+    NotificationsPermission(R.string.onboarding_notifications_permission_title),
+    DaysSchedule(R.string.onboarding_schedule_title),
+    HoursSchedule(R.string.onboarding_schedule_title),
+    AllSet(R.string.onboarding_all_set)
+}
+
 @Preview(name = "Onboarding header (landscape)", widthDp = 600, backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
-fun OnboardingHeaderLandscapePreview() {
+private fun OnboardingHeaderLandscapePreview() {
     BundelOnboardingTheme {
         Column(Modifier.fillMaxWidth()) {
-            OnboardingHeader(orientation = PembaaaOrientation.Landscape)
+            OnboardingHeader(
+                orientation = PembaaaOrientation.Landscape,
+                pageIndex = OnboardingPage.Intro.ordinal
+            )
         }
     }
 }
 
 @Suppress("unused") // We rely on being inside a Column
 @Composable
-private fun ColumnScope.OnboardingHeader(orientation: PembaaaOrientation) {
+private fun ColumnScope.OnboardingHeader(
+    orientation: PembaaaOrientation,
+    pageIndex: Int
+) {
     if (orientation == PembaaaOrientation.Portrait) {
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -181,7 +203,9 @@ private fun ColumnScope.OnboardingHeader(orientation: PembaaaOrientation) {
         Spacer(modifier = Modifier.height(32.dp))
     } else {
         Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(horizontal = 48.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -190,14 +214,43 @@ private fun ColumnScope.OnboardingHeader(orientation: PembaaaOrientation) {
                 modifier = Modifier.size(48.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
+
             Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h3)
+
+            AnimatedContent(
+                targetState = pageIndex,
+                transitionSpec = {
+                    val direction = if (targetState > initialState) 1 else -1
+
+                    val enterTransition = fadeIn(animationSpec = spring()) +
+                        slideIn(initialOffset = { IntOffset(direction * it.width / 5, 0) }, spring())
+                    val exitTransition = fadeOut(animationSpec = spring()) +
+                        slideOut(targetOffset = { IntOffset(-direction * it.width / 5, 0) }, spring())
+                    enterTransition with exitTransition
+                }
+            ) { pageIndex ->
+                PageTitle(
+                    text = stringResource(id = OnboardingPage.values()[pageIndex].pageTitle),
+                    textAlign = TextAlign.End
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
-internal data class OnboardingPagerState(
+@Composable
+internal fun PageTitle(text: String, textAlign: TextAlign = TextAlign.Center) {
+    Text(
+        text = text,
+        textAlign = textAlign,
+        style = MaterialTheme.typography.h5,
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+private data class OnboardingPagerState(
     val pagerState: PagerState,
     val introPageState: IntroPageState,
     val notificationsAccessPageState: NotificationsAccessPageState,
@@ -207,21 +260,27 @@ internal data class OnboardingPagerState(
 
 @Composable
 private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
-    @Suppress("MagicNumber") // Yolo, page indices
-    HorizontalPager(state.pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) { pageIndex ->
-        when (pageIndex) {
-            0 -> IntroPage(state.introPageState)
-            1 -> NotificationsAccessPage(state.notificationsAccessPageState)
-            2 -> DaysSchedulePage(state.daysSchedulePageState)
-            3 -> ScheduleHoursPage(state.hoursSchedulePageState)
-            4 -> AllSetPage()
-            else -> error("Too many pages")
+    HorizontalPager(state.pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) {
+        when (OnboardingPage.values()[it]) {
+            OnboardingPage.Intro -> IntroPage(state.introPageState)
+            OnboardingPage.NotificationsPermission -> NotificationsAccessPage(state.notificationsAccessPageState)
+            OnboardingPage.DaysSchedule -> DaysSchedulePage(state.daysSchedulePageState)
+            OnboardingPage.HoursSchedule -> ScheduleHoursPage(state.hoursSchedulePageState)
+            OnboardingPage.AllSet -> AllSetPage()
         }
     }
 }
 
+internal fun Modifier.onboardingPageModifier(orientation: PembaaaOrientation) =
+    if (orientation == PembaaaOrientation.Portrait) {
+        fillMaxSize()
+    } else {
+        fillMaxSize()
+            .padding(horizontal = 96.dp)
+    }
+
 @Composable
-fun AllSetPage() {
+private fun AllSetPage() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
