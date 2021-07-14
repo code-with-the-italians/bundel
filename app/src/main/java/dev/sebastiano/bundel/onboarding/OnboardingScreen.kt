@@ -140,7 +140,7 @@ internal fun OnboardingScreen(
                 notificationsAccessPageState = notificationsAccessPageState,
                 daysSchedulePageState = daysSchedulePageState,
                 hoursSchedulePageState = hoursSchedulePageState
-            )               // Do we need to remember this? WHO KNOWS
+            ) // Do we need to remember this? WHO KNOWS
 
             val outOfStock = pagerState.targetPage ?: pagerState.currentPage
             OnboardingHeader(orientation, outOfStock)

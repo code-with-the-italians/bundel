@@ -1,6 +1,12 @@
 package dev.sebastiano.bundel.onboarding
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +25,7 @@ import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
-import java.util.*
+import java.util.Locale
 
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
@@ -30,8 +36,8 @@ private fun DaysSchedulePagePreview() {
 }
 
 internal class DaysSchedulePageState(
-        val daysSchedule: Map<WeekDay, Boolean>,
-        val onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
+    val daysSchedule: Map<WeekDay, Boolean>,
+    val onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
 ) {
 
     constructor() : this(daysSchedule = WeekDay.values().map { it to true }.toMap(), onDayCheckedChange = { _, _ -> })
@@ -40,42 +46,42 @@ internal class DaysSchedulePageState(
 @Composable
 internal fun DaysSchedulePage(pageState: DaysSchedulePageState) {
     Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
-                text = stringResource(id = R.string.onboarding_schedule_title),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.h5
+            text = stringResource(id = R.string.onboarding_schedule_title),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h5
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-                text = stringResource(R.string.onboarding_schedule_blurb),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+            text = stringResource(R.string.onboarding_schedule_blurb),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         FlowRow(
-                modifier = Modifier.padding(horizontal = 32.dp),
-                mainAxisAlignment = MainAxisAlignment.Center,
-                mainAxisSpacing = singlePadding(),
-                crossAxisSpacing = singlePadding()
+            modifier = Modifier.padding(horizontal = 32.dp),
+            mainAxisAlignment = MainAxisAlignment.Center,
+            mainAxisSpacing = singlePadding(),
+            crossAxisSpacing = singlePadding()
         ) {
             for (weekDay in pageState.daysSchedule.keys) {
                 MaterialChip(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        checkedBackgroundColor = MaterialTheme.colors.onSurface,
-                        checked = checkNotNull(pageState.daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
-                        onCheckedChanged = { checked -> pageState.onDayCheckedChange(weekDay, checked) }
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    checkedBackgroundColor = MaterialTheme.colors.onSurface,
+                    checked = checkNotNull(pageState.daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
+                    onCheckedChanged = { checked -> pageState.onDayCheckedChange(weekDay, checked) }
                 ) {
                     Text(
-                            text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
-                            style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
+                        text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
+                        style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
                     )
                 }
             }
@@ -84,9 +90,9 @@ internal fun DaysSchedulePage(pageState: DaysSchedulePageState) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-                text = stringResource(R.string.onboarding_schedule_blurb_2),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
+            text = stringResource(R.string.onboarding_schedule_blurb_2),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
     }
 }
