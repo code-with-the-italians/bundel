@@ -5,6 +5,7 @@ appCompat="1.4.0-alpha03"
 assertk="0.24"
 coil="1.2.2"
 compose="1.0.0-rc01"
+composeUiTooling="1.0.0-beta09"
 daggerHilt="2.37"
 datastore="1.0.0-rc01"
 datetime-dialogs="0.4.3"
@@ -39,7 +40,7 @@ androidx-compose-material={ module="androidx.compose.material:material", version
 androidx-compose-materialIconsExtended={ module="androidx.compose.material:material-icons-extended", version.ref="compose" }
 androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
 androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
-androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
+androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="composeUiTooling" }
 androidx-datastore={ module="androidx.datastore:datastore", version.ref="datastore" }
 androidx-hilt-hiltCommon={ module="androidx.hilt:hilt-common", version.ref="hilt" }
 androidx-hilt-hiltCompiler={ module="androidx.hilt:hilt-compiler", version.ref="hilt" }
