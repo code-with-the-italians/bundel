@@ -33,6 +33,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -64,37 +66,44 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 
 @Suppress("MagicNumber") // It's a preview
-@Preview(name = "Inactive", backgroundColor = 0xFF4CE062, showBackground = true)
+@Preview(name = "Inactive")
 @Composable
 fun TimeRangeRowInactivePreview() {
     BundelOnboardingTheme {
-        TimeRangeRow(
-            enabled = false
-        )
+        Surface {
+            TimeRangeRow(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false
+            )
+        }
     }
 }
 
 @Suppress("MagicNumber") // It's a preview
-@Preview(name = "Active", backgroundColor = 0xFF4CE062, showBackground = true)
+@Preview(name = "Active")
 @Composable
 fun TimeRangeRowActivePreview() {
     BundelOnboardingTheme {
-        TimeRangeRow(
-            timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
-            enabled = true,
-            canBeRemoved = true
-        )
+        Surface {
+            TimeRangeRow(
+                modifier = Modifier.fillMaxWidth(),
+                timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
+                enabled = true,
+                canBeRemoved = true
+            )
+        }
     }
 }
 
 @Composable
 internal fun TimeRangeRow(
+    modifier: Modifier = Modifier,
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
     minimumAllowableFrom: LocalTime? = null,
     maximumAllowableTo: LocalTime? = null,
-    onRemoved: ((TimeRange) -> Unit) = {},
+    onRemoved: (TimeRange) -> Unit = {},
     onTimeRangeChanged: (TimeRange) -> Unit = {}
 ) {
     val timeFormatter = DateTimeFormatterBuilder()
@@ -103,7 +112,7 @@ internal fun TimeRangeRow(
         .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
         .toFormatter(LocalConfiguration.current.locales[0])
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier) {
         var expanded by remember { mutableStateOf(ExpandedRangeExtremity.NONE) }
 
         Row(
@@ -120,7 +129,7 @@ internal fun TimeRangeRow(
             val normalPillColor = MaterialTheme.colors.onSurface
 
             TimePillButton(
-                text = timeRange?.let { timeFormatter.format(timeRange.from) } ?: "",
+                text = timeRange?.let { timeFormatter.format(timeRange.from) },
                 pillBackgroundColor = if (expanded == ExpandedRangeExtremity.FROM) expandedPillColor else normalPillColor,
                 enabled = enabled
             ) { expanded = if (expanded != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE }
@@ -132,7 +141,7 @@ internal fun TimeRangeRow(
             Spacer(modifier = Modifier.width(singlePadding()))
 
             TimePillButton(
-                text = timeRange?.let { timeFormatter.format(timeRange.to) } ?: "",
+                text = timeRange?.let { timeFormatter.format(timeRange.to) },
                 pillBackgroundColor = if (expanded == ExpandedRangeExtremity.TO) expandedPillColor else normalPillColor,
                 enabled = enabled
             ) { expanded = if (expanded != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE }
@@ -314,20 +323,35 @@ private fun UpDownButtons(
 
 @Composable
 private fun TimePillButton(
-    text: String,
+    text: String?,
     pillBackgroundColor: Color = MaterialTheme.colors.onSurface,
     enabled: Boolean,
     onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(targetValue = pillBackgroundColor)
 
+    val buttonColors = if (text != null) {
+        ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
+    } else {
+        ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = backgroundColor.copy(alpha = .12f)
+                .compositeOver(MaterialTheme.colors.surface),
+            contentColor = Color.Transparent,
+            disabledContentColor = Color.Transparent,
+        )
+    }
     Button(
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
+        colors = buttonColors,
         elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
         enabled = enabled,
         onClick = { onClick() }
     ) {
-        Text(text = text)
+        // HACK we should be using tabular numbers on the text instead
+        Box(contentAlignment = Alignment.Center) {
+            Text(text = text ?: "00:00")
+            Text(text = "00:00", color = Color.Transparent)
+        }
     }
 }

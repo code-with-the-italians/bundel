@@ -3,11 +3,13 @@ package dev.sebastiano.bundel.onboarding
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,13 +27,27 @@ import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.singlePadding
+import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.currentOrientation
 import java.util.Locale
 
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun DaysSchedulePagePreview() {
     BundelOnboardingTheme {
-        DaysSchedulePage(DaysSchedulePageState())
+        Surface {
+            DaysSchedulePage(DaysSchedulePageState())
+        }
+    }
+}
+
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
+@Composable
+private fun DaysSchedulePageLandscapePreview() {
+    BundelOnboardingTheme {
+        Surface {
+            DaysSchedulePage(DaysSchedulePageState(), orientation = PembaaaOrientation.Landscape)
+        }
     }
 }
 
@@ -44,19 +60,22 @@ internal class DaysSchedulePageState(
 }
 
 @Composable
-internal fun DaysSchedulePage(pageState: DaysSchedulePageState) {
+internal fun DaysSchedulePage(
+    pageState: DaysSchedulePageState,
+    orientation: PembaaaOrientation = currentOrientation()
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .onboardingPageModifier(orientation)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = stringResource(id = R.string.onboarding_schedule_title),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5
-        )
+        if (orientation == PembaaaOrientation.Portrait) {
+            PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
 
-        Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
+        }
 
         Text(
             text = stringResource(R.string.onboarding_schedule_blurb),
@@ -64,10 +83,12 @@ internal fun DaysSchedulePage(pageState: DaysSchedulePageState) {
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        val happyBirthdayMark = if (orientation == PembaaaOrientation.Portrait) 24.dp else 16.dp
+        Spacer(modifier = Modifier.height(happyBirthdayMark))
 
+        val chipsRowHorizontalPadding = if (orientation == PembaaaOrientation.Portrait) 32.dp else 48.dp
         FlowRow(
-            modifier = Modifier.padding(horizontal = 32.dp),
+            modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
             mainAxisAlignment = MainAxisAlignment.Center,
             mainAxisSpacing = singlePadding(),
             crossAxisSpacing = singlePadding()
@@ -87,7 +108,7 @@ internal fun DaysSchedulePage(pageState: DaysSchedulePageState) {
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(happyBirthdayMark))
 
         Text(
             text = stringResource(R.string.onboarding_schedule_blurb_2),

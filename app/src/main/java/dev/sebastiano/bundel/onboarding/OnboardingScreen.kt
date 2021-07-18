@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -55,6 +55,7 @@ import dev.sebastiano.bundel.OnboardingViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.singlePadding
 import dev.sebastiano.bundel.util.PembaaaOrientation
 import dev.sebastiano.bundel.util.currentOrientation
 import kotlinx.coroutines.launch
@@ -64,15 +65,19 @@ import java.util.Locale
 @Composable
 private fun OnboardingScreenPreview() {
     BundelOnboardingTheme {
-        OnboardingScreen()
+        Surface {
+            OnboardingScreen()
+        }
     }
 }
 
-@Preview(name = "Onboarding screen (landscape)", showSystemUi = true, device = Devices.NEXUS_5)
+@Preview(name = "Onboarding screen (landscape)", widthDp = 822, heightDp = 392)
 @Composable
 private fun OnboardingScreenLandscapePreview() {
     BundelOnboardingTheme {
-        OnboardingScreen(orientation = PembaaaOrientation.Landscape)
+        Surface {
+            OnboardingScreen(orientation = PembaaaOrientation.Landscape)
+        }
     }
 }
 
@@ -80,7 +85,9 @@ private fun OnboardingScreenLandscapePreview() {
 @Composable
 private fun OnboardingScreenDarkThemePreview() {
     BundelOnboardingTheme(darkModeOverride = true) {
-        OnboardingScreen()
+        Surface {
+            OnboardingScreen()
+        }
     }
 }
 
@@ -126,12 +133,13 @@ internal fun OnboardingScreen(
     orientation: PembaaaOrientation = currentOrientation(),
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
+    val verticalScreenPadding = if (orientation == PembaaaOrientation.Portrait) 16.dp else singlePadding()
     Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = verticalScreenPadding)
         ) {
             val pagerState = rememberPagerState(pageCount = 5)
             val onboardingPagerState = OnboardingPagerState(
@@ -147,7 +155,8 @@ internal fun OnboardingScreen(
 
             OnboardingPager(state = onboardingPagerState)
 
-            Spacer(modifier = Modifier.height(32.dp))
+            val actionsRowTopSpace = if (orientation == PembaaaOrientation.Portrait) 32.dp else singlePadding()
+            Spacer(modifier = Modifier.height(actionsRowTopSpace))
 
             ActionsRow(pagerState, needsPermission, onOnboardingDoneClicked)
         }
@@ -165,15 +174,17 @@ internal enum class OnboardingPage(
     AllSet(R.string.onboarding_all_set)
 }
 
-@Preview(name = "Onboarding header (landscape)", widthDp = 600, backgroundColor = 0xFF4CE062, showBackground = true)
+@Preview(name = "Onboarding header (landscape)", widthDp = 600)
 @Composable
 private fun OnboardingHeaderLandscapePreview() {
     BundelOnboardingTheme {
-        Column(Modifier.fillMaxWidth()) {
-            OnboardingHeader(
-                orientation = PembaaaOrientation.Landscape,
-                pageIndex = OnboardingPage.Intro.ordinal
-            )
+        Surface {
+            Column(Modifier.fillMaxWidth()) {
+                OnboardingHeader(
+                    orientation = PembaaaOrientation.Landscape,
+                    pageIndex = OnboardingPage.Intro.ordinal
+                )
+            }
         }
     }
 }
@@ -279,25 +290,64 @@ internal fun Modifier.onboardingPageModifier(orientation: PembaaaOrientation) =
             .padding(horizontal = 96.dp)
     }
 
+@Preview
 @Composable
-private fun AllSetPage() {
+private fun AllSetPagePreview() {
+    BundelOnboardingTheme {
+        Surface {
+            AllSetPage()
+        }
+    }
+}
+
+@Preview(widthDp = 822, heightDp = 392)
+@Composable
+private fun AllSetPageLandscapePreview() {
+    BundelOnboardingTheme {
+        Surface {
+            AllSetPage(orientation = PembaaaOrientation.Landscape)
+        }
+    }
+}
+
+@Composable
+private fun AllSetPage(orientation: PembaaaOrientation = currentOrientation()) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = stringResource(id = R.string.onboarding_all_set),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5
-        )
+        if (orientation == PembaaaOrientation.Portrait) {
+            PageTitle(text = stringResource(id = R.string.onboarding_all_set))
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = stringResource(id = R.string.onboarding_all_set_blurb),
-            textAlign = TextAlign.Center
-        )
+            Image(
+                painter = painterResource(R.drawable.misaligned_floor),
+                contentDescription = stringResource(R.string.onboarding_all_done_image_description)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(id = R.string.onboarding_all_set_blurb),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(R.drawable.misaligned_floor),
+                    contentDescription = stringResource(R.string.onboarding_all_done_image_description)
+                )
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                Text(
+                    text = stringResource(id = R.string.onboarding_all_set_blurb),
+                    textAlign = TextAlign.Start
+                )
+            }
+        }
     }
 }
 

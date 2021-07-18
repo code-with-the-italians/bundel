@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -28,13 +27,29 @@ import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.singlePadding
+import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.currentOrientation
 
 @Suppress("MagicNumber") // It's a preview
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun HoursSchedulePagePreview() {
     BundelOnboardingTheme {
-        ScheduleHoursPage(HoursSchedulePageState())
+        Surface {
+            ScheduleHoursPage(HoursSchedulePageState())
+        }
+    }
+}
+
+@Suppress("MagicNumber") // It's a preview
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
+@Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 622, heightDp = 422)
+@Composable
+private fun HoursSchedulePageLandscapePreview() {
+    BundelOnboardingTheme {
+        Surface {
+            ScheduleHoursPage(HoursSchedulePageState(), orientation = PembaaaOrientation.Landscape)
+        }
     }
 }
 
@@ -54,33 +69,37 @@ internal class HoursSchedulePageState(
 }
 
 @Composable
-internal fun ScheduleHoursPage(hoursSchedulePageState: HoursSchedulePageState) {
+internal fun ScheduleHoursPage(
+    hoursSchedulePageState: HoursSchedulePageState,
+    orientation: PembaaaOrientation = currentOrientation()
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = stringResource(id = R.string.onboarding_schedule_title),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h5
-        )
+        if (orientation == PembaaaOrientation.Portrait) {
+            PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
 
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.onboarding_schedule_blurb),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
+        }
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            item {
+                Text(
+                    text = stringResource(R.string.onboarding_schedule_blurb),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
             val items = hoursSchedulePageState.timeRangesSchedule.timeRanges.withIndex().toList()
 
             items(items = items) { (index, timeRange) ->
@@ -89,15 +108,15 @@ internal fun ScheduleHoursPage(hoursSchedulePageState: HoursSchedulePageState) {
 
                 TimeRangeRow(
                     timeRange = timeRange,
+                    canBeRemoved = hoursSchedulePageState.timeRangesSchedule.canRemoveRanges,
+                    minimumAllowableFrom = minimumAllowedFrom,
+                    maximumAllowableTo = maximumAllowedTo,
                     onRemoved = if (hoursSchedulePageState.timeRangesSchedule.canRemoveRanges) {
                         { hoursSchedulePageState.onRemoveTimeRange(timeRange) }
                     } else {
                         { }
                     },
-                    canBeRemoved = hoursSchedulePageState.timeRangesSchedule.canRemoveRanges,
-                    onTimeRangeChanged = { newTimeRange -> hoursSchedulePageState.onChangeTimeRange(timeRange, newTimeRange) },
-                    minimumAllowableFrom = minimumAllowedFrom,
-                    maximumAllowableTo = maximumAllowedTo
+                    onTimeRangeChanged = { newTimeRange -> hoursSchedulePageState.onChangeTimeRange(timeRange, newTimeRange) }
                 )
 
                 Spacer(modifier = Modifier.height(singlePadding()))
