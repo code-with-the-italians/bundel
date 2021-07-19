@@ -1,6 +1,7 @@
 package dev.sebastiano.bundel
 
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.datastore.dataStore
 import dagger.Module
 import dagger.Provides
@@ -28,4 +29,8 @@ internal class ApplicationModule {
     @Provides
     @Singleton
     fun providePreferences(@ApplicationContext context: Context): Preferences = DataStorePreferences(context.dataStore)
+
+    @Provides
+    @Singleton
+    fun providePackageManager(@ApplicationContext context: Context): PackageManager = context.packageManager
 }

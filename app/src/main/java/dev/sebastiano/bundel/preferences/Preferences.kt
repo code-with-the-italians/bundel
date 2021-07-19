@@ -9,6 +9,9 @@ internal interface Preferences {
     fun isCrashlyticsEnabled(): Flow<Boolean>
     suspend fun setIsCrashlyticsEnabled(enabled: Boolean)
 
+    fun getExcludedPackages(): Flow<Set<String>>
+    suspend fun setExcludedPackages(excludedPackages: Set<String>)
+
     suspend fun isOnboardingSeen(): Boolean
     suspend fun setIsOnboardingSeen(onboardingSeen: Boolean)
 

@@ -35,4 +35,6 @@
     <string name="content_description_time_picker_increase">One more!</string>
     <string name="content_description_time_picker_decrease">One less!</string>
     <string name="onboarding_all_done_image_description">The floor is misaligned.</string>
+    <string name="menu_settings_content_description">Settings</string>
+    <string name="menu_back_content_description">Back</string>
 </resources>

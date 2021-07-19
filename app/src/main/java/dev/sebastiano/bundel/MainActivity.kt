@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -45,7 +47,9 @@ import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Com
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
+import dev.sebastiano.bundel.onboarding.OnboardingViewModel
 import dev.sebastiano.bundel.preferences.Preferences
+import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.storage.RobertoRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -110,6 +114,9 @@ class MainActivity : AppCompatActivity() {
                     composable(NavigationRoute.MainScreen.route) {
                         MainScreenWithBottomNav()
                     }
+                    composable(NavigationRoute.Settings.route) {
+                        PreferencesScreen()
+                    }
                 }
             }
         }
@@ -122,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { NotificationsListTopAppBar() },
+            topBar = { NotificationsListTopAppBar { navController.navigate(NavigationRoute.Settings.route) } },
             scaffoldState = scaffoldState,
             bottomBar = { MainScreenBottomNavigation(navController) }
         ) { innerPadding ->
@@ -180,9 +187,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun NotificationsListTopAppBar() {
+    private fun NotificationsListTopAppBar(onSettingsActionClick: () -> Unit) {
+        @Composable
+        fun ActionsMenu() {
+            IconButton(onClick = onSettingsActionClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_round_settings_24),
+                    contentDescription = stringResource(id = R.string.menu_settings_content_description)
+                )
+            }
+        }
+
         TopAppBar(
-            title = { Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4) }
+            title = { Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4) },
+            actions = { ActionsMenu() }
         )
     }
 
