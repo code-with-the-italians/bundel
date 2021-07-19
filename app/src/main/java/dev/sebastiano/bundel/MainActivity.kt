@@ -141,6 +141,9 @@ class MainActivity : AppCompatActivity() {
                         BundelNotificationListenerService.snoozeFlow.emit(notification.persistableNotification.key)
                     }
                 )
+                composable(NavigationRoute.Settings.route) {
+                    PreferencesScreen()
+                }
             }
         }
     }
