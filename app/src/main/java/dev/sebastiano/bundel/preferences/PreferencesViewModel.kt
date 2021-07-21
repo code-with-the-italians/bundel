@@ -19,11 +19,20 @@ internal class PreferencesViewModel @Inject constructor(
 
     private val excludedPackagesFlow = preferences.getExcludedPackages()
     private val installedApps = packageManager.getInstalledApplications(0)
-    val appsFlow = excludedPackagesFlow.map { computeApps(installedApps, it) }
+    val appFilterInfoFlow = excludedPackagesFlow.map { excludedPackages ->
+        computeApps(installedApps, excludedPackages, packageManager)
+            .sortedBy { it.displayName }
+    }
 
-    private fun computeApps(installedApps: List<ApplicationInfo>, excludedPackages: Set<String>): Map<ApplicationInfo, Boolean> =
-        installedApps.map { it to excludedPackages.contains(it.packageName) }
-            .toMap()
+    private fun computeApps(
+        installedApps: List<ApplicationInfo>,
+        excludedPackages: Set<String>,
+        packageManager: PackageManager
+    ) =
+        installedApps.map { applicationInfo ->
+            val isExcluded = excludedPackages.contains(applicationInfo.packageName)
+            AppFilterInfo(applicationInfo, packageManager, isExcluded)
+        }
 
     fun setAppNotificationsExcluded(packageName: String, excluded: Boolean) {
         Timber.d("Setting app '$packageName' notifications as excluded: $excluded")
