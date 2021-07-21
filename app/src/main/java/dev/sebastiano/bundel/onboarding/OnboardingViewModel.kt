@@ -1,4 +1,4 @@
-package dev.sebastiano.bundel
+package dev.sebastiano.bundel.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

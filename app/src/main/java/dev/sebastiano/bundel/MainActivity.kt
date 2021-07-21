@@ -45,6 +45,7 @@ import dev.sebastiano.bundel.notifications.BundelNotificationListenerService.Com
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
+import dev.sebastiano.bundel.onboarding.OnboardingViewModel
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.storage.RobertoRepository
 import kotlinx.coroutines.channels.awaitClose

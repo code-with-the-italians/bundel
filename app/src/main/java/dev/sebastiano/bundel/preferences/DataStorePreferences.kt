@@ -24,7 +24,7 @@ internal class DataStorePreferences(
             .catch { throwable ->
                 when (throwable) {
                     is IOException -> {
-                        Timber.e(throwable)
+                        Timber.e(throwable, "Error while reading Crashlytics opt-in")
                         emit(true)
                     }
                     else -> {
