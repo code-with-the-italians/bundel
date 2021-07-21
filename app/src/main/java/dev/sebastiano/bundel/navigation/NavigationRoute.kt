@@ -26,6 +26,8 @@ internal sealed class NavigationRoute(val route: String) {
         }
     }
 
+    object Settings : NavigationRoute("settings")
+
     interface BottomNavNavigationRoute {
 
         val icon: ImageVector
