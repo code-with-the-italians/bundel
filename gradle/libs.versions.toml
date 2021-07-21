@@ -42,6 +42,8 @@ androidx-compose-materialIconsExtended={ module="androidx.compose.material:mater
 androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
 androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
 androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="composeUiTooling" }
+androidx-compose-uiTest-manifest={ module="androidx.compose.ui:ui-test-manifest", version.ref="compose" }
+androidx-compose-uiTest-junit4={ module="androidx.compose.ui:ui-test-junit4", version.ref="compose" }
 androidx-datastore={ module="androidx.datastore:datastore", version.ref="datastore" }
 androidx-hilt-hiltCommon={ module="androidx.hilt:hilt-common", version.ref="hilt" }
 androidx-hilt-hiltCompiler={ module="androidx.hilt:hilt-compiler", version.ref="hilt" }

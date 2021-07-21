@@ -70,6 +70,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = project.libs.versions.compose.get()
     }
+
+    packagingOptions {
+        resources {
+            excludes += "META-INF/AL2.0"
+            excludes += "META-INF/LGPL2.1"
+        }
+    }
 }
 
 detekt {
@@ -106,9 +113,12 @@ dependencies {
     kapt(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
 
+    debugImplementation(libs.androidx.compose.uiTest.manifest)
+
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
@@ -128,6 +138,10 @@ protobuf {
 }
 
 tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
     withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"
