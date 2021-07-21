@@ -25,7 +25,7 @@ internal class DataStorePreferences(
                 when (throwable) {
                     is IOException -> {
                         Timber.e(throwable, "Error while reading Crashlytics opt-in")
-                        emit(true)
+                        emit(DEFAULT_CRASHLYTICS_ENABLED)
                     }
                     else -> {
                         throw throwable
@@ -123,6 +123,8 @@ internal class DataStorePreferences(
     }
 
     companion object {
+
+        internal const val DEFAULT_CRASHLYTICS_ENABLED = false
 
         internal val DEFAULT_DAYS_SCHEDULE = WeekDay.values().map { it to true }.toMap()
 

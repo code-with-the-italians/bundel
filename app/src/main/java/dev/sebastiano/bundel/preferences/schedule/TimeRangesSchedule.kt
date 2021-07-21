@@ -60,6 +60,19 @@ internal class TimeRangesSchedule private constructor(
 
     fun last() = ranges.last()
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TimeRangesSchedule) return false
+
+        if (ranges != other.ranges) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return ranges.hashCode()
+    }
+
     companion object Factory {
 
         private val DEFAULT_RANGES = arrayOf(
