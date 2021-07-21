@@ -41,6 +41,33 @@ internal class DataStorePreferences(
         }
     }
 
+    override fun getExcludedPackages(): Flow<Set<String>> =
+        dataStore.data.map { it.excludedPackagesList.toSet() }
+            .catch { throwable ->
+                when (throwable) {
+                    is IOException -> {
+                        Timber.e(throwable, "Error while reading excluded packages")
+                        emit(emptySet())
+                    }
+                    else -> {
+                        throw throwable
+                    }
+                }
+            }
+
+    override suspend fun setExcludedPackages(excludedPackages: Set<String>) {
+        try {
+            dataStore.updateData {
+                it.toBuilder()
+                    .clearExcludedPackages()
+                    .addAllExcludedPackages(excludedPackages)
+                    .build()
+            }
+        } catch (ignored: IOException) {
+            Timber.e(ignored, "Unable to store new excluded packages value: $excludedPackages")
+        }
+    }
+
     override suspend fun isOnboardingSeen(): Boolean =
         dataStore.data.first().isOnboardingSeen
 
