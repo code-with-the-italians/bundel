@@ -24,6 +24,7 @@ hilt="1.0.0"
 hiltLifecycleViewmodel="1.0.0-alpha03"
 hiltNavigationCompose="1.0.0-alpha03"
 kotlin="1.5.10"
+kotlinCoroutines="1.5.0"
 lifecycle="2.4.0-alpha02"
 lifecycleViewmodelCompose="1.0.0-alpha07"
 navigationCompose="2.4.0-alpha04"
@@ -82,6 +83,7 @@ io-github-vanpra-dialogs-datetime={ module="io.github.vanpra.compose-material-di
 jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
 junit-jupiter-api={ module="org.junit.jupiter:junit-jupiter-api", version.ref="junit"}
 junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.ref="junit"}
+kotlinx-coroutines-test={ module="org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref="kotlinCoroutines" }
 
 [bundles]
 accompanist=["google-accompanistCoil", "google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]

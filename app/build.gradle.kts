@@ -106,8 +106,9 @@ dependencies {
     kapt(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
 
-    testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertk)
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
