@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -45,6 +47,8 @@ import com.google.accompanist.imageloading.rememberDrawablePainter
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.singlePadding
+import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
+import dev.sebastiano.bundel.ui.overlay.animatedOverlay
 
 @Composable
 internal fun PreferencesScreen(
@@ -103,7 +107,8 @@ private fun AppToggleItem(
     ) {
         AppIcon(
             appIcon = icon,
-            contentDescription = stringResource(id = R.string.app_filter_item_icon_content_description, appInfo.displayName)
+            contentDescription = stringResource(id = R.string.app_filter_item_icon_content_description, appInfo.displayName),
+            crossedOut = !itemEnabled
         )
 
         Spacer(Modifier.width(singlePadding()))
@@ -125,15 +130,26 @@ private fun AppToggleItem(
 @Composable
 private fun AppIcon(
     appIcon: Drawable?,
-    contentDescription: String
+    contentDescription: String,
+    crossedOut: Boolean
 ) {
     val icon = appIcon ?: AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_default_icon)
     val iconPainter = rememberDrawablePainter(drawable = icon)
+
+    val strikethroughTransition = updateTransition(crossedOut, label = "strikethroughTransition")
+    val strikethroughProgress by strikethroughTransition.animateFloat(label = "strikethroughProgress") { state -> if (state) 1f else 0f }
+    val overlay = StrikethroughOverlay(
+        color = MaterialTheme.colors.onSurface,
+        widthDp = 4.dp,
+        getProgress = { strikethroughProgress }
+    )
+
     Image(
         painter = iconPainter,
         contentDescription = contentDescription,
         modifier = Modifier
             .size(48.dp)
+            .animatedOverlay(overlay)
             .padding(6.dp)
     )
 }
