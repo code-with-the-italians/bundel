@@ -57,6 +57,8 @@ import dev.sebastiano.bundel.onboarding.OnboardingViewModel
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.storage.RobertoRepository
+import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelTheme
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

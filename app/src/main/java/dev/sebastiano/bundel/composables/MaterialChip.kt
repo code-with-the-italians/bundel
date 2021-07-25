@@ -20,7 +20,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.sebastiano.bundel.BundelTheme
+import dev.sebastiano.bundel.ui.BundelTheme
 
 @Composable
 @Preview

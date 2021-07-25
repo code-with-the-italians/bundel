@@ -48,13 +48,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.imageloading.rememberDrawablePainter
-import dev.sebastiano.bundel.BundelTheme
+import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
-import dev.sebastiano.bundel.pillBackground
-import dev.sebastiano.bundel.singlePadding
 import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
 import dev.sebastiano.bundel.ui.overlay.animatedOverlay
+import dev.sebastiano.bundel.ui.pillBackground
+import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 
 @Composable

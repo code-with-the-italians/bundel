@@ -3,11 +3,10 @@ package dev.sebastiano.bundel.onboarding
 import android.content.res.Resources
 import androidx.activity.ComponentActivity
 import androidx.compose.material.Surface
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dev.sebastiano.bundel.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.R
 import org.junit.Rule
 import org.junit.Test

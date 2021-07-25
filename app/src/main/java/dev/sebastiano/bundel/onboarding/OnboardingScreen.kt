@@ -50,11 +50,11 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
-import dev.sebastiano.bundel.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.singlePadding
+import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.PembaaaOrientation
 import dev.sebastiano.bundel.util.currentOrientation
 import kotlinx.coroutines.launch
