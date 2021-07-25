@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
@@ -65,7 +66,7 @@ internal fun PreferencesScreen(
                 AppToggleItem(
                     appInfo = appFilterInfo.appInfo,
                     icon = appFilterInfo.appIcon,
-                    itemEnabled = !appFilterInfo.isExcluded,
+                    filterState = if (appFilterInfo.isExcluded) AppFilterState.Excluded else AppFilterState.Included,
                     onIconClicked = { viewModel.setAppNotificationsExcluded(appFilterInfo.packageName, !appFilterInfo.isExcluded) }
                 )
             }
@@ -73,17 +74,24 @@ internal fun PreferencesScreen(
     }
 }
 
+private enum class AppFilterState {
+    Included,
+    Excluded
+}
+
 @Preview
 @Composable
 private fun AppToggleItemPreview() {
-    var itemEnabled by remember { mutableStateOf(true) }
+    var filterState by remember { mutableStateOf(AppFilterState.Included) }
     BundelTheme {
         Surface {
             AppToggleItem(
                 appInfo = AppInfo(packageName = "com.my.package.name", label = "My fancy app"),
                 icon = null,
-                itemEnabled = itemEnabled,
-                onIconClicked = { itemEnabled = !itemEnabled }
+                filterState = filterState,
+                onIconClicked = {
+                    filterState = if (filterState == AppFilterState.Included) AppFilterState.Excluded else AppFilterState.Included
+                }
             )
         }
     }
@@ -94,21 +102,25 @@ private fun AppToggleItemPreview() {
 private fun AppToggleItem(
     appInfo: AppInfo,
     icon: Drawable?,
-    itemEnabled: Boolean,
+    filterState: AppFilterState,
     onIconClicked: () -> Unit
 ) {
+    val excludedTransition = updateTransition(filterState, label = "excludedTransition")
+    val rowAlpha by excludedTransition.animateFloat(label = "rowAlpha") { targetFilterState ->
+        if (targetFilterState == AppFilterState.Included) ContentAlpha.high else ContentAlpha.medium
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onIconClicked() }
             .padding(singlePadding())
-            .alpha(if (itemEnabled) ContentAlpha.high else ContentAlpha.medium),
+            .alpha(rowAlpha),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AppIcon(
             appIcon = icon,
             contentDescription = stringResource(id = R.string.app_filter_item_icon_content_description, appInfo.displayName),
-            crossedOut = !itemEnabled
+            excludedTransition = excludedTransition
         )
 
         Spacer(Modifier.width(singlePadding()))
@@ -131,13 +143,14 @@ private fun AppToggleItem(
 private fun AppIcon(
     appIcon: Drawable?,
     contentDescription: String,
-    crossedOut: Boolean
+    excludedTransition: Transition<AppFilterState>
 ) {
     val icon = appIcon ?: AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_default_icon)
     val iconPainter = rememberDrawablePainter(drawable = icon)
 
-    val strikethroughTransition = updateTransition(crossedOut, label = "strikethroughTransition")
-    val strikethroughProgress by strikethroughTransition.animateFloat(label = "strikethroughProgress") { state -> if (state) 1f else 0f }
+    val strikethroughProgress by excludedTransition.animateFloat(label = "strikethroughProgress") { targetFilterState ->
+        if (targetFilterState == AppFilterState.Included) 0f else 1f
+    }
     val overlay = StrikethroughOverlay(
         color = MaterialTheme.colors.onSurface,
         widthDp = 4.dp,
