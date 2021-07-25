@@ -8,6 +8,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,18 +39,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.imageloading.rememberDrawablePainter
 import dev.sebastiano.bundel.BundelTheme
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.composables.MaterialPill
+import dev.sebastiano.bundel.pillBackground
 import dev.sebastiano.bundel.singlePadding
 import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
 import dev.sebastiano.bundel.ui.overlay.animatedOverlay
+import kotlin.math.roundToInt
 
 @Composable
 internal fun PreferencesScreen(
@@ -126,6 +132,8 @@ private fun AppToggleItem(
         Spacer(Modifier.width(singlePadding()))
 
         Column {
+            ExcludedLabel(excludedTransition)
+
             Text(text = appInfo.displayName)
 
             if (appInfo.label != null) {
@@ -136,6 +144,62 @@ private fun AppToggleItem(
                 )
             }
         }
+    }
+}
+
+private const val ANIMATION_DURATION_MILLIS = 200
+private const val ALPHA_ANIMATION_DURATION_MILLIS = ANIMATION_DURATION_MILLIS / 3
+private const val HEIGHT_ANIMATION_DURATION_MILLIS = ANIMATION_DURATION_MILLIS - ALPHA_ANIMATION_DURATION_MILLIS
+
+@Composable
+private fun ExcludedLabel(
+    transition: Transition<AppFilterState>
+) {
+    val labelAlpha by transition.animateFloat(
+        label = "labelAlpha",
+        transitionSpec = {
+            if (targetState == AppFilterState.Excluded) {
+                tween(durationMillis = ALPHA_ANIMATION_DURATION_MILLIS, delayMillis = HEIGHT_ANIMATION_DURATION_MILLIS)
+            } else {
+                tween(durationMillis = ALPHA_ANIMATION_DURATION_MILLIS)
+            }
+        }
+    ) { targetFilterState ->
+        if (targetFilterState == AppFilterState.Included) 0f else 1f
+    }
+    val labelHeightPercent by transition.animateFloat(
+        label = "labelHeightPercent",
+        transitionSpec = {
+            if (targetState == AppFilterState.Excluded) {
+                tween(durationMillis = ALPHA_ANIMATION_DURATION_MILLIS)
+            } else {
+                tween(durationMillis = ALPHA_ANIMATION_DURATION_MILLIS, delayMillis = ALPHA_ANIMATION_DURATION_MILLIS)
+            }
+        }
+    ) { targetFilterState ->
+        if (targetFilterState == AppFilterState.Included) 0f else 1f
+    }
+
+    MaterialPill(
+        backgroundColor = MaterialTheme.colors.pillBackground,
+        modifier = Modifier
+            .padding(bottom = 4.dp)
+            .layout { measurable, constraints ->
+                val placeable = measurable.measure(constraints)
+
+                val height = placeable.height * labelHeightPercent
+                layout(placeable.width, height.roundToInt()) {
+                    placeable.placeRelative(0, 0)
+                }
+            }
+            .alpha(labelAlpha)
+    ) {
+        Text(
+            text = stringResource(id = R.string.label_excluded),
+            fontSize = MaterialTheme.typography.caption.fontSize,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        )
     }
 }
 

@@ -29,6 +29,9 @@ private val bundel_dark_green_dark = Color(0xFF224D28)
 private val bundel_dark_purple = Color(0xFF33135D)
 private val bundel_dark_purple_dark = Color(0xFF240E42)
 
+private val pillBackgroundLight = Color.LightGray
+private val pillBackgroundDark = Color.DarkGray
+
 internal val bundelLightColors = lightColors(
     primary = bundel_green,
     secondary = bundel_purple,
@@ -186,6 +189,9 @@ internal fun BundelOnboardingTheme(
         content()
     }
 }
+
+internal val Colors.pillBackground: Color
+    get() = if (isLight) pillBackgroundLight else pillBackgroundDark
 
 @Composable
 internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =

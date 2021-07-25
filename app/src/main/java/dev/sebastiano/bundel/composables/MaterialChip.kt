@@ -2,7 +2,6 @@ package dev.sebastiano.bundel.composables
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +24,7 @@ import dev.sebastiano.bundel.BundelTheme
 
 @Composable
 @Preview
-fun Preview() {
+internal fun ChipPreview() {
     BundelTheme {
         var checked by remember { mutableStateOf(false) }
         MaterialChip(
@@ -36,7 +35,7 @@ fun Preview() {
                 println("Click! $checked")
             }
         ) {
-            Text("Ciao Ivan")
+            Text("Ciao Ivan", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
         }
     }
 }
@@ -69,7 +68,7 @@ internal fun MaterialChip(
                 onValueChange = { onCheckedChanged(!checked) }
             )
             .then(modifier),
-        bgColor = bgColor,
+        backgroundColor = bgColor,
         contentColor = if (checked) checkedContentColor else uncheckedContentColor,
         borderStroke = if (checked) checkedBorder else uncheckedBorder,
         elevation = elevation,
@@ -78,27 +77,36 @@ internal fun MaterialChip(
 }
 
 @Composable
-private fun MaterialPill(
+@Preview
+private fun PillPreview() {
+    BundelTheme {
+        MaterialPill(
+            modifier = Modifier.padding(12.dp, 6.dp),
+            contentColor = MaterialTheme.colors.contentColorFor(Color.LightGray),
+            backgroundColor = Color.LightGray
+        ) {
+            Text("I am a pill hello", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+        }
+    }
+}
+
+@Composable
+internal fun MaterialPill(
     modifier: Modifier = Modifier,
-    bgColor: Color,
-    contentColor: Color,
+    backgroundColor: Color = MaterialTheme.colors.secondary,
+    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
     borderStroke: BorderStroke? = null,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
 ) {
     Surface(
         shape = CircleShape,
-        color = bgColor,
+        color = backgroundColor,
         contentColor = contentColor,
         border = borderStroke,
-        elevation = elevation
+        elevation = elevation,
+        modifier = modifier
     ) {
-        // This is a hack to work around a regression in beta08 where some modifiers don't work on Surface,
-        // TODO we should be able to remove this when moving to beta09
-        Box(
-            modifier = modifier
-        ) {
-            content()
-        }
+        content()
     }
 }
