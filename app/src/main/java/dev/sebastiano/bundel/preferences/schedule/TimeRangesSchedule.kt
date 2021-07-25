@@ -69,9 +69,7 @@ internal class TimeRangesSchedule private constructor(
         return true
     }
 
-    override fun hashCode(): Int {
-        return ranges.hashCode()
-    }
+    override fun hashCode(): Int = ranges.hashCode()
 
     companion object Factory {
 

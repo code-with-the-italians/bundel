@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.sebastiano.bundel.ui.overlay.AnimatedOverlay
 
 internal class StrikethroughOverlay(
     private val color: Color = Color.Black,
