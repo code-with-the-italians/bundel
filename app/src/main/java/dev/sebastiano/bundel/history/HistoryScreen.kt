@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.notificationslist.NotificationItem
 import dev.sebastiano.bundel.notificationslist.NotificationsListEmptyState
 import dev.sebastiano.bundel.storage.DiskImagesStorage
+import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.singlePadding
 
 @Preview

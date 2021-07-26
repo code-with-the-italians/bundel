@@ -38,11 +38,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.rememberCoilPainter
-import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.storage.ImagesStorage
+import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.iconSize
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.asImageBitmap

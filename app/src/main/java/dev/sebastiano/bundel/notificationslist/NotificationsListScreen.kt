@@ -10,9 +10,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlinx.coroutines.launch
 
