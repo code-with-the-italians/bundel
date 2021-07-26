@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.plugins
 import com.google.protobuf.gradle.protobuf
@@ -90,6 +91,15 @@ detekt {
     }
 }
 
+val dummyGoogleServicesJson: Configuration by configurations.creating {
+    isCanBeResolved = true
+    isCanBeConsumed = false
+
+    attributes {
+        attribute(Attribute.of("google.services.json", String::class.java), "dummy-json")
+    }
+}
+
 dependencies {
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
@@ -120,6 +130,8 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     testRuntimeOnly(libs.junit.jupiter.engine)
+
+    dummyGoogleServicesJson(projects.bundel)
 }
 
 protobuf {
@@ -184,5 +196,29 @@ tasks {
             logger.info("Copied ${inputs.files.files.filter { it.exists() }} into ${outputs.files.files}")
             logger.info("Output dir contents:\n${outputs.files.files.first().listFiles()?.joinToString()}")
         }
+    }
+
+    val copyDummyGoogleServicesJson by registering(Copy::class) {
+        onlyIf { System.getenv("CI") == "true" }
+        from(dummyGoogleServicesJson.resolve().single()) {
+            rename { "google-services.json" }
+        }
+        into(projectDir)
+    }
+
+    val checkGoogleServicesJson by registering {
+        onlyIf { System.getenv("CI") != "true" }
+        doLast {
+            if (!project.file("google-services.json").exists()) {
+                throw GradleException(
+                    "You need a google-services.json file to run this project. Please refer to the CONTRIBUTING.md file for details."
+                )
+            }
+        }
+    }
+
+    afterEvaluate {
+        named("processReleaseGoogleServices")
+            .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
     }
 }

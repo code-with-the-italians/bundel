@@ -41,10 +41,15 @@ allprojects {
     }
 }
 
-tasks {
-    register("copyDummyDataForCi", Copy::class.java) {
-        from(rootProject.file("build-config/dummy-data/dummy-google-services.json"))
-        destinationDir = project(":app").projectDir
-        rename { "google-services.json" }
+val dummyGoogleServices: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+
+    attributes {
+        attribute(Attribute.of("google.services.json", String::class.java), "dummy-json")
     }
+}
+
+dependencies {
+    dummyGoogleServices(files(rootProject.file("build-config/dummy-data/dummy-google-services.json")))
 }
