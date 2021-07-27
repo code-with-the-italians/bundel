@@ -149,6 +149,20 @@ protobuf {
     }
 }
 
+open class GenerateGoogleServicesJson: DefaultTask() {
+
+    @get:InputFiles
+    var configuration by project.objects.property<Configuration>()
+
+    @get:OutputFile
+    var outputJson by project.objects.property<File>()
+
+    @TaskAction
+    fun generateJson() {
+        outputJson.writeText(configuration.resolve().single().readText())
+    }
+}
+
 tasks {
     withType<Test> {
         useJUnitPlatform()
@@ -198,12 +212,10 @@ tasks {
         }
     }
 
-    val copyDummyGoogleServicesJson by registering(Copy::class) {
+    val copyDummyGoogleServicesJson by registering(GenerateGoogleServicesJson::class) {
         onlyIf { System.getenv("CI") == "true" }
-        from(dummyGoogleServicesJson.resolve().single()) {
-            rename { "google-services.json" }
-        }
-        into(projectDir)
+        configuration = dummyGoogleServicesJson
+        outputJson = file("google-services.json")
     }
 
     val checkGoogleServicesJson by registering {
