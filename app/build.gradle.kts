@@ -232,5 +232,7 @@ tasks {
     afterEvaluate {
         named("processReleaseGoogleServices")
             .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
+        named("processDebugGoogleServices")
+            .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
     }
 }
