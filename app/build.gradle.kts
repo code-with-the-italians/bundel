@@ -114,7 +114,6 @@ dependencies {
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
     implementation(libs.coilKt.coil)
-    implementation(libs.io.github.vanpra.dialogs.datetime)
     implementation(libs.jakes.timber.timber)
 
     implementation(platform(libs.google.firebase.bom))
