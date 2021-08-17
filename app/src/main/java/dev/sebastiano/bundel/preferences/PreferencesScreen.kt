@@ -47,7 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.imageloading.rememberDrawablePainter
+import coil.compose.rememberImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.ui.BundelTheme
@@ -210,7 +210,7 @@ private fun AppIcon(
     excludedTransition: Transition<AppFilterState>
 ) {
     val icon = appIcon ?: AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_default_icon)
-    val iconPainter = rememberDrawablePainter(drawable = icon)
+    val iconPainter = rememberImagePainter(data = icon)
 
     val strikethroughProgress by excludedTransition.animateFloat(label = "strikethroughProgress") { targetFilterState ->
         if (targetFilterState == AppFilterState.Included) 0f else 1f

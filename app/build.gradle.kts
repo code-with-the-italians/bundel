@@ -113,7 +113,7 @@ dependencies {
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
-    implementation(libs.coilKt.coil)
+    implementation(libs.coilKt.coil.compose)
     implementation(libs.jakes.timber.timber)
 
     implementation(platform(libs.google.firebase.bom))
