@@ -33,7 +33,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -147,7 +149,7 @@ internal fun OnboardingScreen(
                 notificationsAccessPageState = notificationsAccessPageState,
                 daysSchedulePageState = daysSchedulePageState,
                 hoursSchedulePageState = hoursSchedulePageState
-            ) // Do we need to remember this? WHO KNOWS
+            )
 
             val outOfStock = pagerState.targetPage ?: pagerState.currentPage
             OnboardingHeader(orientation, outOfStock)
