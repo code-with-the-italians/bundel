@@ -58,7 +58,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -125,11 +128,14 @@ internal fun TimeRangeRow(
         .toFormatter(LocalConfiguration.current.locales[0])
 
     Column(modifier = modifier) {
-        var expanded by remember { mutableStateOf(ExpandedRangeExtremity.NONE) }
+        var expandedExtremity by remember { mutableStateOf(ExpandedRangeExtremity.NONE) }
+        @Px var fromPillCenterX by remember { mutableStateOf(0f) }
+        @Px var toPillCenterX by remember { mutableStateOf(0f) }
+        @Px var stemPosition by remember { mutableStateOf(0f) }
 
         Row(
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             RemoveIcon(canBeRemoved, timeRange, onRemoved)
 
@@ -142,9 +148,15 @@ internal fun TimeRangeRow(
 
             TimePillButton(
                 text = timeRange?.let { timeFormatter.format(timeRange.from) },
-                pillBackgroundColor = if (expanded == ExpandedRangeExtremity.FROM) expandedPillColor else normalPillColor,
-                enabled = enabled
-            ) { expanded = if (expanded != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE }
+                enabled = enabled,
+                modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
+                    fromPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
+                },
+                pillBackgroundColor = if (expandedExtremity == ExpandedRangeExtremity.FROM) expandedPillColor else normalPillColor
+            ) {
+                expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE
+                stemPosition = fromPillCenterX
+            }
 
             Spacer(modifier = Modifier.width(singlePadding()))
 
@@ -154,12 +166,25 @@ internal fun TimeRangeRow(
 
             TimePillButton(
                 text = timeRange?.let { timeFormatter.format(timeRange.to) },
-                pillBackgroundColor = if (expanded == ExpandedRangeExtremity.TO) expandedPillColor else normalPillColor,
-                enabled = enabled
-            ) { expanded = if (expanded != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE }
+                enabled = enabled,
+                modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
+                    toPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
+                },
+                pillBackgroundColor = if (expandedExtremity == ExpandedRangeExtremity.TO) expandedPillColor else normalPillColor
+            ) {
+                expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE
+                stemPosition = toPillCenterX
+            }
         }
 
-        ExpandableTimePicker(expanded, timeRange, minimumAllowableFrom, maximumAllowableTo, onTimeRangeChanged)
+        ExpandableTimePicker(
+            expanded = expandedExtremity,
+            timeRange = timeRange,
+            minimumAllowableFrom = minimumAllowableFrom,
+            maximumAllowableTo = maximumAllowableTo,
+            stemPosition = stemPosition,
+            onTimeRangeChanged = onTimeRangeChanged
+        )
     }
 }
 
@@ -196,20 +221,30 @@ private fun ColumnScope.ExpandableTimePicker(
     timeRange: TimeRange?,
     minimumAllowableFrom: LocalTime?,
     maximumAllowableTo: LocalTime?,
-    onTimeRangeChanged: (TimeRange) -> Unit
+    @Px stemPosition: Float,
+    onTimeRangeChanged: (TimeRange) -> Unit,
 ) {
+    @Px var cardX by remember { mutableStateOf(0f) }
+
     AnimatedVisibility(
-        modifier = Modifier.align(Alignment.CenterHorizontally),
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .onGloballyPositioned { layoutCoordinates -> cardX = layoutCoordinates.positionInParent().x },
         visible = expanded != ExpandedRangeExtremity.NONE
     ) {
         val backgroundColor = MaterialTheme.colors.secondary
         checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
 
         val stemSize = 16.dp
+        val cornerRadius = 16.dp
+
+        val startPadding = 48.dp
+        val startPaddingPx = with(LocalDensity.current) { startPadding.toPx() }
         Card(
+            modifier = Modifier.padding(start = startPadding),
             shape = SpeechBubbleShape(
-                cornerRadius = 16.dp,
-                stemPosition = 190f /* TODO make this depend on the selected pill centre X */,
+                cornerRadius = cornerRadius,
+                stemPosition = stemPosition - cardX - startPaddingPx,
                 stemSize = stemSize
             ),
             elevation = 4.dp,
@@ -268,11 +303,13 @@ private class SpeechBubbleShape(
                 )
             )
         }
+
+        val adjustedStemPosition = stemPosition.coerceIn(cornerRadius, size.width - cornerRadius - stemSize / 2)
         stem.apply {
             reset()
-            moveTo(stemPosition, 0f)
-            lineTo(stemPosition - (stemSize / 2), stemSize)
-            lineTo(stemPosition + (stemSize / 2), stemSize)
+            moveTo(adjustedStemPosition, 0f)
+            lineTo(adjustedStemPosition - stemSize / 2, stemSize)
+            lineTo(adjustedStemPosition + stemSize / 2, stemSize)
             close()
         }
         return Path.combine(PathOperation.Union, roundedRect, stem)
@@ -393,8 +430,9 @@ private fun UpDownButtons(
 @Composable
 private fun TimePillButton(
     text: String?,
-    pillBackgroundColor: Color = MaterialTheme.colors.onSurface,
     enabled: Boolean,
+    modifier: Modifier = Modifier,
+    pillBackgroundColor: Color = MaterialTheme.colors.onSurface,
     onClick: () -> Unit
 ) {
     val backgroundColor by animateColorAsState(targetValue = pillBackgroundColor)
@@ -411,6 +449,7 @@ private fun TimePillButton(
         )
     }
     Button(
+        modifier = modifier,
         shape = CircleShape,
         colors = buttonColors,
         elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),

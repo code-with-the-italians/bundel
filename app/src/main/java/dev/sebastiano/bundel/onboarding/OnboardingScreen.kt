@@ -149,8 +149,7 @@ internal fun OnboardingScreen(
                 hoursSchedulePageState = hoursSchedulePageState
             )
 
-            val pageIndex = pagerState.targetPage ?: pagerState.currentPage
-            OnboardingHeader(orientation, pageIndex)
+            OnboardingHeader(orientation, pagerState.targetPage)
 
             OnboardingPager(state = onboardingPagerState)
 
