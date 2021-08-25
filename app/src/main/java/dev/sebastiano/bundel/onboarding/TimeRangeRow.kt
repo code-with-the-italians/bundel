@@ -198,19 +198,19 @@ private fun ColumnScope.ExpandableTimePicker(
     maximumAllowableTo: LocalTime?,
     onTimeRangeChanged: (TimeRange) -> Unit
 ) {
-    AnimatedVisibility(visible = expanded != ExpandedRangeExtremity.NONE) {
+    AnimatedVisibility(
+        modifier = Modifier.align(Alignment.CenterHorizontally),
+        visible = expanded != ExpandedRangeExtremity.NONE
+    ) {
         val backgroundColor = MaterialTheme.colors.secondary
         checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
 
+        val stemSize = 16.dp
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
             shape = SpeechBubbleShape(
                 cornerRadius = 16.dp,
                 stemPosition = 190f /* TODO make this depend on the selected pill centre X */,
-                stemSize = 16.dp
+                stemSize = stemSize
             ),
             elevation = 4.dp,
             backgroundColor = backgroundColor
@@ -219,6 +219,7 @@ private fun ColumnScope.ExpandableTimePicker(
                 expanded = expanded,
                 timeRange = timeRange,
                 contentColor = contentColorFor(backgroundColor),
+                stemHeight = stemSize,
                 minimumAllowableFrom = minimumAllowableFrom,
                 maximumAllowableTo = maximumAllowableTo,
                 onTimeRangeChanged = onTimeRangeChanged
@@ -283,6 +284,7 @@ private fun TimePicker(
     expanded: ExpandedRangeExtremity,
     timeRange: TimeRange,
     contentColor: Color,
+    stemHeight: Dp,
     minimumAllowableFrom: LocalTime? = null,
     maximumAllowableTo: LocalTime? = null,
     onTimeRangeChanged: (TimeRange) -> Unit
@@ -290,9 +292,7 @@ private fun TimePicker(
     val hourOfDay = if (expanded == ExpandedRangeExtremity.FROM) timeRange.from else timeRange.to
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.padding(start = 24.dp, top = stemHeight),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
