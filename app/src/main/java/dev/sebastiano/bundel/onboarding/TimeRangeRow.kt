@@ -2,6 +2,7 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import androidx.annotation.Px
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
@@ -47,12 +48,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathOperation
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
@@ -195,6 +207,12 @@ private fun ColumnScope.ExpandableTimePicker(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
                 .padding(start = 48.dp + singlePadding(), top = 4.dp, end = 8.dp, bottom = 4.dp),
+            shape = SpeechBubbleShape(
+                cornerRadius = 16.dp,
+                stemPosition = 190f /* TODO make this depend on the selected pill centre X */,
+                stemSize = 16.dp
+            ),
+            elevation = 4.dp,
             backgroundColor = backgroundColor
         ) {
             TimePicker(
@@ -206,6 +224,57 @@ private fun ColumnScope.ExpandableTimePicker(
                 onTimeRangeChanged = onTimeRangeChanged
             )
         }
+    }
+}
+
+private class SpeechBubbleShape(
+    private val cornerRadius: Dp,
+    @Px private val stemPosition: Float,
+    private val stemSize: Dp
+) : Shape {
+
+    private val roundedRect = Path()
+    private val stem = Path()
+
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline = with(density) {
+        Outline.Generic(createSpeechBubblePath(size, cornerRadius.toPx(), stemPosition, stemSize.toPx()))
+    }
+
+    private fun createSpeechBubblePath(
+        size: Size,
+        @Px cornerRadius: Float,
+        @Px stemPosition: Float,
+        @Px stemSize: Float
+    ): Path {
+        //       /\
+        //      /  \
+        //  ___/____\___
+        // /            \
+        // |            |
+        // |            |
+        // \------------/
+
+        roundedRect.apply {
+            reset()
+            addRoundRect(
+                RoundRect(
+                    rect = Rect(0f, stemSize, size.width, size.height),
+                    cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                )
+            )
+        }
+        stem.apply {
+            reset()
+            moveTo(stemPosition, 0f)
+            lineTo(stemPosition - (stemSize / 2), stemSize)
+            lineTo(stemPosition + (stemSize / 2), stemSize)
+            close()
+        }
+        return Path.combine(PathOperation.Union, roundedRect, stem)
     }
 }
 
