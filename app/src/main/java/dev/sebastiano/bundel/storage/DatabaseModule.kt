@@ -16,8 +16,8 @@ internal class DatabaseModule {
     fun provideImagesStorage(application: Application): ImagesStorage = DiskImagesStorage(application)
 
     @Provides
-    fun provideDatabase(application: Application): Database =
-        Room.databaseBuilder(application, Database::class.java, "roberto")
+    fun provideDatabase(application: Application): RobertoDatabase =
+        Room.databaseBuilder(application, RobertoDatabase::class.java, "roberto")
             .addMigrations(Migration1to2)
             .build()
 }

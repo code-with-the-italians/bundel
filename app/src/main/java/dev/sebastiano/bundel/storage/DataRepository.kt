@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class DataRepository @Inject constructor(
-    private val database: Database,
+    private val database: RobertoDatabase,
     private val imagesStorage: ImagesStorage
 ) {
 
