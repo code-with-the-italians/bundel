@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
 
 internal class NotificationsAccessPageState(
@@ -33,14 +33,14 @@ internal class NotificationsAccessPageState(
 @Composable
 internal fun NotificationsAccessPage(
     pageState: NotificationsAccessPageState,
-    orientation: PembaaaOrientation = currentOrientation()
+    orientation: Orientation = currentOrientation()
 ) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        if (orientation == PembaaaOrientation.Portrait) {
+        if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_notifications_permission_title))
         }
 

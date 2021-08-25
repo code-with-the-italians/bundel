@@ -1,6 +1,6 @@
 package dev.sebastiano.bundel.util
 
-internal enum class PembaaaOrientation {
+internal enum class Orientation {
     Landscape,
     Portrait
 }

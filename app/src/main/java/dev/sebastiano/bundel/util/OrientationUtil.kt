@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
-internal fun currentOrientation(): PembaaaOrientation =
+internal fun currentOrientation(): Orientation =
     when (LocalConfiguration.current.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> PembaaaOrientation.Landscape
-        else -> PembaaaOrientation.Portrait
+        Configuration.ORIENTATION_LANDSCAPE -> Orientation.Landscape
+        else -> Orientation.Portrait
     }

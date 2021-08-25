@@ -9,7 +9,7 @@ import dev.sebastiano.bundel.storage.model.DbNotification
     version = 2,
     exportSchema = true
 )
-internal abstract class RobertoDatabase : RoomDatabase() {
+internal abstract class Database : RoomDatabase() {
 
-    abstract fun robertooo(): RobertoDao
+    abstract fun dao(): Dao
 }

@@ -9,7 +9,7 @@ import dev.sebastiano.bundel.storage.model.DbNotification
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-internal abstract class RobertoDao {
+internal abstract class Dao {
 
     @Insert(onConflict = REPLACE)
     abstract suspend fun insertNotification(notification: DbNotification)

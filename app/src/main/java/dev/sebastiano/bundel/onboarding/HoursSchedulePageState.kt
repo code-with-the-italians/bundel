@@ -27,7 +27,7 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.ui.singlePadding
-import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
 
 @Suppress("MagicNumber") // It's a preview
@@ -48,7 +48,7 @@ private fun HoursSchedulePagePreview() {
 private fun HoursSchedulePageLandscapePreview() {
     BundelOnboardingTheme {
         Surface {
-            ScheduleHoursPage(HoursSchedulePageState(), orientation = PembaaaOrientation.Landscape)
+            ScheduleHoursPage(HoursSchedulePageState(), orientation = Orientation.Landscape)
         }
     }
 }
@@ -71,14 +71,14 @@ internal class HoursSchedulePageState(
 @Composable
 internal fun ScheduleHoursPage(
     hoursSchedulePageState: HoursSchedulePageState,
-    orientation: PembaaaOrientation = currentOrientation()
+    orientation: Orientation = currentOrientation()
 ) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        if (orientation == PembaaaOrientation.Portrait) {
+        if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
 
             Spacer(Modifier.height(24.dp))

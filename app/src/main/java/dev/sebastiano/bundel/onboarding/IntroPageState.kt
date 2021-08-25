@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.ui.singlePadding
-import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
 
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
@@ -43,7 +43,7 @@ fun IntroPageLandscapePreview() {
     BundelOnboardingTheme {
         Surface {
             val england = IntroPageState()
-            IntroPage(pageState = england, orientation = PembaaaOrientation.Landscape)
+            IntroPage(pageState = england, orientation = Orientation.Landscape)
         }
     }
 }
@@ -59,14 +59,14 @@ internal class IntroPageState(
 @Composable
 internal fun IntroPage(
     pageState: IntroPageState,
-    orientation: PembaaaOrientation = currentOrientation()
+    orientation: Orientation = currentOrientation()
 ) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        if (orientation == PembaaaOrientation.Portrait) {
+        if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_welcome_title), textAlign = TextAlign.Center)
         }
 
@@ -77,7 +77,7 @@ internal fun IntroPage(
             textAlign = TextAlign.Center
         )
 
-        val spacerHeight = if (orientation == PembaaaOrientation.Portrait) 24.dp else singlePadding()
+        val spacerHeight = if (orientation == Orientation.Portrait) 24.dp else singlePadding()
 
         Spacer(modifier = Modifier.height(spacerHeight))
 

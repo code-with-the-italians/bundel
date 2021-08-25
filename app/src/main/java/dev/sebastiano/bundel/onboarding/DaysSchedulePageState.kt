@@ -27,7 +27,7 @@ import dev.sebastiano.bundel.composables.MaterialChip
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.ui.singlePadding
-import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
 import java.util.Locale
 
@@ -46,7 +46,7 @@ private fun DaysSchedulePagePreview() {
 private fun DaysSchedulePageLandscapePreview() {
     BundelOnboardingTheme {
         Surface {
-            DaysSchedulePage(DaysSchedulePageState(), orientation = PembaaaOrientation.Landscape)
+            DaysSchedulePage(DaysSchedulePageState(), orientation = Orientation.Landscape)
         }
     }
 }
@@ -62,7 +62,7 @@ internal class DaysSchedulePageState(
 @Composable
 internal fun DaysSchedulePage(
     pageState: DaysSchedulePageState,
-    orientation: PembaaaOrientation = currentOrientation()
+    orientation: Orientation = currentOrientation()
 ) {
     Column(
         modifier = Modifier
@@ -71,7 +71,7 @@ internal fun DaysSchedulePage(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        if (orientation == PembaaaOrientation.Portrait) {
+        if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
 
             Spacer(Modifier.height(24.dp))
@@ -83,10 +83,10 @@ internal fun DaysSchedulePage(
             textAlign = TextAlign.Center
         )
 
-        val happyBirthdayMark = if (orientation == PembaaaOrientation.Portrait) 24.dp else 16.dp
+        val happyBirthdayMark = if (orientation == Orientation.Portrait) 24.dp else 16.dp
         Spacer(modifier = Modifier.height(happyBirthdayMark))
 
-        val chipsRowHorizontalPadding = if (orientation == PembaaaOrientation.Portrait) 32.dp else 48.dp
+        val chipsRowHorizontalPadding = if (orientation == Orientation.Portrait) 32.dp else 48.dp
         FlowRow(
             modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
             mainAxisAlignment = MainAxisAlignment.Center,

@@ -3,7 +3,7 @@ package dev.sebastiano.bundel.notifications
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import dagger.hilt.android.AndroidEntryPoint
-import dev.sebastiano.bundel.storage.RobertoRepository
+import dev.sebastiano.bundel.storage.DataRepository
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -21,7 +21,7 @@ import javax.inject.Inject
 internal class BundelNotificationListenerService : NotificationListenerService(), CoroutineScope {
 
     @Inject
-    lateinit var repository: RobertoRepository
+    lateinit var repository: DataRepository
 
     override val coroutineContext = SupervisorJob() + CoroutineName("BundelNotificationListenerServiceScope")
 

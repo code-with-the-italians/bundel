@@ -55,7 +55,7 @@ import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.ui.singlePadding
-import dev.sebastiano.bundel.util.PembaaaOrientation
+import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -75,7 +75,7 @@ private fun OnboardingScreenPreview() {
 private fun OnboardingScreenLandscapePreview() {
     BundelOnboardingTheme {
         Surface {
-            OnboardingScreen(orientation = PembaaaOrientation.Landscape)
+            OnboardingScreen(orientation = Orientation.Landscape)
         }
     }
 }
@@ -129,10 +129,10 @@ internal fun OnboardingScreen(
     notificationsAccessPageState: NotificationsAccessPageState = NotificationsAccessPageState(),
     daysSchedulePageState: DaysSchedulePageState = DaysSchedulePageState(),
     hoursSchedulePageState: HoursSchedulePageState = HoursSchedulePageState(),
-    orientation: PembaaaOrientation = currentOrientation(),
+    orientation: Orientation = currentOrientation(),
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
-    val verticalScreenPadding = if (orientation == PembaaaOrientation.Portrait) 16.dp else singlePadding()
+    val verticalScreenPadding = if (orientation == Orientation.Portrait) 16.dp else singlePadding()
     Surface {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -149,12 +149,12 @@ internal fun OnboardingScreen(
                 hoursSchedulePageState = hoursSchedulePageState
             )
 
-            val outOfStock = pagerState.targetPage ?: pagerState.currentPage
-            OnboardingHeader(orientation, outOfStock)
+            val pageIndex = pagerState.targetPage ?: pagerState.currentPage
+            OnboardingHeader(orientation, pageIndex)
 
             OnboardingPager(state = onboardingPagerState)
 
-            val actionsRowTopSpace = if (orientation == PembaaaOrientation.Portrait) 32.dp else singlePadding()
+            val actionsRowTopSpace = if (orientation == Orientation.Portrait) 32.dp else singlePadding()
             Spacer(modifier = Modifier.height(actionsRowTopSpace))
 
             ActionsRow(pagerState, needsPermission, onOnboardingDoneClicked)
@@ -180,7 +180,7 @@ private fun OnboardingHeaderLandscapePreview() {
         Surface {
             Column(Modifier.fillMaxWidth()) {
                 OnboardingHeader(
-                    orientation = PembaaaOrientation.Landscape,
+                    orientation = Orientation.Landscape,
                     pageIndex = OnboardingPage.Intro.ordinal
                 )
             }
@@ -191,10 +191,10 @@ private fun OnboardingHeaderLandscapePreview() {
 @Suppress("unused") // We rely on being inside a Column
 @Composable
 private fun ColumnScope.OnboardingHeader(
-    orientation: PembaaaOrientation,
+    orientation: Orientation,
     pageIndex: Int
 ) {
-    if (orientation == PembaaaOrientation.Portrait) {
+    if (orientation == Orientation.Portrait) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(
@@ -281,8 +281,8 @@ private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
     }
 }
 
-internal fun Modifier.onboardingPageModifier(orientation: PembaaaOrientation) =
-    if (orientation == PembaaaOrientation.Portrait) {
+internal fun Modifier.onboardingPageModifier(orientation: Orientation) =
+    if (orientation == Orientation.Portrait) {
         fillMaxSize()
     } else {
         fillMaxSize()
@@ -304,19 +304,19 @@ private fun AllSetPagePreview() {
 private fun AllSetPageLandscapePreview() {
     BundelOnboardingTheme {
         Surface {
-            AllSetPage(orientation = PembaaaOrientation.Landscape)
+            AllSetPage(orientation = Orientation.Landscape)
         }
     }
 }
 
 @Composable
-private fun AllSetPage(orientation: PembaaaOrientation = currentOrientation()) {
+private fun AllSetPage(orientation: Orientation = currentOrientation()) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        if (orientation == PembaaaOrientation.Portrait) {
+        if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_all_set))
 
             Spacer(modifier = Modifier.height(24.dp))
