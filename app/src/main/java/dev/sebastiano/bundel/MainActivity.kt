@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,10 +39,10 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,11 +55,16 @@ import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.onboarding.OnboardingViewModel
+import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.storage.DataRepository
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
 import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.defaultBundelTotallyNotFromTiviEnterTransition
+import dev.sebastiano.bundel.ui.defaultTiviExitTransition
+import dev.sebastiano.bundel.ui.defaultTiviPopEnterTransition
+import dev.sebastiano.bundel.ui.defaultTiviPopExitTransition
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -67,6 +73,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import com.google.accompanist.navigation.animation.composable as animationComposable
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -82,68 +89,115 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var preferences: Preferences
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // TODO reevaluate this, we shouldn't leak this into the activity
         val startDestination = runBlocking {
             if (preferences.isOnboardingSeen()) {
-                NavigationRoute.MainScreen.route
+                NavigationRoute.MainScreenGraph.route
             } else {
-                NavigationRoute.Onboarding.route
+                NavigationRoute.OnboardingGraph.route
             }
         }
 
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberAnimatedNavController()
             val systemUiController = rememberSystemUiController()
 
             BundelTheme {
                 SetupSystemUi(systemUiController)
-                NavHost(navController = navController, startDestination = startDestination) {
-                    composable(NavigationRoute.Onboarding.route) {
-                        val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
-                        val scope = rememberCoroutineScope()
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = startDestination,
+                    enterTransition = { initial, target ->
+                        defaultBundelTotallyNotFromTiviEnterTransition(initial, target)
+                    },
+                    exitTransition = { initial, target ->
+                        defaultTiviExitTransition(initial, target)
+                    },
+                    popEnterTransition = { _, _ ->
+                        defaultTiviPopEnterTransition()
+                    },
+                    popExitTransition = { _, _ ->
+                        defaultTiviPopExitTransition()
+                    }
+                ) {
+                    navigation(
+                        route = NavigationRoute.OnboardingGraph.route,
+                        startDestination = NavigationRoute.OnboardingGraph.OnboardingScreen.route,
+                    ) {
+                        animationComposable(NavigationRoute.OnboardingGraph.OnboardingScreen.route) {
+                            val needsNotificationsPermission by needsNotificationsPermission.collectAsState(true)
+                            val scope = rememberCoroutineScope()
 
-                        OnboardingScreen(
-                            onSettingsIntentClick = { showNotificationsPreferences() },
-                            onDismissClicked = {
-                                scope.launch { preferences.setIsOnboardingSeen(true) }
-                                navController.navigate(
-                                    route = NavigationRoute.MainScreen.route,
-                                    navOptions = NavOptions.Builder()
-                                        .setPopUpTo(NavigationRoute.Onboarding.route, inclusive = true)
-                                        .build()
-                                )
-                            },
-                            needsNotificationsPermission = needsNotificationsPermission
-                        )
+                            OnboardingScreen(
+                                onSettingsIntentClick = { showNotificationsPreferences() },
+                                onDismissClicked = {
+                                    scope.launch { preferences.setIsOnboardingSeen(true) }
+                                    navController.navigate(
+                                        route = NavigationRoute.MainScreenGraph.MainScreen.route,
+                                        navOptions = NavOptions.Builder()
+                                            .setPopUpTo(NavigationRoute.OnboardingGraph.route, inclusive = true)
+                                            .build()
+                                    )
+                                },
+                                needsNotificationsPermission = needsNotificationsPermission
+                            )
+                        }
                     }
-                    composable(NavigationRoute.MainScreen.route) {
-                        MainScreenWithBottomNav(navController)
+
+                    navigation(
+                        route = NavigationRoute.MainScreenGraph.route,
+                        startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
+                    ) {
+                        animationComposable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
+                            MainScreenWithBottomNav { navController.navigate(NavigationRoute.SettingsGraph.route) }
+                        }
                     }
-                    composable(NavigationRoute.Settings.route) {
-                        PreferencesScreen(onBackPress = { navController.popBackStack() })
+
+                    navigation(
+                        route = NavigationRoute.SettingsGraph.route,
+                        startDestination = NavigationRoute.SettingsGraph.SettingsScreen.route
+                    ) {
+                        animationComposable(
+                            route = NavigationRoute.SettingsGraph.SettingsScreen.route
+                        ) {
+                            PreferencesScreen(
+                                onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
+                                onBackPress = { navController.popBackStack() }
+                            )
+                        }
+                        animationComposable(
+                            route = NavigationRoute.SettingsGraph.SelectApps.route,
+                        ) {
+                            AppsListScreen()
+                        }
                     }
                 }
             }
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     private fun MainScreenWithBottomNav(
-        parentNavController: NavController
+        onSettingsClick: () -> Unit
     ) {
-        val navController = rememberNavController()
+        val navController = rememberAnimatedNavController()
         val scaffoldState = rememberScaffoldState()
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = { NotificationsListTopAppBar { parentNavController.navigate(NavigationRoute.Settings.route) } },
+            topBar = { NotificationsListTopAppBar(onSettingsClick) },
             scaffoldState = scaffoldState,
             bottomBar = { MainScreenBottomNavigation(navController) }
         ) { innerPadding ->
-            NavHost(navController, startDestination = NavigationRoute.MainScreen.NotificationsList.route) {
+            AnimatedNavHost(
+                navController,
+                startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route
+            ) {
                 mainScreen(
                     innerPadding,
                     onItemClicked = { notification ->
@@ -157,11 +211,11 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun MainScreenBottomNavigation(navController: NavController) {
-        val items = listOf(NavigationRoute.MainScreen.NotificationsList, NavigationRoute.MainScreen.History)
+        val items = listOf(NavigationRoute.MainScreenGraph.NotificationsList, NavigationRoute.MainScreenGraph.History)
 
         BottomNavigation {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route ?: NavigationRoute.MainScreen.NotificationsList.route
+            val currentRoute = navBackStackEntry?.destination?.route ?: NavigationRoute.MainScreenGraph.NotificationsList.route
             for (screen in items) {
                 val label = stringResource(screen.labelId)
                 BottomNavigationItem(
@@ -183,14 +237,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     private fun NavGraphBuilder.mainScreen(
         innerPadding: PaddingValues,
         onItemClicked: suspend (notification: ActiveNotification) -> Unit
     ) {
-        composable(NavigationRoute.MainScreen.NotificationsList.route) {
+        animationComposable(NavigationRoute.MainScreenGraph.NotificationsList.route) {
             NotificationsListScreen(innerPadding, onItemClicked)
         }
-        composable(NavigationRoute.MainScreen.History.route) {
+        animationComposable(NavigationRoute.MainScreenGraph.History.route) {
             val items by repository.getNotifications().collectAsState(initial = emptyList())
             NotificationsHistoryScreen(innerPadding, items)
         }

@@ -9,24 +9,34 @@ import dev.sebastiano.bundel.R
 
 internal sealed class NavigationRoute(val route: String) {
 
-    object Onboarding : NavigationRoute("onboarding")
+    object OnboardingGraph : NavigationRoute("onboarding") {
 
-    object MainScreen : NavigationRoute("main_screen") {
+        object OnboardingScreen: NavigationRoute("onboarding.screen")
+    }
 
-        object NotificationsList : NavigationRoute("notifications_list"), BottomNavNavigationRoute {
+    object MainScreenGraph : NavigationRoute("main_screen") {
+
+        object MainScreen: NavigationRoute("main_screen.screen")
+
+        object NotificationsList : NavigationRoute("main_screen.notifications_list"), BottomNavNavigationRoute {
 
             override val icon: ImageVector = Icons.Rounded.NotificationsActive
             override val labelId: Int = R.string.bottom_nav_active_notifications
         }
 
-        object History : NavigationRoute("history"), BottomNavNavigationRoute {
+        object History : NavigationRoute("main_screen.history"), BottomNavNavigationRoute {
 
             override val icon: ImageVector = Icons.Rounded.History
             override val labelId: Int = R.string.bottom_nav_history
         }
     }
 
-    object Settings : NavigationRoute("settings")
+    object SettingsGraph : NavigationRoute("settings") {
+
+        object SettingsScreen : NavigationRoute("settings.screen")
+
+        object SelectApps: NavigationRoute("settings.select_apps")
+    }
 
     interface BottomNavNavigationRoute {
 
