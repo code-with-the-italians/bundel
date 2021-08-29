@@ -60,6 +60,7 @@ google-accompanistFlowLayout={ module="com.google.accompanist:accompanist-flowla
 google-accompanistPager={ module="com.google.accompanist:accompanist-pager", version.ref="accompanist" }
 google-accompanistPagerIndicators={ module="com.google.accompanist:accompanist-pager-indicators", version.ref="accompanist" }
 google-accompanistSystemUIController={ module="com.google.accompanist:accompanist-systemuicontroller", version.ref="accompanist" }
+google-accompanistNavAnimations={ module="com.google.accompanist:accompanist-navigation-animation", version.ref="accompanist" }
 google-dagger-dagger={ module="com.google.dagger:dagger", version.ref="daggerHilt" }
 google-dagger-daggerCompiler={ module="com.google.dagger:dagger-compiler", version.ref="daggerHilt" }
 google-dagger-hiltAndroid={ module="com.google.dagger:hilt-android", version.ref="daggerHilt" }
@@ -84,7 +85,7 @@ junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.
 kotlinx-coroutines-test={ module="org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref="kotlinCoroutines" }
 
 [bundles]
-accompanist=["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]
+accompanist=["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations"]
 compose=["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
 datastore=["google-protobuf-javalite", "androidx-datastore"]
 firebase=["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
