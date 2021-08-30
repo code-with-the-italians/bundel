@@ -11,8 +11,11 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
 
+// Note: these transitions have been kindly donated by Chris Banes, and are the
+// same you can find in his app Tivi https://github.com/chrisbanes/tivi
+
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultBundelTotallyNotFromTiviEnterTransition(
+internal fun AnimatedContentScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): EnterTransition {
@@ -27,7 +30,7 @@ internal fun AnimatedContentScope<*>.defaultBundelTotallyNotFromTiviEnterTransit
 }
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultTiviExitTransition(
+internal fun AnimatedContentScope<*>.defaultExitTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): ExitTransition {
@@ -45,11 +48,9 @@ private val NavDestination.hostNavGraph: NavGraph
     get() = hierarchy.first { it is NavGraph } as NavGraph
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultTiviPopEnterTransition(): EnterTransition {
-    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
-}
+internal fun AnimatedContentScope<*>.defaultPopEnterTransition(): EnterTransition =
+    fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultTiviPopExitTransition(): ExitTransition {
-    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
-}
+internal fun AnimatedContentScope<*>.defaultPopExitTransition(): ExitTransition =
+    fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)

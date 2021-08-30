@@ -6,11 +6,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.singlePadding
@@ -64,6 +70,17 @@ fun NotificationsListDarkPreview() {
 
 @Composable
 internal fun NotificationsListScreen(
+    lifecycle: Lifecycle,
+    innerPadding: PaddingValues,
+    onItemClicked: suspend (notification: ActiveNotification) -> Unit
+) {
+    val notifications by remember(lifecycle) { BundelNotificationListenerService.NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
+        .collectAsState(emptyList())
+    NotificationsListScreen(innerPadding, notifications, onItemClicked)
+}
+
+@Composable
+private fun NotificationsListScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     activeNotifications: List<ActiveNotification>,
     onItemClicked: suspend (notification: ActiveNotification) -> Unit = {}

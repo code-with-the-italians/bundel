@@ -1,0 +1,144 @@
+package dev.sebastiano.bundel
+
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import dev.sebastiano.bundel.history.NotificationsHistoryScreen
+import dev.sebastiano.bundel.navigation.NavigationRoute
+import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
+import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
+import dev.sebastiano.bundel.storage.DataRepository
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+internal fun MainScreenWithBottomNav(
+    lifecycle: Lifecycle,
+    repository: DataRepository,
+    onSettingsClick: () -> Unit
+) {
+    val navController = rememberAnimatedNavController()
+    val scaffoldState = rememberScaffoldState()
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { NotificationsListTopAppBar(onSettingsClick) },
+        scaffoldState = scaffoldState,
+        bottomBar = { MainScreenBottomNavigation(navController) }
+    ) { innerPadding ->
+        AnimatedNavHost(
+            navController,
+            startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route
+        ) {
+            mainScreen(
+                lifecycle,
+                repository,
+                innerPadding,
+                onItemClicked = { notification ->
+                    scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+                    BundelNotificationListenerService.snoozeFlow.emit(notification.persistableNotification.key)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun MainScreenBottomNavigation(navController: NavController) {
+    val items = listOf(NavigationRoute.MainScreenGraph.NotificationsList, NavigationRoute.MainScreenGraph.History)
+
+    BottomNavigation {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route ?: NavigationRoute.MainScreenGraph.NotificationsList.route
+        for (screen in items) {
+            val label = stringResource(screen.labelId)
+            BottomNavigationItem(
+                icon = { Icon(screen.icon, label) },
+                label = { Text(label) },
+                alwaysShowLabel = false,
+                selected = currentRoute == screen.route,
+                onClick = {
+                    navController.navigate(screen.route) {
+                        popUpTo(checkNotNull(navController.graph.startDestinationRoute)) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.mainScreen(
+    lifecycle: Lifecycle,
+    repository: DataRepository,
+    innerPadding: PaddingValues,
+    onItemClicked: suspend (notification: ActiveNotification) -> Unit
+) {
+    composable(NavigationRoute.MainScreenGraph.NotificationsList.route) {
+        NotificationsListScreen(lifecycle, innerPadding, onItemClicked)
+    }
+    composable(NavigationRoute.MainScreenGraph.History.route) {
+        val items by repository.getNotifications().collectAsState(initial = emptyList())
+        NotificationsHistoryScreen(innerPadding, items)
+    }
+}
+
+@Composable
+private fun NotificationsListTopAppBar(onSettingsActionClick: () -> Unit) {
+    @Composable
+    fun ActionsMenu() {
+        IconButton(onClick = onSettingsActionClick) {
+            Icon(
+                painter = painterResource(R.drawable.ic_round_settings_24),
+                contentDescription = stringResource(id = R.string.menu_settings_content_description)
+            )
+        }
+    }
+
+    TopAppBar(
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_bundel_icon),
+                    contentDescription = stringResource(id = R.string.app_name),
+                    modifier = Modifier.size(36.dp)
+                )
+                Spacer(modifier = Modifier.width(20.dp))
+                Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4)
+            }
+        },
+        actions = { ActionsMenu() }
+    )
+}

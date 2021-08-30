@@ -11,12 +11,12 @@ internal sealed class NavigationRoute(val route: String) {
 
     object OnboardingGraph : NavigationRoute("onboarding") {
 
-        object OnboardingScreen: NavigationRoute("onboarding.screen")
+        object OnboardingScreen : NavigationRoute("onboarding.screen")
     }
 
     object MainScreenGraph : NavigationRoute("main_screen") {
 
-        object MainScreen: NavigationRoute("main_screen.screen")
+        object MainScreen : NavigationRoute("main_screen.screen")
 
         object NotificationsList : NavigationRoute("main_screen.notifications_list"), BottomNavNavigationRoute {
 
@@ -35,7 +35,7 @@ internal sealed class NavigationRoute(val route: String) {
 
         object SettingsScreen : NavigationRoute("settings.screen")
 
-        object SelectApps: NavigationRoute("settings.select_apps")
+        object SelectApps : NavigationRoute("settings.select_apps")
     }
 
     interface BottomNavNavigationRoute {

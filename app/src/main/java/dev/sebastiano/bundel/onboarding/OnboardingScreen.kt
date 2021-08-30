@@ -97,33 +97,35 @@ internal fun OnboardingScreen(
     onSettingsIntentClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit
 ) {
-    val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
-    val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
-    val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
+    BundelOnboardingTheme {
+        val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
+        val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
+        val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
 
-    OnboardingScreen(
-        needsPermission = needsPermission,
-        introPageState = IntroPageState(
-            crashReportingEnabled = crashReportingEnabled,
-            onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
-        ),
-        notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onSettingsIntentClick),
-        daysSchedulePageState = DaysSchedulePageState(
-            daysSchedule = daysSchedule,
-            onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) }
-        ),
-        hoursSchedulePageState = HoursSchedulePageState(
-            timeRangesSchedule = timeRangesSchedule,
-            onAddTimeRange = { viewModel.onTimeRangesScheduleAddTimeRange() },
-            onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
-            onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
-        ),
-        onOnboardingDoneClicked = onOnboardingDoneClicked,
-    )
+        OnboardingScreen(
+            needsPermission = needsPermission,
+            introPageState = IntroPageState(
+                crashReportingEnabled = crashReportingEnabled,
+                onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
+            ),
+            notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onSettingsIntentClick),
+            daysSchedulePageState = DaysSchedulePageState(
+                daysSchedule = daysSchedule,
+                onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) }
+            ),
+            hoursSchedulePageState = HoursSchedulePageState(
+                timeRangesSchedule = timeRangesSchedule,
+                onAddTimeRange = { viewModel.onTimeRangesScheduleAddTimeRange() },
+                onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
+                onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
+            ),
+            onOnboardingDoneClicked = onOnboardingDoneClicked,
+        )
+    }
 }
 
 @Composable
-internal fun OnboardingScreen(
+private fun OnboardingScreen(
     needsPermission: Boolean = false,
     introPageState: IntroPageState = IntroPageState(),
     notificationsAccessPageState: NotificationsAccessPageState = NotificationsAccessPageState(),
