@@ -63,7 +63,7 @@ internal fun AppsListScreen(
                 appInfo = appFilterInfo.appInfo,
                 icon = appFilterInfo.appIcon,
                 filterState = if (appFilterInfo.isExcluded) AppFilterState.Excluded else AppFilterState.Included,
-                onIconClicked = { viewModel.setAppNotificationsExcluded(appFilterInfo.packageName, !appFilterInfo.isExcluded) }
+                onItemClicked = { viewModel.setAppNotificationsExcluded(appFilterInfo.packageName, !appFilterInfo.isExcluded) }
             )
         }
     }
@@ -85,7 +85,7 @@ private fun AppToggleItemPreview() {
                 appInfo = AppInfo(packageName = "com.my.package.name", label = "My fancy app"),
                 icon = null,
                 filterState = filterState,
-                onIconClicked = {
+                onItemClicked = {
                     filterState = if (filterState == AppFilterState.Included) AppFilterState.Excluded else AppFilterState.Included
                 }
             )
@@ -99,7 +99,7 @@ private fun AppToggleItem(
     appInfo: AppInfo,
     icon: Drawable?,
     filterState: AppFilterState,
-    onIconClicked: () -> Unit
+    onItemClicked: () -> Unit
 ) {
     val excludedTransition = updateTransition(filterState, label = "excludedTransition")
     val rowAlpha by excludedTransition.animateFloat(label = "rowAlpha") { targetFilterState ->
@@ -108,7 +108,7 @@ private fun AppToggleItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onIconClicked() }
+            .clickable { onItemClicked() }
             .padding(singlePadding())
             .alpha(rowAlpha),
         verticalAlignment = Alignment.CenterVertically
