@@ -22,6 +22,11 @@ private val bundel_dark_purple = Color(0xFF33135D)
 private val bundel_dark_purple_dark = Color(0xFF240E42)
 private val pillBackgroundLight = Color.LightGray
 private val pillBackgroundDark = Color.DarkGray
+private val snoozeNotificationBackgroundLight = Color(0xFF3B64EB)
+private val snoozeNotificationForegroundLight = bundel_white
+private val snoozeNotificationBackgroundDark = Color(0xFF1D3173)
+private val snoozeNotificationForegroundDark = Color(0xFFB3B3B3)
+
 internal val bundelLightColors = lightColors(
     primary = bundel_green,
     secondary = bundel_purple,
@@ -30,6 +35,7 @@ internal val bundelLightColors = lightColors(
     primaryVariant = bundel_green_dark,
     background = bundel_background_gray
 )
+
 internal val bundelDarkColors = darkColors(
     primary = bundel_dark_green,
     secondary = bundel_dark_purple,
@@ -38,6 +44,7 @@ internal val bundelDarkColors = darkColors(
     primaryVariant = bundel_dark_green_dark,
     background = bundel_dark_background_gray
 )
+
 internal val bundelOnboardingLightColors = lightColors(
     primary = bundel_purple,
     onPrimary = bundel_white,
@@ -49,6 +56,7 @@ internal val bundelOnboardingLightColors = lightColors(
     background = bundel_green,
     onBackground = bundel_white
 )
+
 internal val bundelOnboardingDarkColors = darkColors(
     primary = bundel_dark_purple,
     onPrimary = bundel_light_gray,
@@ -60,8 +68,15 @@ internal val bundelOnboardingDarkColors = darkColors(
     background = bundel_dark_green_dark,
     onBackground = bundel_light_gray
 )
+
 internal val Colors.pillBackground: Color
     get() = if (isLight) pillBackgroundLight else pillBackgroundDark
+
+internal val Colors.notificationSnoozeBackground: Color
+    get() = if (isLight) snoozeNotificationBackgroundLight else snoozeNotificationBackgroundDark
+
+internal val Colors.notificationSnoozeForeground: Color
+    get() = if (isLight) snoozeNotificationForegroundLight else snoozeNotificationForegroundDark
 
 @Composable
 internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =

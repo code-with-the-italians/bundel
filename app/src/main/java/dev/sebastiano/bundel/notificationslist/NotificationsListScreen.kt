@@ -1,15 +1,15 @@
 package dev.sebastiano.bundel.notificationslist
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,7 +20,6 @@ import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.singlePadding
-import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -45,7 +44,8 @@ private val activeNotification = ActiveNotification(
         timestamp = 12345678L,
         text = "Hello Ivan",
         appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!")
-    )
+    ),
+    isSnoozed = false
 )
 
 @Preview
@@ -72,23 +72,22 @@ fun NotificationsListDarkPreview() {
 internal fun NotificationsListScreen(
     lifecycle: Lifecycle,
     innerPadding: PaddingValues,
-    onItemClicked: suspend (notification: ActiveNotification) -> Unit
+    onNotificationDismiss: (notification: ActiveNotification) -> Unit
 ) {
-    val notifications by remember(lifecycle) { BundelNotificationListenerService.NOTIFICATIONS_FLOW.flowWithLifecycle(lifecycle) }
+    val notifications by remember(lifecycle) { BundelNotificationListenerService.activeNotificationsFlow.flowWithLifecycle(lifecycle) }
         .collectAsState(emptyList())
-    NotificationsListScreen(innerPadding, notifications, onItemClicked)
+    NotificationsListScreen(innerPadding, notifications, onNotificationDismiss)
 }
 
 @Composable
 private fun NotificationsListScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     activeNotifications: List<ActiveNotification>,
-    onItemClicked: suspend (notification: ActiveNotification) -> Unit = {}
+    onNotificationDismiss: (notification: ActiveNotification) -> Unit = {}
 ) {
-    val scope = rememberCoroutineScope()
     if (activeNotifications.isNotEmpty()) {
         NotificationsLazyColumn(activeNotifications, Modifier.padding(innerPadding)) { notification ->
-            scope.launch { onItemClicked(notification) }
+            onNotificationDismiss(notification)
         }
     } else {
         NotificationsListEmptyState()
@@ -99,15 +98,18 @@ private fun NotificationsListScreen(
 private fun NotificationsLazyColumn(
     activeNotifications: List<ActiveNotification>,
     modifier: Modifier = Modifier,
-    onNotificationContentClick: (ActiveNotification) -> Unit = { }
+    onNotificationDismiss: (ActiveNotification) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize().then(modifier), contentPadding = PaddingValues(singlePadding())) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(modifier),
+        contentPadding = PaddingValues(singlePadding()),
+        verticalArrangement = Arrangement.spacedBy(singlePadding())
+    ) {
         val items = activeNotifications.filterNot { it.persistableNotification.isGroup }
-        itemsIndexed(
-            items = items,
-            key = { _, item -> item.persistableNotification.uniqueId }
-        ) { index, notification ->
-            NotificationItem(notification, isLastItem = index == items.lastIndex, onNotificationContentClick)
+        items(items = items, key = { item -> item.persistableNotification.uniqueId }) { notification ->
+            SwipeableNotificationItem(notification, onNotificationDismiss)
         }
     }
 }

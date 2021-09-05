@@ -24,7 +24,8 @@ internal fun StatusBarNotification.toActiveNotification(context: Context) = Acti
         appInfo = extractAppInfo(context.packageManager)
     ),
     icons = extractIcons(),
-    interactions = extractInteractions()
+    interactions = extractInteractions(),
+    isSnoozed = false
 )
 
 private fun StatusBarNotification.extractIcons() = ActiveNotification.Icons(

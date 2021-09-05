@@ -6,7 +6,8 @@ import android.graphics.drawable.Icon
 internal data class ActiveNotification(
     val persistableNotification: PersistableNotification,
     val icons: Icons = Icons(),
-    val interactions: Interactions = Interactions()
+    val interactions: Interactions = Interactions(),
+    val isSnoozed: Boolean
 ) {
 
     val isNotEmpty: Boolean =

@@ -19,6 +19,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -37,6 +38,7 @@ import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.storage.DataRepository
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -54,6 +56,8 @@ internal fun MainScreenWithBottomNav(
         scaffoldState = scaffoldState,
         bottomBar = { MainScreenBottomNavigation(navController) }
     ) { innerPadding ->
+        val scope = rememberCoroutineScope()
+
         AnimatedNavHost(
             navController,
             startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route
@@ -62,9 +66,14 @@ internal fun MainScreenWithBottomNav(
                 lifecycle,
                 repository,
                 innerPadding,
-                onItemClicked = { notification ->
-                    scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
-                    BundelNotificationListenerService.snoozeFlow.emit(notification.persistableNotification.key)
+                onNotificationDismiss = { notification ->
+                    scope.launch {
+                        launch {
+                            scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+                        }
+
+                        BundelNotificationListenerService.snooze(notification) // TODO define snooze duration whenever we can
+                    }
                 }
             )
         }
@@ -104,10 +113,10 @@ private fun NavGraphBuilder.mainScreen(
     lifecycle: Lifecycle,
     repository: DataRepository,
     innerPadding: PaddingValues,
-    onItemClicked: suspend (notification: ActiveNotification) -> Unit
+    onNotificationDismiss: (notification: ActiveNotification) -> Unit
 ) {
     composable(NavigationRoute.MainScreenGraph.NotificationsList.route) {
-        NotificationsListScreen(lifecycle, innerPadding, onItemClicked)
+        NotificationsListScreen(lifecycle, innerPadding, onNotificationDismiss)
     }
     composable(NavigationRoute.MainScreenGraph.History.route) {
         val items by repository.getNotifications().collectAsState(initial = emptyList())

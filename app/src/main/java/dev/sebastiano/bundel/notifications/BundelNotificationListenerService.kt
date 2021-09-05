@@ -45,7 +45,9 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         Timber.i("Notifications listener connected")
 
         collectJob = launch {
-            snoozeFlow.collect { snooze(it) }
+            snoozedNotificationsFlow.collect {
+                snooze(it)
+            }
         }
     }
 
@@ -60,9 +62,20 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         runBlocking {
             repository.saveNotification(sbn.toActiveNotification(this@BundelNotificationListenerService))
         }
+
         val activeNotification = sbn.toActiveNotificationOrNull(this)
         if (activeNotification != null) {
-            mutableNotificationsFlow.value = (mutableNotificationsFlow.value + activeNotification)
+            val currentNotifications = mutableNotificationsFlow.value.toMutableList()
+            val existingNotification = currentNotifications.find { it.persistableNotification.key == sbn.key }
+            if (existingNotification != null) {
+                // Exists already, likely snoozed, replace it
+                currentNotifications -= existingNotification
+                currentNotifications += activeNotification
+            } else {
+                currentNotifications += activeNotification
+            }
+
+            mutableNotificationsFlow.value = currentNotifications
                 .distinctBy { it.persistableNotification.uniqueId }
                 .sortedByDescending { it.persistableNotification.timestamp }
         }
@@ -72,20 +85,40 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         Timber.i("Notification removed by ${sbn.packageName}")
         val existing = mutableNotificationsFlow.value.find { it.persistableNotification.key == sbn.key }
             ?: return
+
+        if (existing.isSnoozed) {
+            Timber.i("Notification is snoozed, not really removing it")
+            return
+        }
         mutableNotificationsFlow.value = mutableNotificationsFlow.value - existing
     }
 
-    @Suppress("MagicNumber") // TODO pass in snooze amount
-    private fun snooze(key: String) {
-        Timber.i("Snoozing notification '$key'")
-        snoozeNotification(key, 5_000L)
+    private fun snooze(snoozedNotification: SnoozedNotification) {
+        Timber.i("Snoozing notification '${snoozedNotification.kettle}' by ${snoozedNotification.durationMillis} millis")
+        mutableNotificationsFlow.value = mutableNotificationsFlow.value.map {
+            if (it.persistableNotification.key == snoozedNotification.kettle) {
+                it.copy(isSnoozed = true)
+            } else {
+                it
+            }
+        }
+        snoozeNotification(snoozedNotification.kettle, snoozedNotification.durationMillis.toLong())
     }
 
     companion object {
 
         private val mutableNotificationsFlow = MutableStateFlow(emptyList<ActiveNotification>())
-        val NOTIFICATIONS_FLOW: Flow<List<ActiveNotification>> = mutableNotificationsFlow
+        private val snoozedNotificationsFlow = MutableSharedFlow<SnoozedNotification>()
 
-        val snoozeFlow = MutableSharedFlow<String>()
+        val activeNotificationsFlow: Flow<List<ActiveNotification>> = mutableNotificationsFlow
+
+        suspend fun snooze(notification: ActiveNotification, durationMillis: Int = 5_000) {
+            snoozedNotificationsFlow.emit(SnoozedNotification(notification.persistableNotification.key, durationMillis))
+        }
+
+        private data class SnoozedNotification(
+            val kettle: String, // aka fuck you kettles, it's supposed to be the notification key
+            val durationMillis: Int
+        )
     }
 }
