@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
@@ -40,6 +41,8 @@ import androidx.compose.material.icons.rounded.BrokenImage
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,6 +74,7 @@ import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.math.absoluteValue
 import android.graphics.drawable.Icon as GraphicsIcon
 
 private fun previewNotification(context: Context) = ActiveNotification(
@@ -135,6 +139,7 @@ internal fun NotificationItem(
     }
 }
 
+@Suppress("LongMethod") // Kinda has to be :(
 @Composable
 internal fun SwipeableNotificationItem(
     activeNotification: ActiveNotification,
@@ -166,11 +171,19 @@ internal fun SwipeableNotificationItem(
 
     val coroutineScope = rememberCoroutineScope()
     val contentOffset = if (hasTriedToSnooze) 48.dp else 0.dp
+    val cornerRadiusFactor = derivedStateOf {
+        if (dismissState.offset.value != 0f) {
+            (dismissState.progress.fraction * 6f).coerceAtMost(1f)
+        } else {
+            0f
+        }
+    }
     SwipeToDismiss(
         modifier = Modifier.alpha(itemAlpha),
         state = dismissState,
         background = {
             SnoozeBackground(
+                cornerRadiusFactor = cornerRadiusFactor,
                 onSnoozeClicked = {
                     hasSnoozed = true
 
@@ -208,6 +221,7 @@ internal fun SwipeableNotificationItem(
 
 @Composable
 private fun SnoozeBackground(
+    cornerRadiusFactor: State<Float> = remember { mutableStateOf(1f) },
     onSnoozeClicked: () -> Unit,
 ) {
     Box(
@@ -215,7 +229,7 @@ private fun SnoozeBackground(
             .fillMaxSize()
             .background(
                 color = MaterialTheme.colors.notificationSnoozeBackground,
-                shape = MaterialTheme.shapes.medium,
+                shape = RoundedCornerShape(4.dp * (1f - cornerRadiusFactor.value).absoluteValue.coerceAtMost(1f)),
             ),
     ) {
         IconButton(
