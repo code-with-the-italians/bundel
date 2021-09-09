@@ -174,9 +174,10 @@ internal fun SwipeableNotificationItem(
     val contentOffset = if (hasTriedToSnooze) 48.dp else 0.dp
     val cornerRadiusFactor = derivedStateOf {
         if (dismissState.offset.value != 0f) {
+            @Suppress("TooGenericExceptionCaught ") // TODO get rid of this workaround once issue 199294986 is fixed
             try {
                 (dismissState.progress.fraction * 6f).coerceAtMost(1f)
-            } catch (e: Exception) {
+            } catch (ignored: Exception) {
                 0f
             }
         } else {
