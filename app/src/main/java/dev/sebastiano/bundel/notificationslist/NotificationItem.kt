@@ -74,6 +74,7 @@ import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.Exception
 import kotlin.math.absoluteValue
 import android.graphics.drawable.Icon as GraphicsIcon
 
@@ -173,7 +174,11 @@ internal fun SwipeableNotificationItem(
     val contentOffset = if (hasTriedToSnooze) 48.dp else 0.dp
     val cornerRadiusFactor = derivedStateOf {
         if (dismissState.offset.value != 0f) {
-            (dismissState.progress.fraction * 6f).coerceAtMost(1f)
+            try {
+                (dismissState.progress.fraction * 6f).coerceAtMost(1f)
+            } catch (e: Exception) {
+                0f
+            }
         } else {
             0f
         }
