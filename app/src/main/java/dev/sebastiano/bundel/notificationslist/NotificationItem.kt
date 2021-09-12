@@ -235,8 +235,8 @@ internal fun NotificationItem(
     onNotificationClick: (ActiveNotification) -> Unit = {}
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
+        enabled = !activeNotification.isSnoozed,
         onClick = activeNotification.ifClickable { onNotificationClick(activeNotification) }
     ) {
         Column(Modifier.padding(singlePadding())) {
@@ -244,7 +244,8 @@ internal fun NotificationItem(
             NotificationContent(
                 notification = activeNotification.persistableNotification,
                 iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
-                interactions = activeNotification.interactions
+                interactions = activeNotification.interactions,
+                enabled = !activeNotification.isSnoozed
             )
         }
     }
@@ -321,10 +322,11 @@ private fun Timestamp(notification: PersistableNotification) {
 private fun NotificationContent(
     notification: PersistableNotification,
     iconPainter: Painter?,
-    interactions: ActiveNotification.Interactions?
+    interactions: ActiveNotification.Interactions?,
+    enabled: Boolean = true
 ) {
     Row(Modifier.fillMaxWidth()) {
-        if (iconPainter != null) { // TODO reevaluate nullability
+        if (iconPainter != null) {
             Image(iconPainter, stringResource(R.string.notification_icon_content_description), modifier = Modifier.size(iconSize()))
         } else {
             Image(
@@ -352,13 +354,16 @@ private fun NotificationContent(
                 )
             }
 
-            if (interactions != null) NotificationActions(interactions)
+            if (interactions != null) NotificationActions(interactions, enabled)
         }
     }
 }
 
 @Composable
-private fun NotificationActions(interactions: ActiveNotification.Interactions) {
+private fun NotificationActions(
+    interactions: ActiveNotification.Interactions,
+    enabled: Boolean
+) {
     if (interactions.actions.isEmpty()) return
 
     Spacer(modifier = Modifier.height(singlePadding()))
@@ -366,7 +371,10 @@ private fun NotificationActions(interactions: ActiveNotification.Interactions) {
     Row(Modifier.horizontalScroll(scrollState)) {
         val items = interactions.actions.take(3)
         for ((index, action) in items.withIndex()) {
-            TextButton(onClick = { action.pendingIntent?.send() }) {
+            TextButton(
+                onClick = { action.pendingIntent?.send() },
+                enabled = enabled
+            ) {
                 Text(action.text.trim().toString())
             }
             if (index < items.size - 1) {
