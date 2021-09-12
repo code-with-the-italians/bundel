@@ -1,20 +1,24 @@
 package dev.sebastiano.bundel.schedule
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
 import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 internal class ScheduleCheckerTest {
 
     private val weekendDateTime = LocalDateTime.of(2021, 9, 12, 17, 45, 0, 0)
-    private val weekdayDateTime = LocalDateTime.of(2021, 9, 8, 17, 45, 0, 0)
+    private val weekdayDateTime = LocalDateTime.of(2021, 9, 8, 16, 45, 0, 0)
 
     private val daysSchedule = mapOf(
         WeekDay.MONDAY to true,
@@ -97,6 +101,52 @@ internal class ScheduleCheckerTest {
                 .withMinute(31)
             assertThat(ScheduleChecker.isSnoozeActive(dateTime, daysSchedule, timeRangesSchedule)).isFalse()
         }
+    }
 
+    @Nested
+    inner class CalculateSnoozeDelay {
+
+        // - snooze by 15' if we are at the beginning of the range
+        // - snooze by 10' if we are 5' into the range
+        // - snooze by 15' if we are 15' into the range
+
+        @Test
+        internal fun `should throw IAE if now is not during snooze time`() {
+            assertThat { ScheduleChecker.calculateSnoozeDelay(weekendDateTime, daysSchedule, timeRangesSchedule) }.isFailure()
+                .isInstanceOf(IllegalArgumentException::class)
+        }
+
+        @Test
+        internal fun `should snooze by 15 minutes if now is at the beginning of the range`() {
+            val dateTime = weekdayDateTime.withHour(14)
+                .withMinute(0)
+            val expectedDateTime = dateTime.plusMinutes(15)
+            val expectedMillis = Duration.between(dateTime, expectedDateTime).toMillis().toInt()
+
+            val actual = ScheduleChecker.calculateSnoozeDelay(dateTime, daysSchedule, timeRangesSchedule)
+            assertThat(actual).isEqualTo(expectedMillis)
+        }
+
+        @Test
+        internal fun `should snooze by 10 minutes if now is 5 minutes into the range`() {
+            val dateTime = weekdayDateTime.withHour(14)
+                .withMinute(5)
+            val expectedDateTime = dateTime.plusMinutes(10)
+            val expectedMillis = Duration.between(dateTime, expectedDateTime).toMillis().toInt()
+
+            val actual = ScheduleChecker.calculateSnoozeDelay(dateTime, daysSchedule, timeRangesSchedule)
+            assertThat(actual).isEqualTo(expectedMillis)
+        }
+
+        @Test
+        internal fun `should snooze by 15 minutes if now is 15 minutes into the range`() {
+            val dateTime = weekdayDateTime.withHour(14)
+                .withMinute(15)
+            val expectedDateTime = dateTime.plusMinutes(15)
+            val expectedMillis = Duration.between(dateTime, expectedDateTime).toMillis().toInt()
+
+            val actual = ScheduleChecker.calculateSnoozeDelay(dateTime, daysSchedule, timeRangesSchedule)
+            assertThat(actual).isEqualTo(expectedMillis)
+        }
     }
 }

@@ -1,5 +1,7 @@
 package dev.sebastiano.bundel
 
+import android.content.Context
+import android.text.format.DateUtils
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -65,6 +68,7 @@ internal fun MainScreenWithBottomNav(
     ) { innerPadding ->
         val scope = rememberCoroutineScope()
 
+        val context = LocalContext.current
         AnimatedNavHost(
             navController,
             startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route
@@ -78,7 +82,7 @@ internal fun MainScreenWithBottomNav(
                     notification.interactions.main.send()
                 },
                 onNotificationDismiss = { notification ->
-                    scope.launch { handleNotificationSnooze(scope, preferences, scaffoldState, notification) }
+                    scope.launch { handleNotificationSnooze(scope, preferences, scaffoldState, notification, context) }
                 }
             )
         }
@@ -89,7 +93,8 @@ private suspend fun handleNotificationSnooze(
     coroutineScope: CoroutineScope,
     preferences: Preferences,
     scaffoldState: ScaffoldState,
-    notification: ActiveNotification
+    notification: ActiveNotification,
+    context: Context
 ) {
     val now = LocalDateTime.now()
     val daysSchedule = preferences.getDaysSchedule().first()
@@ -98,13 +103,20 @@ private suspend fun handleNotificationSnooze(
     if (!ScheduleChecker.isSnoozeActive(now, daysSchedule, timeRangesSchedule)) {
         scaffoldState.snackbarHostState.showSnackbar("Can't snooze right now sorry pal")
     } else {
+        val dalekSebDurationMillis = ScheduleChecker.calculateSnoozeDelay(now, daysSchedule, timeRangesSchedule)
+
         // Note: We need the nested launch because showSnackbar is suspending; if we didn't,
         // reordering the calls would cause issues.
         coroutineScope.launch {
-            scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+            val formattedDelay = DateUtils.getRelativeTimeSpanString(
+                context,
+                System.currentTimeMillis() + dalekSebDurationMillis,
+                false
+            )
+
+            scaffoldState.snackbarHostState.showSnackbar("Snoozing until ${formattedDelay}...")
         }
 
-        val dalekSebDurationMillis = 0
         BundelNotificationListenerService.snooze(notification, dalekSebDurationMillis)
     }
 }

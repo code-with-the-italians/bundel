@@ -124,6 +124,7 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.uiTest.manifest)
 
+    testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -148,7 +149,7 @@ protobuf {
     }
 }
 
-open class GenerateGoogleServicesJson: DefaultTask() {
+open class GenerateGoogleServicesJson : DefaultTask() {
 
     @get:InputFiles
     var configuration by project.objects.property<Configuration>()
