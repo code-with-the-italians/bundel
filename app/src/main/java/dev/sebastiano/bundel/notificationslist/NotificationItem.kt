@@ -42,7 +42,6 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,7 +73,6 @@ import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.Exception
 import kotlin.math.absoluteValue
 import android.graphics.drawable.Icon as GraphicsIcon
 
@@ -107,7 +105,11 @@ private fun previewNotification(context: Context) = ActiveNotification(
 @Composable
 private fun NotificationItemLightPreview() {
     BundelTheme {
-        NotificationItem(previewNotification(LocalContext.current))
+        SnoozableNotificationItem(
+            activeNotification = previewNotification(LocalContext.current),
+            onNotificationClick = {},
+            onNotificationDismiss = {}
+        )
     }
 }
 
@@ -115,35 +117,19 @@ private fun NotificationItemLightPreview() {
 @Composable
 private fun NotificationItemDarkPreview() {
     BundelTheme(darkModeOverride = true) {
-        NotificationItem(previewNotification(LocalContext.current))
-    }
-}
-
-@Composable
-internal fun NotificationItem(
-    activeNotification: ActiveNotification,
-    onNotificationDismiss: (ActiveNotification) -> Unit = {}
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onClick = activeNotification.ifClickable { onNotificationDismiss(activeNotification) }
-    ) {
-        Column(Modifier.padding(singlePadding())) {
-            NotificationMetadata(activeNotification.persistableNotification)
-            NotificationContent(
-                notification = activeNotification.persistableNotification,
-                iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
-                interactions = activeNotification.interactions
-            )
-        }
+        SnoozableNotificationItem(
+            activeNotification = previewNotification(LocalContext.current),
+            onNotificationClick = {},
+            onNotificationDismiss = {}
+        )
     }
 }
 
 @Suppress("LongMethod") // Kinda has to be :(
 @Composable
-internal fun SwipeableNotificationItem(
+internal fun SnoozableNotificationItem(
     activeNotification: ActiveNotification,
+    onNotificationClick: (ActiveNotification) -> Unit,
     onNotificationDismiss: (ActiveNotification) -> Unit
 ) {
     var hasSnoozed by remember { mutableStateOf(false) }
@@ -172,36 +158,21 @@ internal fun SwipeableNotificationItem(
 
     val coroutineScope = rememberCoroutineScope()
     val contentOffset = if (hasTriedToSnooze) 48.dp else 0.dp
-    val cornerRadiusFactor = derivedStateOf {
-        if (dismissState.offset.value != 0f) {
-            @Suppress("TooGenericExceptionCaught ") // TODO get rid of this workaround once issue 199294986 is fixed
-            try {
-                (dismissState.progress.fraction * 6f).coerceAtMost(1f)
-            } catch (ignored: Exception) {
-                0f
-            }
-        } else {
-            0f
-        }
-    }
     SwipeToDismiss(
         modifier = Modifier.alpha(itemAlpha),
         state = dismissState,
         background = {
-            SnoozeBackground(
-                cornerRadiusFactor = cornerRadiusFactor,
-                onSnoozeClicked = {
-                    hasSnoozed = true
+            SnoozeBackground {
+                hasSnoozed = true
 
-                    coroutineScope.launch {
-                        dismissState.reset()
-                        hasTriedToSnooze = false
-                        hasSnoozed = false
-                    }
-
-                    onNotificationDismiss(activeNotification)
+                coroutineScope.launch {
+                    dismissState.reset()
+                    hasTriedToSnooze = false
+                    hasSnoozed = false
                 }
-            )
+
+                onNotificationDismiss(activeNotification)
+            }
         },
         dismissThresholds = { direction ->
             val threshold = when (direction) {
@@ -219,7 +190,7 @@ internal fun SwipeableNotificationItem(
         ) {
             NotificationItem(
                 activeNotification = activeNotification,
-                onNotificationDismiss = onNotificationDismiss
+                onNotificationClick = onNotificationClick
             )
         }
     }
@@ -235,7 +206,7 @@ private fun SnoozeBackground(
             .fillMaxSize()
             .background(
                 color = MaterialTheme.colors.notificationSnoozeBackground,
-                shape = RoundedCornerShape(4.dp * (1f - cornerRadiusFactor.value).absoluteValue.coerceAtMost(1f)),
+                shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f)),
             ),
     ) {
         IconButton(
@@ -257,6 +228,27 @@ private fun ActiveNotification.ifClickable(onClick: (ActiveNotification) -> Unit
     } else {
         {} // No-op
     }
+
+@Composable
+internal fun NotificationItem(
+    activeNotification: ActiveNotification,
+    onNotificationClick: (ActiveNotification) -> Unit = {}
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        onClick = activeNotification.ifClickable { onNotificationClick(activeNotification) }
+    ) {
+        Column(Modifier.padding(singlePadding())) {
+            NotificationMetadata(activeNotification.persistableNotification)
+            NotificationContent(
+                notification = activeNotification.persistableNotification,
+                iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
+                interactions = activeNotification.interactions
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable

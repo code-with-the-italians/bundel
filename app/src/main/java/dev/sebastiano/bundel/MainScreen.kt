@@ -66,8 +66,14 @@ internal fun MainScreenWithBottomNav(
                 lifecycle,
                 repository,
                 innerPadding,
+                onNotificationClick = { notification ->
+                    checkNotNull(notification.interactions.main) { "Notification has no main action, shouldn't be clickable" }
+                    notification.interactions.main.send()
+                },
                 onNotificationDismiss = { notification ->
                     scope.launch {
+                        // Note: We need the nested launch because showSnackbar is suspending; if we didn't,
+                        // reordering the calls would cause issues.
                         launch {
                             scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
                         }
@@ -113,10 +119,11 @@ private fun NavGraphBuilder.mainScreen(
     lifecycle: Lifecycle,
     repository: DataRepository,
     innerPadding: PaddingValues,
+    onNotificationClick: (notification: ActiveNotification) -> Unit,
     onNotificationDismiss: (notification: ActiveNotification) -> Unit
 ) {
     composable(NavigationRoute.MainScreenGraph.NotificationsList.route) {
-        NotificationsListScreen(lifecycle, innerPadding, onNotificationDismiss)
+        NotificationsListScreen(lifecycle, innerPadding, onNotificationClick, onNotificationDismiss)
     }
     composable(NavigationRoute.MainScreenGraph.History.route) {
         val items by repository.getNotifications().collectAsState(initial = emptyList())
