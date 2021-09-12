@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                         preferences = preferences,
                         onOpenSettingsClick = { openNotificationsPreferences() }
                     )
-                    mainScreenGraph(navController, lifecycle, repository)
+                    mainScreenGraph(navController, lifecycle, repository, preferences)
                     settingsGraph(navController)
                 }
             }

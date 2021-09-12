@@ -63,4 +63,7 @@ internal data class TimeRange(
             val newTo = to.minusHours(1)
             return newTo > from && to.hour > 0
         }
+
+    fun contains(localTime: LocalTime): Boolean =
+        localTime in from..to
 }

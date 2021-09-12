@@ -8,7 +8,7 @@ private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_TIME_OF_DAY.minusMinut
 
 internal class TimeRangesSchedule private constructor(
     private val ranges: List<TimeRange>
-) {
+): List<TimeRange> by ranges {
 
     val canAppendAnotherRange: Boolean
         get() = last().to < LAST_TIME_THAT_CAN_APPEND_TO
@@ -17,9 +17,6 @@ internal class TimeRangesSchedule private constructor(
         get() = size > 1
 
     val timeRanges: List<TimeRange> = ranges
-
-    val size: Int
-        get() = ranges.size
 
     fun appendTimeRange(): TimeRangesSchedule {
         check(canAppendAnotherRange) { "Trying to add a time range when canAppendAnotherRange is false" }
@@ -32,8 +29,6 @@ internal class TimeRangesSchedule private constructor(
         )
         return of(ranges + timeRange)
     }
-
-    operator fun get(index: Int) = ranges[index]
 
     fun updateRange(old: TimeRange, new: TimeRange): TimeRangesSchedule {
         val oldIndex = ranges.indexOf(old)
@@ -57,8 +52,6 @@ internal class TimeRangesSchedule private constructor(
 
         return of(newRanges)
     }
-
-    fun last() = ranges.last()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

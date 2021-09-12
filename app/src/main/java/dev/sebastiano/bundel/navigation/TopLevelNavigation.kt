@@ -47,13 +47,14 @@ internal fun NavGraphBuilder.mainScreenGraph(
     navController: NavHostController,
     lifecycle: Lifecycle,
     repository: DataRepository,
+    preferences: Preferences
 ) {
     navigation(
         route = NavigationRoute.MainScreenGraph.route,
         startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
     ) {
         composable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
-            MainScreenWithBottomNav(lifecycle, repository) { navController.navigate(NavigationRoute.SettingsGraph.route) }
+            MainScreenWithBottomNav(lifecycle, repository, preferences) { navController.navigate(NavigationRoute.SettingsGraph.route) }
         }
     }
 }

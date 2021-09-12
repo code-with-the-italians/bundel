@@ -13,6 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
@@ -37,14 +38,20 @@ import dev.sebastiano.bundel.navigation.NavigationRoute
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
+import dev.sebastiano.bundel.preferences.Preferences
+import dev.sebastiano.bundel.schedule.ScheduleChecker
 import dev.sebastiano.bundel.storage.DataRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun MainScreenWithBottomNav(
     lifecycle: Lifecycle,
     repository: DataRepository,
+    preferences: Preferences,
     onSettingsClick: () -> Unit
 ) {
     val navController = rememberAnimatedNavController()
@@ -71,18 +78,34 @@ internal fun MainScreenWithBottomNav(
                     notification.interactions.main.send()
                 },
                 onNotificationDismiss = { notification ->
-                    scope.launch {
-                        // Note: We need the nested launch because showSnackbar is suspending; if we didn't,
-                        // reordering the calls would cause issues.
-                        launch {
-                            scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
-                        }
-
-                        BundelNotificationListenerService.snooze(notification) // TODO define snooze duration whenever we can
-                    }
+                    scope.launch { handleNotificationSnooze(scope, preferences, scaffoldState, notification) }
                 }
             )
         }
+    }
+}
+
+private suspend fun handleNotificationSnooze(
+    coroutineScope: CoroutineScope,
+    preferences: Preferences,
+    scaffoldState: ScaffoldState,
+    notification: ActiveNotification
+) {
+    val now = LocalDateTime.now()
+    val daysSchedule = preferences.getDaysSchedule().first()
+    val timeRangesSchedule = preferences.getTimeRangesSchedule().first()
+
+    if (!ScheduleChecker.isSnoozeActive(now, daysSchedule, timeRangesSchedule)) {
+        scaffoldState.snackbarHostState.showSnackbar("Can't snooze right now sorry pal")
+    } else {
+        // Note: We need the nested launch because showSnackbar is suspending; if we didn't,
+        // reordering the calls would cause issues.
+        coroutineScope.launch {
+            scaffoldState.snackbarHostState.showSnackbar("Snoozing...")
+        }
+
+        val dalekSebDurationMillis = 0
+        BundelNotificationListenerService.snooze(notification, dalekSebDurationMillis)
     }
 }
 
