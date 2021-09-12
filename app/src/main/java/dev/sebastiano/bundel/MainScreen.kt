@@ -114,7 +114,7 @@ private suspend fun handleNotificationSnooze(
                 false
             )
 
-            scaffoldState.snackbarHostState.showSnackbar("Snoozing until ${formattedDelay}...")
+            scaffoldState.snackbarHostState.showSnackbar("Snoozing until $formattedDelay...")
         }
 
         BundelNotificationListenerService.snooze(notification, dalekSebDurationMillis)

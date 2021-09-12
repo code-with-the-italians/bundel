@@ -8,7 +8,7 @@ private val LAST_TIME_THAT_CAN_APPEND_TO = LAST_AVAILABLE_TIME_OF_DAY.minusMinut
 
 internal class TimeRangesSchedule private constructor(
     private val ranges: List<TimeRange>
-): List<TimeRange> by ranges {
+) : List<TimeRange> by ranges {
 
     val canAppendAnotherRange: Boolean
         get() = last().to < LAST_TIME_THAT_CAN_APPEND_TO
