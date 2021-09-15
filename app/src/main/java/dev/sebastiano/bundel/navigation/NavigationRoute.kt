@@ -9,6 +9,8 @@ import dev.sebastiano.bundel.R
 
 internal sealed class NavigationRoute(val route: String) {
 
+    object SplashScreen : NavigationRoute("benThereDoneThat")
+
     object OnboardingGraph : NavigationRoute("onboarding") {
 
         object OnboardingScreen : NavigationRoute("onboarding.screen")

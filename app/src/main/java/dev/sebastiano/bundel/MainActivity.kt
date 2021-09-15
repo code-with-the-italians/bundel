@@ -20,6 +20,7 @@ import dev.sebastiano.bundel.navigation.NavigationRoute
 import dev.sebastiano.bundel.navigation.mainScreenGraph
 import dev.sebastiano.bundel.navigation.onboardingGraph
 import dev.sebastiano.bundel.navigation.settingsGraph
+import dev.sebastiano.bundel.navigation.splashScreenGraph
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.storage.DataRepository
@@ -33,7 +34,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -54,15 +54,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO reevaluate this, we shouldn't leak this into the activity
-        val startDestination = runBlocking {
-            if (preferences.isOnboardingSeen()) {
-                NavigationRoute.MainScreenGraph.route
-            } else {
-                NavigationRoute.OnboardingGraph.route
-            }
-        }
-
         setContent {
             val navController = rememberAnimatedNavController()
             val systemUiController = rememberSystemUiController()
@@ -72,12 +63,15 @@ class MainActivity : AppCompatActivity() {
 
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = startDestination,
+                    startDestination = NavigationRoute.SplashScreen.route,
                     enterTransition = { initial, target -> defaultEnterTransition(initial, target) },
                     exitTransition = { initial, target -> defaultExitTransition(initial, target) },
                     popEnterTransition = { _, _ -> defaultPopEnterTransition() },
                     popExitTransition = { _, _ -> defaultPopExitTransition() }
                 ) {
+                    splashScreenGraph(preferences) { navigationRoute ->
+                        navController.navigate(navigationRoute.route)
+                    }
                     onboardingGraph(
                         navController = navController,
                         needsNotificationsPermissionFlow = needsNotificationsPermission,

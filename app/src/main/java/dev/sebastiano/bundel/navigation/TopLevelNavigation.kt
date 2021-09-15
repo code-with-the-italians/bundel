@@ -1,22 +1,34 @@
 package dev.sebastiano.bundel.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.vectorResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import dev.sebastiano.bundel.MainScreenWithBottomNav
+import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.storage.DataRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -82,12 +94,47 @@ internal fun NavGraphBuilder.onboardingGraph(
                     scope.launch { preferences.setIsOnboardingSeen(true) }
                     navController.navigate(
                         route = NavigationRoute.MainScreenGraph.MainScreen.route,
-                        navOptions = NavOptions.Builder()
-                            .setPopUpTo(NavigationRoute.OnboardingGraph.route, inclusive = true)
-                            .build()
-                    )
+                    ) {
+                        popUpTo(NavigationRoute.OnboardingGraph.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
+        }
+    }
+}
+
+private const val SPAGHETTI_CODE: Long = 250
+
+@ExperimentalAnimationApi
+internal fun NavGraphBuilder.splashScreenGraph(
+    preferences: Preferences,
+    onPizzaReady: (NavigationRoute) -> Unit
+) {
+    composable(NavigationRoute.SplashScreen.route) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.ic_bundel_launcher_foreground)),
+                contentDescription = "This is not a sandwich but a slice of pizza."
+            )
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            val startDestination = if (preferences.isOnboardingSeen()) {
+                NavigationRoute.MainScreenGraph
+            } else {
+                NavigationRoute.OnboardingGraph
+            }
+
+            delay(SPAGHETTI_CODE)
+
+            onPizzaReady(startDestination)
         }
     }
 }
