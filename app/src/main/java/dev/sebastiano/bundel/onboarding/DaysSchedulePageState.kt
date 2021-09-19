@@ -12,6 +12,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,13 +23,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialChip
+import dev.sebastiano.bundel.composables.MaterialPillAppearance
+import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
+import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
+import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -56,7 +67,7 @@ internal class DaysSchedulePageState(
     val onDayCheckedChange: (day: WeekDay, checked: Boolean) -> Unit
 ) {
 
-    constructor() : this(daysSchedule = WeekDay.values().map { it to true }.toMap(), onDayCheckedChange = { _, _ -> })
+    constructor() : this(daysSchedule = WeekDay.values().associate { it to true }, onDayCheckedChange = { _, _ -> })
 }
 
 @Composable
@@ -87,26 +98,12 @@ internal fun DaysSchedulePage(
         Spacer(modifier = Modifier.height(happyBirthdayMark))
 
         val chipsRowHorizontalPadding = if (orientation == Orientation.Portrait) 32.dp else 48.dp
-        FlowRow(
-            modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
-            mainAxisAlignment = MainAxisAlignment.Center,
-            mainAxisSpacing = singlePadding(),
-            crossAxisSpacing = singlePadding()
-        ) {
-            for (weekDay in pageState.daysSchedule.keys) {
-                MaterialChip(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    checkedBackgroundColor = MaterialTheme.colors.onSurface,
-                    checked = checkNotNull(pageState.daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
-                    onCheckedChanged = { checked -> pageState.onDayCheckedChange(weekDay, checked) }
-                ) {
-                    Text(
-                        text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
-                    )
-                }
-            }
-        }
+        DaysPicker(
+            daysSchedule = pageState.daysSchedule,
+            onDayCheckedChange = pageState.onDayCheckedChange,
+            chipsSpacing = singlePadding(),
+            modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding)
+        )
 
         Spacer(modifier = Modifier.height(happyBirthdayMark))
 
@@ -115,5 +112,84 @@ internal fun DaysSchedulePage(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Preview(group = "DaysPicker", showBackground = true)
+@Composable
+private fun DaysPickerBundelThemePreview() {
+    BundelTheme {
+        var daysSchedule by remember {
+            mutableStateOf(WeekDay.values().associate { it to true })
+        }
+        DaysPicker(
+            daysSchedule = daysSchedule,
+            onDayCheckedChange = { weekDay, checked ->
+                val newSchedule = daysSchedule.toMutableMap()
+                newSchedule[weekDay] = checked
+                daysSchedule = newSchedule
+            },
+            chipsSpacing = singlePadding(),
+            checkedAppearance = checkedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
+                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+            ),
+            uncheckedAppearance = checkedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
+                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+            )
+        )
+    }
+}
+
+@Preview(group = "DaysPicker", showBackground = true)
+@Composable
+private fun DaysPickerOnboardingThemePreview() {
+    BundelOnboardingTheme {
+        var daysSchedule by remember {
+            mutableStateOf(WeekDay.values().associate { it to true })
+        }
+        Surface {
+            DaysPicker(
+                daysSchedule = daysSchedule,
+                onDayCheckedChange = { weekDay, checked ->
+                    val newSchedule = daysSchedule.toMutableMap()
+                    newSchedule[weekDay] = checked
+                    daysSchedule = newSchedule
+                },
+                chipsSpacing = singlePadding()
+            )
+        }
+    }
+}
+
+@Composable
+internal fun DaysPicker(
+    daysSchedule: Map<WeekDay, Boolean>,
+    onDayCheckedChange: (WeekDay, Boolean) -> Unit,
+    chipsSpacing: Dp,
+    modifier: Modifier = Modifier,
+    checkedAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
+    uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
+) {
+    FlowRow(
+        modifier = modifier,
+        mainAxisAlignment = MainAxisAlignment.Center,
+        mainAxisSpacing = chipsSpacing,
+        crossAxisSpacing = chipsSpacing
+    ) {
+        for (weekDay in daysSchedule.keys) {
+            MaterialChip(
+                checked = checkNotNull(daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
+                onCheckedChanged = { checked -> onDayCheckedChange(weekDay, checked) },
+                checkedAppearance = checkedAppearance,
+                uncheckedAppearance = uncheckedAppearance
+            ) {
+                Text(
+                    text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
+                    style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
+                )
+            }
+        }
     }
 }

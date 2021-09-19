@@ -10,6 +10,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,7 +46,6 @@ import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
 import dev.sebastiano.bundel.ui.overlay.animatedOverlay
-import dev.sebastiano.bundel.ui.pillBackground
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 
@@ -171,7 +171,6 @@ private fun ExcludedLabel(
     }
 
     MaterialPill(
-        backgroundColor = MaterialTheme.colors.pillBackground,
         modifier = Modifier
             .padding(bottom = 4.dp)
             .layout { measurable, constraints ->
@@ -182,7 +181,8 @@ private fun ExcludedLabel(
                     placeable.placeRelative(0, 0)
                 }
             }
-            .alpha(labelAlpha)
+            .alpha(labelAlpha),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
             text = stringResource(id = R.string.label_excluded),

@@ -15,15 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.dialog
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import dev.sebastiano.bundel.MainScreenWithBottomNav
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
+import dev.sebastiano.bundel.preferences.ActiveDaysDialog
 import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
@@ -43,13 +46,20 @@ internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
         ) {
             PreferencesScreen(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
-                onBackPress = { navController.popBackStack() }
-            )
+                onActiveDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.ActiveDays.route) }
+            ) { navController.popBackStack() }
         }
+
         composable(
-            route = NavigationRoute.SettingsGraph.SelectApps.route,
+            route = NavigationRoute.SettingsGraph.SelectApps.route
         ) {
             AppsListScreen()
+        }
+
+        dialog(
+            route = NavigationRoute.SettingsGraph.ActiveDays.route
+        ) {
+            ActiveDaysDialog(onDialogDismiss = { navController.popBackStack() })
         }
     }
 }

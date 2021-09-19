@@ -17,6 +17,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,19 +33,28 @@ import dev.sebastiano.bundel.ui.BundelTheme
 @Composable
 private fun PreferencesScreenPreview() {
     BundelTheme {
-        PreferencesScreen(onSelectAppsClicked = { }, onBackPress = { })
+        PreferencesScreen(onSelectAppsClicked = {}, onActiveDaysClicked = {}) { }
     }
 }
 
 @Composable
 internal fun PreferencesScreen(
     onSelectAppsClicked: () -> Unit,
+    onActiveDaysClicked: () -> Unit,
     onBackPress: () -> Unit
 ) {
     Scaffold(
         topBar = { PreferencesTopAppBar(onBackPress) }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                text = "Active days",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onActiveDaysClicked() }
+                    .padding(16.dp)
+            )
+            Divider()
             Text(
                 text = "Select apps",
                 modifier = Modifier

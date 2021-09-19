@@ -1,7 +1,10 @@
 package dev.sebastiano.bundel.composables
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,66 +30,88 @@ import dev.sebastiano.bundel.ui.BundelTheme
 @Preview
 internal fun ChipPreview() {
     BundelTheme {
-        var checked by remember { mutableStateOf(false) }
-        MaterialChip(
-            modifier = Modifier.padding(12.dp, 6.dp),
-            checked = checked,
-            onCheckedChanged = {
-                checked = !checked
-                println("Click! $checked")
+        Surface {
+            var checked by remember { mutableStateOf(false) }
+            MaterialChip(
+                checked = checked,
+                onCheckedChanged = {
+                    checked = it
+                    println("Click! $checked")
+                },
+                uncheckedAppearance = uncheckedMaterialPillAppearance(
+                    borderColor = Color.Green,
+                    borderWidth = 4.dp
+                ),
+                checkedAppearance = checkedMaterialPillAppearance(
+                    contentColor = Color.Yellow,
+                    borderColor = Color.Red,
+                    borderWidth = 1.dp
+                )
+            ) {
+                Text("Ciao Ivan")
             }
-        ) {
-            Text("Ciao Ivan", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
         }
     }
 }
 
 @Composable
 internal fun MaterialChip(
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     checked: Boolean,
-    checkedBackgroundColor: Color = MaterialTheme.colors.surface,
-    checkedContentColor: Color = contentColorFor(checkedBackgroundColor),
-    checkedBorder: BorderStroke? = null,
-    uncheckedBackgroundColor: Color = checkedBackgroundColor.copy(alpha = .54f),
-    uncheckedContentColor: Color = checkedContentColor.copy(alpha = .54f),
-    uncheckedBorder: BorderStroke? = null,
+    checkedAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
+    uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
     elevation: Dp = 0.dp,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
     onCheckedChanged: (checked: Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
-    val bgColor by animateColorAsState(
-        targetValue = if (checked) checkedBackgroundColor else uncheckedBackgroundColor
-    )
-
     MaterialPill(
         modifier = Modifier
+            .clip(CircleShape)
             .toggleable(
                 value = checked,
                 enabled = enabled,
                 role = Role.Checkbox,
                 onValueChange = { onCheckedChanged(!checked) }
-            )
-            .then(modifier),
-        backgroundColor = bgColor,
-        contentColor = if (checked) checkedContentColor else uncheckedContentColor,
-        borderStroke = if (checked) checkedBorder else uncheckedBorder,
+            ),
+        appearance = if (checked) checkedAppearance else uncheckedAppearance,
         elevation = elevation,
+        contentPadding = contentPadding,
         content = content
     )
 }
 
 @Composable
+internal fun checkedMaterialPillAppearance(
+    backgroundColor: Color = MaterialTheme.colors.onSurface,
+    contentColor: Color = contentColorFor(backgroundColor),
+    borderColor: Color = Color.Transparent,
+    borderWidth: Dp = 0.dp
+) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
+
+@Composable
+internal fun uncheckedMaterialPillAppearance(
+    backgroundColor: Color = MaterialTheme.colors.onSurface.copy(alpha = .54f),
+    contentColor: Color = contentColorFor(backgroundColor),
+    borderColor: Color = Color.Transparent,
+    borderWidth: Dp = 0.dp
+) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
+
+internal data class MaterialPillAppearance(
+    val backgroundColor: Color,
+    val contentColor: Color,
+    val borderColor: Color,
+    val borderWidth: Dp
+)
+
+@Composable
 @Preview
 private fun PillPreview() {
     BundelTheme {
-        MaterialPill(
-            modifier = Modifier.padding(12.dp, 6.dp),
-            contentColor = MaterialTheme.colors.contentColorFor(Color.LightGray),
-            backgroundColor = Color.LightGray
-        ) {
-            Text("I am a pill hello", modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+        Surface {
+            MaterialPill {
+                Text("I am a pill hello")
+            }
         }
     }
 }
@@ -93,20 +119,26 @@ private fun PillPreview() {
 @Composable
 internal fun MaterialPill(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colors.secondary,
-    contentColor: Color = MaterialTheme.colors.contentColorFor(backgroundColor),
-    borderStroke: BorderStroke? = null,
+    appearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
     elevation: Dp = 0.dp,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
     content: @Composable () -> Unit
 ) {
+    val backgroundColor by animateColorAsState(appearance.backgroundColor)
+    val contentColor by animateColorAsState(appearance.contentColor)
+    val borderColor by animateColorAsState(appearance.borderColor)
+    val borderWidth by animateDpAsState(appearance.borderWidth)
+
     Surface(
         shape = CircleShape,
         color = backgroundColor,
         contentColor = contentColor,
-        border = borderStroke,
+        border = BorderStroke(borderWidth, borderColor),
         elevation = elevation,
         modifier = modifier
     ) {
-        content()
+        Box(modifier = Modifier.padding(contentPadding)) {
+            content()
+        }
     }
 }

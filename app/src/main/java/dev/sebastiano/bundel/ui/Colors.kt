@@ -16,12 +16,22 @@ private val bundel_green_dark = Color(0xFF1E8F3E)
 private val bundel_purple = Color(0xFF4F1D91)
 private val bundel_purple_dark = Color(0xFF3C166D)
 private val bundel_dark_background_gray = Color(0xFF101010)
+private val bundel_dark_gray = Color(0xFF333333)
 private val bundel_dark_green = Color(0xFF33783D)
 private val bundel_dark_green_dark = Color(0xFF224D28)
 private val bundel_dark_purple = Color(0xFF33135D)
 private val bundel_dark_purple_dark = Color(0xFF240E42)
-private val pillBackgroundLight = Color.LightGray
-private val pillBackgroundDark = Color.DarkGray
+
+// TODO figure out a better way for this
+private val chipCheckedBackgroundLight = bundel_green
+private val chipCheckedBackgroundDark = bundel_green_dark
+private val chipCheckedContentLight = bundel_white
+private val chipCheckedContentDark = bundel_light_gray
+private val chipUncheckedBackgroundLight = Color(0xFFBBBBBB)
+private val chipUncheckedBackgroundDark = bundel_dark_gray
+private val chipUncheckedContentLight = bundel_black
+private val chipUncheckedContentDark = bundel_light_gray
+
 private val snoozeNotificationBackgroundLight = Color(0xFF3B64EB)
 private val snoozeNotificationForegroundLight = bundel_white
 private val snoozeNotificationBackgroundDark = Color(0xFF1D3173)
@@ -69,14 +79,25 @@ internal val bundelOnboardingDarkColors = darkColors(
     onBackground = bundel_light_gray
 )
 
-internal val Colors.pillBackground: Color
-    get() = if (isLight) pillBackgroundLight else pillBackgroundDark
-
 internal val Colors.notificationSnoozeBackground: Color
     get() = if (isLight) snoozeNotificationBackgroundLight else snoozeNotificationBackgroundDark
 
 internal val Colors.notificationSnoozeForeground: Color
     get() = if (isLight) snoozeNotificationForegroundLight else snoozeNotificationForegroundDark
+
+internal fun Colors.regularThemeMaterialChipBackgroundColor(checked: Boolean): Color =
+    if (checked) {
+        if (isLight) chipCheckedBackgroundLight else chipCheckedBackgroundDark
+    } else {
+        if (isLight) chipUncheckedBackgroundLight else chipUncheckedBackgroundDark
+    }
+
+internal fun Colors.regularThemeMaterialChipContentColor(checked: Boolean): Color =
+    if (checked) {
+        if (isLight) chipCheckedContentLight else chipCheckedContentDark
+    } else {
+        if (isLight) chipUncheckedContentLight else chipUncheckedContentDark
+    }
 
 @Composable
 internal fun bundelColors(darkModeOverride: Boolean? = null): Colors =
