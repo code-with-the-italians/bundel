@@ -12,7 +12,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-internal class PreferencesViewModel @Inject constructor(
+internal class InstalledAppsViewModel @Inject constructor(
     private val preferences: Preferences,
     packageManager: PackageManager
 ) : ViewModel() {
