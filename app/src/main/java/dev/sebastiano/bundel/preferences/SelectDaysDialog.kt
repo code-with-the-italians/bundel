@@ -23,11 +23,13 @@ import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
 
 @Composable
-internal fun ActiveDaysDialog(
+internal fun SelectDaysDialog(
     viewModel: ActiveDaysViewModel = hiltViewModel(),
     onDialogDismiss: () -> Unit
 ) {
-    Card {
+    Card(
+        modifier = Modifier.padding(48.dp) // TODO this shouldn't be needed...
+    ) {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {

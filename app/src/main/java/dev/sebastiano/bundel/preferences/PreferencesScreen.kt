@@ -36,15 +36,21 @@ import kotlinx.coroutines.flow.map
 @Composable
 private fun PreferencesScreenPreview() {
     BundelTheme {
-        PreferencesScreen(onSelectAppsClicked = {}, onActiveDaysClicked = {}) { }
+        PreferencesScreen(
+            onSelectAppsClicked = {},
+            onSelectDaysClicked = {},
+            onSelectTimeRangesClicked = {},
+        ) { }
     }
 }
 
 @Composable
 internal fun PreferencesScreen(
     activeDaysViewModel: ActiveDaysViewModel = hiltViewModel(),
+    activeTimeRangesViewModel: EnglebertViewModel = hiltViewModel(),
     onSelectAppsClicked: () -> Unit,
-    onActiveDaysClicked: () -> Unit,
+    onSelectDaysClicked: () -> Unit,
+    onSelectTimeRangesClicked: () -> Unit,
     onBackPress: () -> Unit
 ) {
     Scaffold(
@@ -54,7 +60,7 @@ internal fun PreferencesScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onActiveDaysClicked() }
+                    .clickable { onSelectDaysClicked() }
                     .padding(16.dp)
             ) {
                 Text(text = "Active days")
@@ -75,6 +81,14 @@ internal fun PreferencesScreen(
                     )
                 }
             }
+            Divider()
+            Text(
+                text = "Active time ranges",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSelectTimeRangesClicked() }
+                    .padding(16.dp)
+            )
             Divider()
             Text(
                 text = "Select apps",

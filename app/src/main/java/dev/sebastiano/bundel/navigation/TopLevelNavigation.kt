@@ -11,10 +11,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
@@ -25,15 +27,17 @@ import com.google.accompanist.navigation.animation.navigation
 import dev.sebastiano.bundel.MainScreenWithBottomNav
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
-import dev.sebastiano.bundel.preferences.ActiveDaysDialog
 import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
+import dev.sebastiano.bundel.preferences.SelectDaysDialog
+import dev.sebastiano.bundel.preferences.SelectTimeRangesDialog
 import dev.sebastiano.bundel.storage.DataRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalAnimationApi
 internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
     navigation(
@@ -45,7 +49,8 @@ internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
         ) {
             PreferencesScreen(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
-                onActiveDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.ActiveDays.route) }
+                onSelectDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectDays.route) },
+                onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) }
             ) { navController.popBackStack() }
         }
 
@@ -56,9 +61,17 @@ internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
         }
 
         dialog(
-            route = NavigationRoute.SettingsGraph.ActiveDays.route
+            route = NavigationRoute.SettingsGraph.SelectDays.route,
+            dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
-            ActiveDaysDialog(onDialogDismiss = { navController.popBackStack() })
+            SelectDaysDialog(onDialogDismiss = { navController.popBackStack() })
+        }
+
+        dialog(
+            route = NavigationRoute.SettingsGraph.SelectTimeRanges.route,
+            dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            SelectTimeRangesDialog(onDialogDismiss = { navController.popBackStack() })
         }
     }
 }
