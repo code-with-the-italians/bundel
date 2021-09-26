@@ -24,7 +24,7 @@ internal class OnboardingAndroidUiTest {
         composeTestRule.setContent {
             BundelOnboardingTheme {
                 Surface {
-                    OnboardingScreen()
+//                    OnboardingScreen()
                 }
             }
         }
@@ -42,7 +42,7 @@ internal class OnboardingAndroidUiTest {
         composeTestRule.setContent {
             BundelOnboardingTheme {
                 Surface {
-                    OnboardingScreen()
+//                    OnboardingScreen()
                 }
             }
         }
@@ -56,7 +56,7 @@ internal class OnboardingAndroidUiTest {
         composeTestRule.setContent {
             BundelOnboardingTheme {
                 Surface {
-                    OnboardingScreen()
+//                    OnboardingScreen()
                 }
             }
         }

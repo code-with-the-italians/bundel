@@ -2,6 +2,7 @@
 
 package dev.sebastiano.bundel.onboarding
 
+import android.content.res.Configuration
 import androidx.annotation.Px
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
@@ -28,8 +29,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -48,6 +47,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
@@ -57,12 +58,12 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
@@ -70,42 +71,109 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.composables.MaterialPill
+import dev.sebastiano.bundel.composables.MaterialPillAppearance
+import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
+import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
 import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
 import dev.sebastiano.bundel.preferences.schedule.PartOfHour
 import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
+import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
 import java.time.LocalTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 
-@Suppress("MagicNumber") // It's a preview
-@Preview(name = "Inactive")
-@Composable
-fun TimeRangeRowInactivePreview() {
-    BundelOnboardingTheme {
-        Surface {
-            TimeRangeRow(
-                modifier = Modifier.fillMaxWidth(),
-                enabled = false
-            )
+@Suppress("unused")
+internal class OnboardingPreviews {
+
+    @Suppress("MagicNumber") // It's a preview
+    @Preview(name = "Inactive", group = "Onboarding")
+    @Preview(name = "Inactive Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun TimeRangeRowOnboardingInactivePreview() {
+        BundelOnboardingTheme {
+            Surface {
+                TimeRangeRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    pickerBackgroundColor = MaterialTheme.colors.secondary,
+                    enabled = false
+                )
+            }
+        }
+    }
+
+    @Suppress("MagicNumber") // It's a preview
+    @Preview(name = "Active", group = "Onboarding")
+    @Preview(name = "Active Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun TimeRangeRowOnboardingActivePreview() {
+        BundelOnboardingTheme {
+            Surface {
+                TimeRangeRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    pickerBackgroundColor = MaterialTheme.colors.secondary,
+                    timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
+                    enabled = true,
+                    canBeRemoved = true
+                )
+            }
         }
     }
 }
 
-@Suppress("MagicNumber") // It's a preview
-@Preview(name = "Active")
-@Composable
-fun TimeRangeRowActivePreview() {
-    BundelOnboardingTheme {
-        Surface {
-            TimeRangeRow(
-                modifier = Modifier.fillMaxWidth(),
-                timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
-                enabled = true,
-                canBeRemoved = true
-            )
+@Suppress("unused")
+internal class AppThemePreviews {
+
+    @Suppress("MagicNumber") // It's a preview
+    @Preview(name = "Inactive", group = "App theme")
+    @Preview(name = "Inactive Night", group = "App theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun TimeRangeRowInactivePreview() {
+        BundelTheme {
+            Surface {
+                TimeRangeRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    expandedPillAppearance = checkedMaterialPillAppearance(
+                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
+                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                    ),
+                    normalPillAppearance = checkedMaterialPillAppearance(
+                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
+                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                    ),
+                    enabled = false
+                )
+            }
+        }
+    }
+
+    @Suppress("MagicNumber") // It's a preview
+    @Preview(name = "Active", group = "App theme")
+    @Preview(name = "Active Night", group = "App theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun TimeRangeRowActivePreview() {
+        BundelTheme {
+            Surface {
+                TimeRangeRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    expandedPillAppearance = checkedMaterialPillAppearance(
+                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
+                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                    ),
+                    normalPillAppearance = checkedMaterialPillAppearance(
+                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
+                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                    ),
+                    timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
+                    enabled = true,
+                    canBeRemoved = true
+                )
+            }
         }
     }
 }
@@ -113,6 +181,9 @@ fun TimeRangeRowActivePreview() {
 @Composable
 internal fun TimeRangeRow(
     modifier: Modifier = Modifier,
+    expandedPillAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
+    normalPillAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
+    pickerBackgroundColor: Color = MaterialTheme.colors.surface,
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
@@ -143,16 +214,13 @@ internal fun TimeRangeRow(
 
             Spacer(modifier = Modifier.width(singlePadding()))
 
-            val expandedPillColor = MaterialTheme.colors.primary
-            val normalPillColor = MaterialTheme.colors.onSurface
-
             TimePillButton(
                 text = timeRange?.let { timeFormatter.format(timeRange.from) },
                 enabled = enabled,
                 modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
                     fromPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
                 },
-                pillBackgroundColor = if (expandedExtremity == ExpandedRangeExtremity.FROM) expandedPillColor else normalPillColor
+                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.FROM) expandedPillAppearance else normalPillAppearance,
             ) {
                 expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE
                 stemPosition = fromPillCenterX
@@ -170,7 +238,7 @@ internal fun TimeRangeRow(
                 modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
                     toPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
                 },
-                pillBackgroundColor = if (expandedExtremity == ExpandedRangeExtremity.TO) expandedPillColor else normalPillColor
+                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.TO) expandedPillAppearance else normalPillAppearance,
             ) {
                 expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE
                 stemPosition = toPillCenterX
@@ -179,10 +247,11 @@ internal fun TimeRangeRow(
 
         ExpandableTimePicker(
             expanded = expandedExtremity,
+            stemPosition = stemPosition,
+            backgroundColor = pickerBackgroundColor,
             timeRange = timeRange,
             minimumAllowableFrom = minimumAllowableFrom,
             maximumAllowableTo = maximumAllowableTo,
-            stemPosition = stemPosition,
             onTimeRangeChanged = onTimeRangeChanged
         )
     }
@@ -218,10 +287,11 @@ private fun RemoveIcon(
 @Composable
 private fun ColumnScope.ExpandableTimePicker(
     expanded: ExpandedRangeExtremity,
+    @Px stemPosition: Float,
+    backgroundColor: Color = MaterialTheme.colors.primary,
     timeRange: TimeRange?,
     minimumAllowableFrom: LocalTime?,
     maximumAllowableTo: LocalTime?,
-    @Px stemPosition: Float,
     onTimeRangeChanged: (TimeRange) -> Unit,
 ) {
     @Px var cardX by remember { mutableStateOf(0f) }
@@ -232,7 +302,6 @@ private fun ColumnScope.ExpandableTimePicker(
             .onGloballyPositioned { layoutCoordinates -> cardX = layoutCoordinates.positionInParent().x },
         visible = expanded != ExpandedRangeExtremity.NONE
     ) {
-        val backgroundColor = MaterialTheme.colors.secondary
         checkNotNull(timeRange) { "The time picker is only available when the timeRange is not null" }
 
         val stemSize = 16.dp
@@ -432,29 +501,13 @@ private fun TimePillButton(
     text: String?,
     enabled: Boolean,
     modifier: Modifier = Modifier,
-    pillBackgroundColor: Color = MaterialTheme.colors.onSurface,
+    pillAppearance: MaterialPillAppearance,
     onClick: () -> Unit
 ) {
-    val backgroundColor by animateColorAsState(targetValue = pillBackgroundColor)
-
-    val buttonColors = if (text != null) {
-        ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
-    } else {
-        ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = backgroundColor.copy(alpha = .12f)
-                .compositeOver(MaterialTheme.colors.surface),
-            contentColor = Color.Transparent,
-            disabledContentColor = Color.Transparent,
-        )
-    }
-    Button(
-        modifier = modifier,
-        shape = CircleShape,
-        colors = buttonColors,
-        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
-        enabled = enabled,
-        onClick = { onClick() }
+    MaterialPill(
+        modifier = modifier.clip(CircleShape)
+            .clickable(enabled, role = Role.Button, onClick = onClick),
+        appearance = pillAppearance
     ) {
         // HACK we should be using tabular numbers on the text instead
         Box(contentAlignment = Alignment.Center) {
