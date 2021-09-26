@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
@@ -43,59 +44,69 @@ internal fun SelectTimeRangesDialog(
             val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
 
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(singlePadding()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val items = timeRangesSchedule.timeRanges.withIndex().toList()
-
-                items(items = items) { (index, timeRange) ->
-                    val minimumAllowedFrom = if (index > 0) items[index - 1].value.to else null
-                    val maximumAllowedTo = if (index < items.count() - 1) items[index + 1].value.from else null
-
-                    TimeRangeRow(
-                        expandedPillAppearance = checkedMaterialPillAppearance(
-                            backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                            contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
-                        ),
-                        normalPillAppearance = checkedMaterialPillAppearance(
-                            backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                            contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
-                        ),
-                        timeRange = timeRange,
-                        canBeRemoved = timeRangesSchedule.canRemoveRanges,
-                        minimumAllowableFrom = minimumAllowedFrom,
-                        maximumAllowableTo = maximumAllowedTo,
-                        onRemoved = if (timeRangesSchedule.canRemoveRanges) {
-                            { viewModel.onTimeRangesScheduleRemoveTimeRange(timeRange) }
-                        } else {
-                            { }
-                        }
-                    ) { newTimeRange -> viewModel.onTimeRangesScheduleChangeTimeRange(timeRange, newTimeRange) }
-                }
-
-                if (timeRangesSchedule.canAppendAnotherRange) {
-                    item {
-                        TimeRangeRow(
-                            modifier = Modifier
-                                .clickable { viewModel.onTimeRangesScheduleAddTimeRange() }
-                                .padding(horizontal = 8.dp)
-                                .alpha(ContentAlpha.medium),
-                            normalPillAppearance = checkedMaterialPillAppearance(
-                                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
-                            ),
-                            timeRange = null,
-                            enabled = false
-                        )
-                    }
-                }
+                RangesListContent(timeRangesSchedule, viewModel)
             }
 
             TextButton(onClick = onDialogDismiss, modifier = Modifier.align(Alignment.End)) {
                 Text(text = "DONE")
             }
+        }
+    }
+}
+
+@Suppress("FunctionName")
+private fun LazyListScope.RangesListContent(
+    timeRangesSchedule: TimeRangesSchedule,
+    viewModel: EnglebertViewModel
+) {
+    val items = timeRangesSchedule.timeRanges.withIndex().toList()
+
+    items(items = items) { (index, timeRange) ->
+        val minimumAllowedFrom = if (index > 0) items[index - 1].value.to else null
+        val maximumAllowedTo = if (index < items.count() - 1) items[index + 1].value.from else null
+
+        TimeRangeRow(
+            expandedPillAppearance = checkedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
+                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+            ),
+            normalPillAppearance = checkedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
+                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+            ),
+            timeRange = timeRange,
+            canBeRemoved = timeRangesSchedule.canRemoveRanges,
+            minimumAllowableFrom = minimumAllowedFrom,
+            maximumAllowableTo = maximumAllowedTo,
+            onRemoved = if (timeRangesSchedule.canRemoveRanges) {
+                { viewModel.onTimeRangesScheduleRemoveTimeRange(timeRange) }
+            } else {
+                { }
+            }
+        ) { newTimeRange -> viewModel.onTimeRangesScheduleChangeTimeRange(timeRange, newTimeRange) }
+    }
+
+    if (timeRangesSchedule.canAppendAnotherRange) {
+        item {
+            TimeRangeRow(
+                modifier = Modifier
+                    .clickable { viewModel.onTimeRangesScheduleAddTimeRange() }
+                    .padding(horizontal = 8.dp)
+                    .alpha(ContentAlpha.medium),
+                normalPillAppearance = checkedMaterialPillAppearance(
+                    backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
+                    contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                ),
+                timeRange = null,
+                enabled = false
+            )
         }
     }
 }

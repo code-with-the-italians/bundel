@@ -2,7 +2,7 @@
 
 package dev.sebastiano.bundel.preferences
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.foundation.clickable
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.util.pluralsResource
 import kotlinx.coroutines.flow.map
 
 @Preview
@@ -72,23 +73,36 @@ internal fun PreferencesScreen(
                     }
                     .collectAsState(initial = emptyList())
 
-                AnimatedVisibility(visible = daysResIds.isNotEmpty()) {
+                AnimatedContent(daysResIds) { resIds ->
                     @Suppress("SimplifiableCallChain") // joinToString is not inline so noooope
                     Text(
-                        text = daysResIds.map { stringResource(id = it) }.joinToString(", "),
+                        text = resIds.map { stringResource(id = it) }.joinToString(", "),
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier.alpha(ContentAlpha.disabled)
                     )
                 }
             }
             Divider()
-            Text(
-                text = "Active time ranges",
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onSelectTimeRangesClicked() }
                     .padding(16.dp)
-            )
+            ) {
+                Text(text = "Active time ranges")
+
+                val rangesCount by activeTimeRangesViewModel.timeRangesScheduleFlow
+                    .map { schedule -> schedule.size }
+                    .collectAsState(initial = 0)
+
+                AnimatedContent(rangesCount) { count ->
+                    Text(
+                        text = pluralsResource(R.plurals.settings_time_ranges_count, count, count),
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.alpha(ContentAlpha.disabled)
+                    )
+                }
+            }
             Divider()
             Text(
                 text = "Select apps",
