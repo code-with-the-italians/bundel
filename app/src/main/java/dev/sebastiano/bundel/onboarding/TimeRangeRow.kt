@@ -48,7 +48,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
@@ -84,6 +83,7 @@ import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
 import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
+import dev.sebastiano.bundel.util.appendIf
 import java.time.LocalTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
@@ -505,8 +505,9 @@ private fun TimePillButton(
     onClick: () -> Unit
 ) {
     MaterialPill(
-        modifier = modifier.clip(CircleShape)
-            .clickable(enabled, role = Role.Button, onClick = onClick),
+        modifier = modifier
+            .clip(CircleShape)
+            .appendIf(enabled) { clickable(role = Role.Button, onClick = onClick) },
         appearance = pillAppearance
     ) {
         // HACK we should be using tabular numbers on the text instead
