@@ -52,7 +52,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun AppsListScreen(
-    viewModel: InstalledAppsViewModel = hiltViewModel()
+    viewModel: ExcludedAppsViewModel = hiltViewModel()
 ) {
     val appFilterInfoList by viewModel.appFilterInfoFlow.collectAsState(initial = emptyList())
 

@@ -12,13 +12,16 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-internal class InstalledAppsViewModel @Inject constructor(
+internal class ExcludedAppsViewModel @Inject constructor(
     private val preferences: Preferences,
     packageManager: PackageManager
 ) : ViewModel() {
 
     private val excludedPackagesFlow = preferences.getExcludedPackages()
     private val installedApps = packageManager.getInstalledApplications(0)
+
+    val excludedAppsCountFlow = excludedPackagesFlow.map { it.count() }
+
     val appFilterInfoFlow = excludedPackagesFlow.map { excludedPackages ->
         computeApps(installedApps, excludedPackages, packageManager)
             .sortedBy { it.displayName }

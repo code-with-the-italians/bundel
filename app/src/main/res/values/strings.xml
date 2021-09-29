@@ -39,9 +39,19 @@
     <string name="menu_back_content_description">Back</string>
     <string name="app_filter_item_icon_content_description">Icon for %s</string>
     <string name="label_excluded">EXCLUDED</string>
+    <string name="settings">Settings</string>
+    <string name="settings_active_days">Active days</string>
+    <string name="settings_time_ranges">Active time ranges</string>
+    <string name="settings_exclude_apps">Exclude apps from filtering</string>
+    <string name="settings_about">About app</string>
 
     <plurals name="settings_time_ranges_count">
         <item quantity="one">%d time range</item>
         <item quantity="other">%d time ranges</item>
+    </plurals>
+
+    <plurals name="settings_excluded_apps_count">
+        <item quantity="one">%d excluded app</item>
+        <item quantity="other">%d excluded apps</item>
     </plurals>
 </resources>

@@ -49,6 +49,7 @@ private fun PreferencesScreenPreview() {
 internal fun PreferencesScreen(
     activeDaysViewModel: ActiveDaysViewModel = hiltViewModel(),
     activeTimeRangesViewModel: EnglebertViewModel = hiltViewModel(),
+    excludedAppsViewModel: ExcludedAppsViewModel = hiltViewModel(),
     onSelectAppsClicked: () -> Unit,
     onSelectDaysClicked: () -> Unit,
     onSelectTimeRangesClicked: () -> Unit,
@@ -58,61 +59,101 @@ internal fun PreferencesScreen(
         topBar = { PreferencesTopAppBar(onBackPress) }
     ) { _ ->
         Column(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelectDaysClicked() }
-                    .padding(16.dp)
-            ) {
-                Text(text = "Active days")
+            ActiveDaysRow(onSelectDaysClicked, activeDaysViewModel)
 
-                val daysResIds by activeDaysViewModel.daysScheduleFlow
-                    .map { daysMap ->
-                        daysMap.entries.filter { it.value }
-                            .map { it.key.displayResId }
-                    }
-                    .collectAsState(initial = emptyList())
-
-                AnimatedContent(daysResIds) { resIds ->
-                    @Suppress("SimplifiableCallChain") // joinToString is not inline so noooope
-                    Text(
-                        text = resIds.map { stringResource(id = it) }.joinToString(", "),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.alpha(ContentAlpha.disabled)
-                    )
-                }
-            }
             Divider()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelectTimeRangesClicked() }
-                    .padding(16.dp)
-            ) {
-                Text(text = "Active time ranges")
 
-                val rangesCount by activeTimeRangesViewModel.timeRangesScheduleFlow
-                    .map { schedule -> schedule.size }
-                    .collectAsState(initial = 0)
+            ActiveTimeRangesRow(onSelectTimeRangesClicked, activeTimeRangesViewModel)
 
-                AnimatedContent(rangesCount) { count ->
-                    Text(
-                        text = pluralsResource(R.plurals.settings_time_ranges_count, count, count),
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.alpha(ContentAlpha.disabled)
-                    )
-                }
-            }
             Divider()
+
+            ExcludedAppsRow(onSelectAppsClicked, excludedAppsViewModel)
+
+            Divider()
+
+            Text(text = stringResource(R.string.settings_about), modifier = Modifier.padding(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun ActiveDaysRow(onSelectDaysClicked: () -> Unit, activeDaysViewModel: ActiveDaysViewModel) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelectDaysClicked() }
+            .padding(16.dp)
+    ) {
+        Text(text = stringResource(R.string.settings_active_days))
+
+        val daysResIds by activeDaysViewModel.daysScheduleFlow
+            .map { daysMap ->
+                daysMap.entries.filter { it.value }
+                    .map { it.key.displayResId }
+            }
+            .collectAsState(initial = emptyList())
+
+        AnimatedContent(daysResIds) { resIds ->
+            @Suppress("SimplifiableCallChain") // joinToString is not inline so noooope
             Text(
-                text = "Select apps",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onSelectAppsClicked() }
-                    .padding(16.dp)
+                text = resIds.map { stringResource(id = it) }.joinToString(", "),
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.alpha(ContentAlpha.disabled)
             )
-            Divider()
-            Text(text = "About app", modifier = Modifier.padding(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun ActiveTimeRangesRow(
+    onSelectTimeRangesClicked: () -> Unit,
+    activeTimeRangesViewModel: EnglebertViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelectTimeRangesClicked() }
+            .padding(16.dp)
+    ) {
+        Text(text = stringResource(R.string.settings_time_ranges))
+
+        val rangesCount by activeTimeRangesViewModel.timeRangesScheduleFlow
+            .map { schedule -> schedule.size }
+            .collectAsState(initial = 0)
+
+        AnimatedContent(rangesCount) { count ->
+            Text(
+                text = pluralsResource(R.plurals.settings_time_ranges_count, count, count),
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.alpha(ContentAlpha.disabled)
+            )
+        }
+    }
+}
+
+@Composable
+@ExperimentalAnimationApi
+private fun ExcludedAppsRow(
+    onSelectAppsClicked: () -> Unit,
+    viewModel: ExcludedAppsViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelectAppsClicked() }
+            .padding(16.dp)
+    ) {
+        Text(text = stringResource(R.string.settings_exclude_apps))
+
+        val spiketacularAppsCount by viewModel.excludedAppsCountFlow
+            .collectAsState(initial = 0)
+
+        AnimatedContent(spiketacularAppsCount) { count ->
+            Text(
+                text = pluralsResource(R.plurals.settings_excluded_apps_count, count, count),
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.alpha(ContentAlpha.disabled)
+            )
         }
     }
 }
@@ -130,6 +171,6 @@ private fun PreferencesTopAppBar(
                 )
             }
         },
-        title = { Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4) }
+        title = { Text(stringResource(id = R.string.settings)) }
     )
 }
