@@ -1,6 +1,7 @@
 package dev.sebastiano.bundel
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
@@ -79,10 +80,14 @@ class MainActivity : AppCompatActivity() {
                         onOpenSettingsClick = { openNotificationsPreferences() }
                     )
                     mainScreenGraph(navController, lifecycle, repository, preferences)
-                    settingsGraph(navController)
+                    settingsGraph(navController, ::onOpenUrlClick)
                 }
             }
         }
+    }
+
+    private fun onOpenUrlClick(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
     @Composable

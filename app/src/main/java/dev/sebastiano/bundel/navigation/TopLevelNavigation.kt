@@ -39,7 +39,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalAnimationApi
-internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
+internal fun NavGraphBuilder.settingsGraph(
+    navController: NavHostController,
+    onUrlClick: (String) -> Unit
+) {
     navigation(
         route = NavigationRoute.SettingsGraph.route,
         startDestination = NavigationRoute.SettingsGraph.SettingsScreen.route
@@ -50,8 +53,11 @@ internal fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
             PreferencesScreen(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
                 onSelectDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectDays.route) },
-                onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) }
-            ) { navController.popBackStack() }
+                onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) },
+                onLicensesLinkClick = { TODO() },
+                onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
+                onBackPress = { navController.popBackStack() },
+            )
         }
 
         composable(
