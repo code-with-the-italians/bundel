@@ -44,7 +44,7 @@
     <string name="settings_time_ranges">Active time ranges</string>
     <string name="settings_exclude_apps">Exclude apps from filtering</string>
     <string name="settings_about">About app</string>
-    <string name="settings_app_version">App version: %s (%s)</string>
+    <string name="settings_app_version">App version: %1$s (%2$s)</string>
     <string name="settings_about_oss_prefix">"We use open source software: "</string>
     <string name="settings_about_oss_link">acknowledgements</string>
     <string name="settings_about_sources_prefix">"This app is open source software: "</string>
