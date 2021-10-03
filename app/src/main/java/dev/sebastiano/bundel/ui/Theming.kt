@@ -8,7 +8,12 @@ internal fun BundelTheme(
     darkModeOverride: Boolean? = null,
     content: @Composable () -> Unit
 ) {
-    MaterialTheme(bundelColors(darkModeOverride), bundelTypography) {
+    MaterialTheme(
+        colors = bundelColors(darkModeOverride),
+        typography = bundelTypography,
+        // some people just want to watch the world burn
+        shapes = MaterialTheme.shapes.copy(large = MaterialTheme.shapes.small)
+    ) {
         content()
     }
 }

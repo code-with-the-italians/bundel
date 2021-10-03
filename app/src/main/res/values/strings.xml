@@ -49,6 +49,7 @@
     <string name="settings_about_oss_link">acknowledgements</string>
     <string name="settings_about_sources_prefix">"This app is open source software: "</string>
     <string name="settings_about_sources_link">see the sources</string>
+    <string name="settings_active_days_blurb">Choose the days on which Bundel will be active.</string>
 
     <plurals name="settings_time_ranges_count">
         <item quantity="one">%d time range</item>

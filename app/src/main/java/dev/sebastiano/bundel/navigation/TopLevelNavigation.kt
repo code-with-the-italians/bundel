@@ -24,6 +24,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.bottomSheet
 import dev.sebastiano.bundel.MainScreenWithBottomNav
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
@@ -33,12 +35,17 @@ import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.preferences.SelectDaysDialog
 import dev.sebastiano.bundel.preferences.SelectTimeRangesDialog
 import dev.sebastiano.bundel.storage.DataRepository
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
-@ExperimentalAnimationApi
+@OptIn(
+    ExperimentalComposeUiApi::class,
+    ExperimentalMaterialNavigationApi::class,
+    ExperimentalAnimationApi::class,
+    FlowPreview::class
+)
 internal fun NavGraphBuilder.settingsGraph(
     navController: NavHostController,
     onUrlClick: (String) -> Unit
@@ -66,10 +73,7 @@ internal fun NavGraphBuilder.settingsGraph(
             AppsListScreen()
         }
 
-        dialog(
-            route = NavigationRoute.SettingsGraph.SelectDays.route,
-            dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
+        bottomSheet(route = NavigationRoute.SettingsGraph.SelectDays.route) {
             SelectDaysDialog(onDialogDismiss = { navController.popBackStack() })
         }
 

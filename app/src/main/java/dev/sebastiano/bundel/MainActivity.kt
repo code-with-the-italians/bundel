@@ -14,6 +14,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,36 +54,45 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var preferences: Preferences
 
-    @OptIn(ExperimentalAnimationApi::class)
+    @OptIn(
+        ExperimentalAnimationApi::class,
+        ExperimentalMaterialNavigationApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberAnimatedNavController()
+            val bottomSheetNavigator = rememberBottomSheetNavigator()
+            val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val systemUiController = rememberSystemUiController()
 
             BundelTheme {
                 SetupSystemUi(systemUiController)
 
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = NavigationRoute.SplashScreen.route,
-                    enterTransition = { initial, target -> defaultEnterTransition(initial, target) },
-                    exitTransition = { initial, target -> defaultExitTransition(initial, target) },
-                    popEnterTransition = { _, _ -> defaultPopEnterTransition() },
-                    popExitTransition = { _, _ -> defaultPopExitTransition() }
+                ModalBottomSheetLayout(
+                    bottomSheetNavigator,
+                    sheetShape = MaterialTheme.shapes.small
                 ) {
-                    splashScreenGraph(preferences) { navigationRoute ->
-                        navController.navigate(navigationRoute.route)
-                    }
-                    onboardingGraph(
+                    AnimatedNavHost(
                         navController = navController,
-                        needsNotificationsPermissionFlow = needsNotificationsPermission,
-                        preferences = preferences,
-                        onOpenSettingsClick = { openNotificationsPreferences() }
-                    )
-                    mainScreenGraph(navController, lifecycle, repository, preferences)
-                    settingsGraph(navController, ::onOpenUrlClick)
+                        startDestination = NavigationRoute.SplashScreen.route,
+                        enterTransition = { initial, target -> defaultEnterTransition(initial, target) },
+                        exitTransition = { initial, target -> defaultExitTransition(initial, target) },
+                        popEnterTransition = { _, _ -> defaultPopEnterTransition() },
+                        popExitTransition = { _, _ -> defaultPopExitTransition() }
+                    ) {
+                        splashScreenGraph(preferences) { navigationRoute ->
+                            navController.navigate(navigationRoute.route)
+                        }
+                        onboardingGraph(
+                            navController = navController,
+                            needsNotificationsPermissionFlow = needsNotificationsPermission,
+                            preferences = preferences,
+                            onOpenSettingsClick = { openNotificationsPreferences() }
+                        )
+                        mainScreenGraph(navController, lifecycle, repository, preferences)
+                        settingsGraph(navController, ::onOpenUrlClick)
+                    }
                 }
             }
         }

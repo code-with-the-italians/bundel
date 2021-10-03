@@ -142,7 +142,7 @@ private fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = verticalScreenPadding)
         ) {
-            val pagerState = rememberPagerState(pageCount = 5)
+            val pagerState = rememberPagerState()
             val onboardingPagerState = OnboardingPagerState(
                 pagerState = pagerState,
                 introPageState = introPageState,
@@ -271,7 +271,7 @@ private data class OnboardingPagerState(
 
 @Composable
 private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
-    HorizontalPager(state.pagerState, dragEnabled = false, modifier = Modifier.weight(1F)) {
+    HorizontalPager(count = 5, state = state.pagerState, modifier = Modifier.weight(1F)) {
         when (OnboardingPage.values()[it]) {
             OnboardingPage.Intro -> IntroPage(state.introPageState)
             OnboardingPage.NotificationsPermission -> NotificationsAccessPage(state.notificationsAccessPageState)
