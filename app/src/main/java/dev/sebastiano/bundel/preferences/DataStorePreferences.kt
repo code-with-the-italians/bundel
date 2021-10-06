@@ -82,7 +82,7 @@ internal class DataStorePreferences(
     override fun getDaysSchedule(): Flow<Map<WeekDay, Boolean>> =
         dataStore.data.map { it.scheduleDaysMap }
             .map { rawMap ->
-                rawMap.mapKeys { WeekDay.valueOf(it.key) }.toMap()
+                rawMap.mapKeys { WeekDay.valueOf(it.key) }
                     .takeIf { it.isNotEmpty() } ?: DEFAULT_DAYS_SCHEDULE
             }
 

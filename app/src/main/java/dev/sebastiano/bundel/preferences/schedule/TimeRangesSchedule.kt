@@ -35,8 +35,7 @@ internal class TimeRangesSchedule private constructor(
         require(oldIndex >= 0) { "Range not found: $old" }
 
         val newRanges = ranges.toMutableList()
-        newRanges.removeAt(oldIndex)
-        newRanges.add(oldIndex, new)
+        newRanges[oldIndex] = new
 
         return of(newRanges)
     }
