@@ -4,7 +4,9 @@ import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.storage.model.DbNotification
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class DataRepository @Inject constructor(
     private val database: RobertoDatabase,
     private val imagesStorage: ImagesStorage

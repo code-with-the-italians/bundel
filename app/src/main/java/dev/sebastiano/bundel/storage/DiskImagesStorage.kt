@@ -11,8 +11,11 @@ import dev.sebastiano.bundel.storage.ImagesStorage.NotificationIconSize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
-internal class DiskImagesStorage(
+@Singleton
+internal class DiskImagesStorage @Inject constructor(
     private val application: Application
 ) : ImagesStorage {
 
