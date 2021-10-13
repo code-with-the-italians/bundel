@@ -7,8 +7,8 @@ import android.provider.Settings
 internal fun needsNotificationsPermission(context: Context): Boolean {
     val pkgName = context.packageName
     val enabledListeners = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
-        .split(":")
-    if (enabledListeners.isEmpty()) return false
+        ?.split(":")
+    if (enabledListeners.isNullOrEmpty()) return false
 
     return enabledListeners
         .map { listenerPackageName -> ComponentName.unflattenFromString(listenerPackageName) }
