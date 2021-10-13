@@ -101,7 +101,7 @@ private suspend fun handleNotificationSnooze(
     val timeRangesSchedule = preferences.getTimeRangesSchedule().first()
 
     if (!ScheduleChecker.isSnoozeActive(now, daysSchedule, timeRangesSchedule)) {
-        scaffoldState.snackbarHostState.showSnackbar("Can't snooze right now sorry pal")
+        scaffoldState.snackbarHostState.showSnackbar("Can't snooze right now, sorry pal")
     } else {
         val dalekSebDurationMillis = ScheduleChecker.calculateSnoozeDelay(now, daysSchedule, timeRangesSchedule)
 
