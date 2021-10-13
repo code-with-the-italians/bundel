@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
@@ -204,6 +205,7 @@ private fun ExcludedLabel(
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun AppIcon(
     appIcon: Drawable?,
