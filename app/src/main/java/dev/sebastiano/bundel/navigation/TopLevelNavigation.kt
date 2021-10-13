@@ -61,7 +61,7 @@ internal fun NavGraphBuilder.settingsGraph(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
                 onSelectDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectDays.route) },
                 onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) },
-                onLicensesLinkClick = { TODO() },
+                onLicensesLinkClick = { navController.navigate(NavigationRoute.SettingsGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
                 onBackPress = { navController.popBackStack() },
             )
@@ -71,6 +71,12 @@ internal fun NavGraphBuilder.settingsGraph(
             route = NavigationRoute.SettingsGraph.SelectApps.route
         ) {
             AppsListScreen(onBackPress = { navController.popBackStack() })
+        }
+
+        composable(
+            route = NavigationRoute.SettingsGraph.Licenses.route
+        ) {
+            LicensesScreen(onBackPress = { navController.popBackStack() })
         }
 
         bottomSheet(route = NavigationRoute.SettingsGraph.SelectDays.route) {

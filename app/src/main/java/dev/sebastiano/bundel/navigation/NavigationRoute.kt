@@ -42,6 +42,8 @@ internal sealed class NavigationRoute(val route: String) {
         object SelectDays : NavigationRoute("settings.babbadibuppi")
 
         object SelectTimeRanges : NavigationRoute("settings.time-ranges")
+
+        object Licenses : NavigationRoute("settings.absentFriends")
     }
 
     interface BottomNavNavigationRoute {

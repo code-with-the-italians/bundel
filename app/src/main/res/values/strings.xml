@@ -51,6 +51,7 @@
     <string name="settings_about_sources_link">see the sources</string>
     <string name="settings_active_days_blurb">Choose the days on which Bundel will be active.</string>
     <string name="settings_exclude_apps_title">Exclude apps</string>
+    <string name="preferences_licenses_title">Open source licenses</string>
 
     <plurals name="settings_time_ranges_count">
         <item quantity="one">%d time range</item>
