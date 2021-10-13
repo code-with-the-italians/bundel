@@ -70,7 +70,7 @@ internal fun NavGraphBuilder.settingsGraph(
         composable(
             route = NavigationRoute.SettingsGraph.SelectApps.route
         ) {
-            AppsListScreen()
+            AppsListScreen(onBackPress = { navController.popBackStack() })
         }
 
         bottomSheet(route = NavigationRoute.SettingsGraph.SelectDays.route) {

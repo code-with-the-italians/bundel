@@ -59,7 +59,7 @@ internal fun PreferencesScreen(
     onBackPress: () -> Unit
 ) {
     Scaffold(
-        topBar = { PreferencesTopAppBar(onBackPress) }
+        topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) }
     ) { _ ->
         Column(modifier = Modifier.fillMaxSize()) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
@@ -80,7 +80,8 @@ internal fun PreferencesScreen(
 }
 
 @Composable
-private fun PreferencesTopAppBar(
+internal fun PreferencesTopAppBar(
+    title: String,
     onBackPress: () -> Unit
 ) {
     TopAppBar(
@@ -92,7 +93,7 @@ private fun PreferencesTopAppBar(
                 )
             }
         },
-        title = { Text(stringResource(id = R.string.settings)) }
+        title = { Text(title) }
     )
 }
 

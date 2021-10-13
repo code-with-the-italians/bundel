@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -52,19 +53,29 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun AppsListScreen(
-    viewModel: ExcludedAppsViewModel = hiltViewModel()
+    viewModel: ExcludedAppsViewModel = hiltViewModel(),
+    onBackPress: () -> Unit
 ) {
     val appFilterInfoList by viewModel.appFilterInfoFlow.collectAsState(initial = emptyList())
 
-    // TODO Add Scaffold
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(items = appFilterInfoList, key = { it.packageName }) { appFilterInfo ->
-            AppToggleItem(
-                appInfo = appFilterInfo.appInfo,
-                icon = appFilterInfo.appIcon,
-                filterState = if (appFilterInfo.isExcluded) AppFilterState.Excluded else AppFilterState.Included,
-                onItemClicked = { viewModel.setAppNotificationsExcluded(appFilterInfo.packageName, !appFilterInfo.isExcluded) }
+    Scaffold(
+        modifier = Modifier.fillMaxWidth(),
+        topBar = {
+            PreferencesTopAppBar(
+                title = stringResource(R.string.settings_exclude_apps_title),
+                onBackPress = onBackPress,
             )
+        }
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(items = appFilterInfoList, key = { it.packageName }) { appFilterInfo ->
+                AppToggleItem(
+                    appInfo = appFilterInfo.appInfo,
+                    icon = appFilterInfo.appIcon,
+                    filterState = if (appFilterInfo.isExcluded) AppFilterState.Excluded else AppFilterState.Included,
+                    onItemClicked = { viewModel.setAppNotificationsExcluded(appFilterInfo.packageName, !appFilterInfo.isExcluded) }
+                )
+            }
         }
     }
 }
