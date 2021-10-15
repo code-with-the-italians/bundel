@@ -10,6 +10,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
     id("dagger.hilt.android.plugin")
     id("com.google.protobuf")
     id("io.gitlab.arturbosch.detekt")
@@ -31,10 +32,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -62,7 +61,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs = listOf(
-            "-Xallow-jvm-ir-dependencies",
             "-Xopt-in=kotlin.RequiresOptIn",
             "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
         )
@@ -81,7 +79,7 @@ android {
 }
 
 detekt {
-    input = files("src/main/java", "src/main/kotlin")
+    source = files("src/main/java", "src/main/kotlin")
     config = rootProject.files("build-config/detekt.yml")
     buildUponDefaultConfig = true
     reports {
@@ -119,7 +117,7 @@ dependencies {
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    kapt(libs.androidx.room.roomCompiler)
+    ksp(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
 
     debugImplementation(libs.androidx.compose.uiTest.manifest)
