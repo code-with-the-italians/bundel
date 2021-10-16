@@ -15,6 +15,7 @@ gradlePlugins-detekt="1.18.1"
 gradlePlugins-gms="4.3.10"
 gradlePlugins-junit5="1.8.0.0"
 gradlePlugins-kotlinter="3.6.0"
+gradlePlugins-ksp="1.5.31-1.0.0"
 gradlePlugins-protobuf="0.8.17"
 gradlePlugins-versionsBenManes="0.39.0"
 junit="5.8.1"
@@ -94,3 +95,17 @@ hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCo
 hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
 lifecycle=["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
 room=["androidx-room-roomKtx", "androidx-room-roomRuntime"]
+
+[plugins]
+android={ id="com.android.application", version.ref="gradlePlugins-agp" }
+crashlytics={ id="com.google.firebase.crashlytics", version.ref="gradlePlugins-crashlytics" }
+detekt={ id="io.gitlab.arturbosch.detekt", version.ref="gradlePlugins-detekt" }
+googleServices={ id="com.google.gms.google-services", version.ref="gradlePlugins-gms" }
+hilt={ id="dagger.hilt.android.plugin", version.ref="daggerHilt" }
+junit5={ id="de.mannodermaus.android-junit5", version.ref="gradlePlugins-junit5" }
+kotlinAndroid={ id="org.jetbrains.kotlin.android", version.ref="kotlin" }
+kapt={ id="org.jetbrains.kotlin.kapt", version.ref="kotlin" }
+kotlinter={ id="org.jmailen.kotlinter", version.ref="gradlePlugins-kotlinter" }
+ksp={ id="com.google.devtools.ksp", version.ref="gradlePlugins-ksp" }
+protobuf={ id="com.google.protobuf", version.ref="gradlePlugins-protobuf" }
+versionsBenManes={ id="com.github.ben-manes.versions", version.ref="gradlePlugins-versionsBenManes" }

@@ -15,9 +15,8 @@ buildscript {
 
     repositories {
         google()
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
+        gradlePluginPortal()
+        mavenCentral()
     }
 }
 
@@ -29,9 +28,8 @@ allprojects {
     buildscript {
         repositories {
             google()
-            maven {
-                url = uri("https://plugins.gradle.org/m2/")
-            }
+            gradlePluginPortal()
+            mavenCentral()
         }
     }
 
