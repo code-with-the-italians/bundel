@@ -27,7 +27,7 @@ lifecycle="2.4.0-rc01"
 lifecycleViewmodelCompose="1.0.0-alpha07"
 navigationCompose="2.4.0-alpha10"
 protobuf="3.10.0"
-room="2.4.0-alpha04"
+room="2.4.0-beta01"
 timber="5.0.1"
 
 [libraries]
