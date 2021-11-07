@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId = "dev.sebastiano.bundel"
         minSdk = 26
-        targetSdk = 30
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
 
