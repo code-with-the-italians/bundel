@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.contentColorFor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,12 +24,12 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 
 @Composable
 @Preview
 internal fun ChipPreview() {
-    BundelTheme {
+    BundelYouTheme {
         Surface {
             var checked by remember { mutableStateOf(false) }
             MaterialChip(
@@ -83,7 +83,7 @@ internal fun MaterialChip(
 
 @Composable
 internal fun checkedMaterialPillAppearance(
-    backgroundColor: Color = MaterialTheme.colors.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
     contentColor: Color = contentColorFor(backgroundColor),
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp
@@ -91,7 +91,7 @@ internal fun checkedMaterialPillAppearance(
 
 @Composable
 internal fun uncheckedMaterialPillAppearance(
-    backgroundColor: Color = MaterialTheme.colors.onSurface.copy(alpha = .54f),
+    backgroundColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = .54f),
     contentColor: Color = contentColorFor(backgroundColor),
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp
@@ -107,7 +107,7 @@ internal data class MaterialPillAppearance(
 @Composable
 @Preview
 private fun PillPreview() {
-    BundelTheme {
+    BundelYouTheme {
         Surface {
             MaterialPill {
                 Text("I am a pill hello")
@@ -134,7 +134,7 @@ internal fun MaterialPill(
         color = backgroundColor,
         contentColor = contentColor,
         border = BorderStroke(borderWidth, borderColor),
-        elevation = elevation,
+        tonalElevation = elevation,
         modifier = modifier
     ) {
         Box(modifier = Modifier.padding(contentPadding)) {

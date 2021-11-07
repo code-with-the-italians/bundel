@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,8 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
 import dev.sebastiano.bundel.onboarding.DaysPicker
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.onStart
@@ -49,6 +47,7 @@ internal fun SelectDaysDialog(
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // TODO don't use flow operators in composition
         val daysSchedule by viewModel.daysScheduleFlow
             .onStart { delay(WACKY_RACES_CONDITION) }
             .collectAsState(initial = emptyMap())
@@ -61,12 +60,12 @@ internal fun SelectDaysDialog(
                 .fillMaxWidth()
                 .padding(horizontal = 48.dp),
             checkedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
             uncheckedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
         )
 

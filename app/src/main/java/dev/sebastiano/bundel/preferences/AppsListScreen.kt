@@ -21,10 +21,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,13 +45,13 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
 import dev.sebastiano.bundel.ui.overlay.animatedOverlay
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppsListScreen(
     viewModel: ExcludedAppsViewModel = hiltViewModel(),
@@ -91,7 +91,7 @@ private enum class AppFilterState {
 @Composable
 private fun AppToggleItemPreview() {
     var filterState by remember { mutableStateOf(AppFilterState.Included) }
-    BundelTheme {
+    BundelYouTheme {
         Surface {
             AppToggleItem(
                 appInfo = AppInfo(packageName = "com.my.package.name", label = "My fancy app"),
@@ -141,7 +141,7 @@ private fun AppToggleItem(
             if (appInfo.label != null) {
                 Text(
                     text = appInfo.packageName,
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.alpha(ContentAlpha.medium)
                 )
             }
@@ -198,7 +198,7 @@ private fun ExcludedLabel(
     ) {
         Text(
             text = stringResource(id = R.string.label_excluded),
-            fontSize = MaterialTheme.typography.caption.fontSize,
+            fontSize = MaterialTheme.typography.bodySmall.fontSize,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
         )
@@ -219,7 +219,7 @@ private fun AppIcon(
         if (targetFilterState == AppFilterState.Included) 0f else 1f
     }
     val overlay = StrikethroughOverlay(
-        color = MaterialTheme.colors.onSurface,
+        color = MaterialTheme.colorScheme.onSurface,
         widthDp = 4.dp,
         getProgress = { strikethroughProgress }
     )

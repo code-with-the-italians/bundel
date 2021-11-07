@@ -16,13 +16,13 @@ import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.notificationslist.NotificationItem
 import dev.sebastiano.bundel.notificationslist.NotificationsListEmptyState
 import dev.sebastiano.bundel.storage.DiskImagesStorage
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 
 @Preview
 @Composable
 fun NotificationsHistoryEmptyLightPreview() {
-    BundelTheme {
+    BundelYouTheme {
         NotificationsHistoryScreen(persistableNotifications = emptyList())
     }
 }
@@ -30,7 +30,7 @@ fun NotificationsHistoryEmptyLightPreview() {
 @Preview
 @Composable
 fun NotificationsHistoryEmptyDarkPreview() {
-    BundelTheme(darkModeOverride = true) {
+    BundelYouTheme(darkTheme = true) {
         NotificationsHistoryScreen(persistableNotifications = emptyList())
     }
 }
@@ -46,7 +46,7 @@ private val persistableNotification = PersistableNotification(
 @Preview
 @Composable
 fun NotificationsHistoryLightPreview() {
-    BundelTheme {
+    BundelYouTheme {
         NotificationsHistoryScreen(
             persistableNotifications = listOf(persistableNotification)
         )
@@ -56,7 +56,7 @@ fun NotificationsHistoryLightPreview() {
 @Preview
 @Composable
 fun NotificationsHistoryDarkPreview() {
-    BundelTheme(darkModeOverride = true) {
+    BundelYouTheme(darkTheme = true) {
         NotificationsHistoryScreen(
             persistableNotifications = listOf(persistableNotification)
         )

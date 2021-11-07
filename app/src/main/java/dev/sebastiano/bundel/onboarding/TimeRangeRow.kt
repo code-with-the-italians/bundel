@@ -30,16 +30,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowDropUp
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,10 +78,8 @@ import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
 import dev.sebastiano.bundel.preferences.schedule.PartOfHour
 import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
-import dev.sebastiano.bundel.ui.BundelTheme
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
+import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.appendIf
 import java.time.LocalTime
@@ -96,11 +94,11 @@ internal class OnboardingPreviews {
     @Preview(name = "Inactive Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowOnboardingInactivePreview() {
-        BundelOnboardingTheme {
+        BundelOnboardingYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
-                    pickerBackgroundColor = MaterialTheme.colors.secondary,
+                    pickerBackgroundColor = MaterialTheme.colorScheme.secondary,
                     enabled = false
                 )
             }
@@ -112,11 +110,11 @@ internal class OnboardingPreviews {
     @Preview(name = "Active Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowOnboardingActivePreview() {
-        BundelOnboardingTheme {
+        BundelOnboardingYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
-                    pickerBackgroundColor = MaterialTheme.colors.secondary,
+                    pickerBackgroundColor = MaterialTheme.colorScheme.secondary,
                     timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
                     enabled = true,
                     canBeRemoved = true
@@ -134,17 +132,17 @@ internal class AppThemePreviews {
     @Preview(name = "Inactive Night", group = "App theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowInactivePreview() {
-        BundelTheme {
+        BundelYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
                     expandedPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
                     normalPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                     ),
                     enabled = false
                 )
@@ -157,17 +155,17 @@ internal class AppThemePreviews {
     @Preview(name = "Active Night", group = "App theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowActivePreview() {
-        BundelTheme {
+        BundelYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
                     expandedPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
                     normalPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                        contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                     ),
                     timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
                     enabled = true,
@@ -183,7 +181,7 @@ internal fun TimeRangeRow(
     modifier: Modifier = Modifier,
     expandedPillAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
     normalPillAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
-    pickerBackgroundColor: Color = MaterialTheme.colors.surface,
+    pickerBackgroundColor: Color = MaterialTheme.colorScheme.surface,
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
     canBeRemoved: Boolean = false,
@@ -288,7 +286,7 @@ private fun RemoveIcon(
 private fun ColumnScope.ExpandableTimePicker(
     expanded: ExpandedRangeExtremity,
     @Px stemPosition: Float,
-    backgroundColor: Color = MaterialTheme.colors.primary,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
     timeRange: TimeRange?,
     minimumAllowableFrom: LocalTime?,
     maximumAllowableTo: LocalTime?,
@@ -402,10 +400,10 @@ private fun TimePicker(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        val textStyle = MaterialTheme.typography.h2
+        val textStyle = MaterialTheme.typography.headlineLarge
         var selectedPart by remember { mutableStateOf(PartOfHour.HOUR) }
 
-        val selectedPartColor = MaterialTheme.colors.primary
+        val selectedPartColor = MaterialTheme.colorScheme.primary
 
         val numbersSlidingAnimation: AnimatedContentScope<Int>.() -> ContentTransform = {
             if (initialState > targetState) {

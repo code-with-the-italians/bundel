@@ -12,9 +12,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -35,7 +35,7 @@ import dev.sebastiano.bundel.util.currentOrientation
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun HoursSchedulePagePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             ScheduleHoursPage(HoursSchedulePageState())
         }
@@ -47,7 +47,7 @@ private fun HoursSchedulePagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 622, heightDp = 422)
 @Composable
 private fun HoursSchedulePageLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             ScheduleHoursPage(HoursSchedulePageState(), orientation = Orientation.Landscape)
         }
@@ -108,7 +108,7 @@ internal fun ScheduleHoursPage(
                 val maximumAllowedTo = if (index < items.count() - 1) items[index + 1].value.from else null
 
                 TimeRangeRow(
-                    pickerBackgroundColor = MaterialTheme.colors.secondary,
+                    pickerBackgroundColor = MaterialTheme.colorScheme.secondary,
                     timeRange = timeRange,
                     canBeRemoved = hoursSchedulePageState.timeRangesSchedule.canRemoveRanges,
                     minimumAllowableFrom = minimumAllowedFrom,
@@ -127,7 +127,7 @@ internal fun ScheduleHoursPage(
                 item {
                     Box(modifier = Modifier.clickable { hoursSchedulePageState.onAddTimeRange() }) {
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-                            TimeRangeRow(pickerBackgroundColor = MaterialTheme.colors.secondary, timeRange = null, enabled = false)
+                            TimeRangeRow(pickerBackgroundColor = MaterialTheme.colorScheme.secondary, timeRange = null, enabled = false)
                         }
                     }
                 }

@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,10 +33,8 @@ import dev.sebastiano.bundel.composables.MaterialPillAppearance
 import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
 import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
-import dev.sebastiano.bundel.ui.BundelTheme
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
+import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -45,7 +43,7 @@ import java.util.Locale
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun DaysSchedulePagePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             DaysSchedulePage(DaysSchedulePageState())
         }
@@ -55,7 +53,7 @@ private fun DaysSchedulePagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
 @Composable
 private fun DaysSchedulePageLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             DaysSchedulePage(DaysSchedulePageState(), orientation = Orientation.Landscape)
         }
@@ -109,8 +107,8 @@ internal fun DaysSchedulePage(
 
 @Preview(group = "DaysPicker", showBackground = true)
 @Composable
-private fun DaysPickerBundelThemePreview() {
-    BundelTheme {
+private fun DaysPickerBundelYouThemePreview() {
+    BundelYouTheme {
         var daysSchedule by remember {
             mutableStateOf(WeekDay.values().associate { it to true })
         }
@@ -123,12 +121,12 @@ private fun DaysPickerBundelThemePreview() {
             },
             chipsSpacing = singlePadding(),
             checkedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
             ),
             uncheckedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             )
         )
     }
@@ -137,7 +135,7 @@ private fun DaysPickerBundelThemePreview() {
 @Preview(group = "DaysPicker", showBackground = true)
 @Composable
 private fun DaysPickerOnboardingThemePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         var daysSchedule by remember {
             mutableStateOf(WeekDay.values().associate { it to true })
         }
@@ -179,7 +177,7 @@ internal fun DaysPicker(
             ) {
                 Text(
                     text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
-                    style = MaterialTheme.typography.body1.plus(TextStyle(fontWeight = FontWeight.Medium))
+                    style = MaterialTheme.typography.bodyLarge.plus(TextStyle(fontWeight = FontWeight.Medium))
                 )
             }
         }

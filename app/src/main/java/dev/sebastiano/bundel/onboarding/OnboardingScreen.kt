@@ -25,13 +25,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ButtonDefaults.buttonColors
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.buttonColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,7 +53,7 @@ import com.google.accompanist.pager.rememberPagerState
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -63,7 +63,7 @@ import java.util.Locale
 @Preview(name = "Onboarding screen", showSystemUi = true)
 @Composable
 private fun OnboardingScreenPreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             OnboardingScreen()
         }
@@ -73,7 +73,7 @@ private fun OnboardingScreenPreview() {
 @Preview(name = "Onboarding screen (landscape)", widthDp = 822, heightDp = 392)
 @Composable
 private fun OnboardingScreenLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             OnboardingScreen(orientation = Orientation.Landscape)
         }
@@ -83,7 +83,7 @@ private fun OnboardingScreenLandscapePreview() {
 @Preview(name = "Onboarding screen (dark theme)", showSystemUi = true)
 @Composable
 private fun OnboardingScreenDarkThemePreview() {
-    BundelOnboardingTheme(darkModeOverride = true) {
+    BundelOnboardingYouTheme(darkTheme = true) {
         Surface {
             OnboardingScreen()
         }
@@ -97,7 +97,7 @@ internal fun OnboardingScreen(
     onSettingsIntentClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit
 ) {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
         val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
         val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
@@ -177,7 +177,7 @@ internal enum class OnboardingPage(
 @Preview(name = "Onboarding header (landscape)", widthDp = 600)
 @Composable
 private fun OnboardingHeaderLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             Column(Modifier.fillMaxWidth()) {
                 OnboardingHeader(
@@ -208,7 +208,7 @@ private fun ColumnScope.OnboardingHeader(
                 modifier = Modifier.size(72.dp)
             )
             Spacer(modifier = Modifier.width(24.dp))
-            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h2)
+            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge)
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -226,7 +226,7 @@ private fun ColumnScope.OnboardingHeader(
             )
             Spacer(modifier = Modifier.width(16.dp))
 
-            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.h3)
+            Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
 
             AnimatedContent(
                 targetState = pageIndex,
@@ -256,7 +256,7 @@ internal fun PageTitle(text: String, textAlign: TextAlign = TextAlign.Center) {
     Text(
         text = text,
         textAlign = textAlign,
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -293,7 +293,7 @@ internal fun Modifier.onboardingPageModifier(orientation: Orientation) =
 @Preview
 @Composable
 private fun AllSetPagePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             AllSetPage()
         }
@@ -303,7 +303,7 @@ private fun AllSetPagePreview() {
 @Preview(widthDp = 822, heightDp = 392)
 @Composable
 private fun AllSetPageLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             AllSetPage(orientation = Orientation.Landscape)
         }
@@ -360,10 +360,10 @@ private fun ActionsRow(
     Box(modifier = Modifier.fillMaxWidth()) {
         val scope = rememberCoroutineScope()
         val buttonColors = buttonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = MaterialTheme.colors.onSurface
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface
         )
-        val buttonElevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp)
+        val buttonElevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp)
 
         AnimatedVisibility(
             visible = pagerState.currentPage > 0,

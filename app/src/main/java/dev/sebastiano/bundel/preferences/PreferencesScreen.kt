@@ -15,13 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,12 +42,13 @@ import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.util.appendIf
 import dev.sebastiano.bundel.util.pluralsResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PreferencesScreen(
     activeDaysViewModel: ActiveDaysViewModel = hiltViewModel(),
@@ -85,7 +87,7 @@ internal fun PreferencesTopAppBar(
     title: String,
     onBackPress: () -> Unit
 ) {
-    TopAppBar(
+    SmallTopAppBar(
         navigationIcon = {
             IconButton(onClick = onBackPress) {
                 Icon(
@@ -109,6 +111,7 @@ private fun ActiveDaysRow(
     ) {
         Text(text = stringResource(R.string.settings_active_days))
 
+        // TODO don't use flow operators in composition
         val daysResIds by daysScheduleFlow
             .map { daysMap ->
                 daysMap.entries.filter { it.value }
@@ -120,7 +123,7 @@ private fun ActiveDaysRow(
             @Suppress("SimplifiableCallChain") // joinToString is not inline so noooope
             Text(
                 text = resIds.map { stringResource(id = it) }.joinToString(", "),
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.alpha(ContentAlpha.disabled)
             )
         }
@@ -138,6 +141,7 @@ private fun ActiveTimeRangesRow(
     ) {
         Text(text = stringResource(R.string.settings_time_ranges))
 
+        // TODO don't use flow operators in composition
         val rangesCount by timeRangesFlow
             .map { schedule -> schedule.size }
             .collectAsState(initial = 0)
@@ -145,7 +149,7 @@ private fun ActiveTimeRangesRow(
         AnimatedContent(rangesCount) { count ->
             Text(
                 text = pluralsResource(R.plurals.settings_time_ranges_count, count, count),
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.alpha(ContentAlpha.disabled)
             )
         }
@@ -169,7 +173,7 @@ private fun ExcludedAppsRow(
         AnimatedContent(spiketacularAppsCount) { count ->
             Text(
                 text = pluralsResource(R.plurals.settings_excluded_apps_count, count, count),
-                style = MaterialTheme.typography.caption,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.alpha(ContentAlpha.disabled)
             )
         }
@@ -179,7 +183,7 @@ private fun ExcludedAppsRow(
 @Preview
 @Composable
 fun AboutAppRowPreview() {
-    BundelTheme {
+    BundelYouTheme {
         Surface {
             AboutAppRow(onSourcesLinkClick = {}, onLicensesLinkClick = { })
         }
@@ -197,15 +201,15 @@ private fun AboutAppRow(
     ) {
         Text(text = stringResource(R.string.settings_about))
 
-        val baseTextStyle = MaterialTheme.typography.caption
-            .copy(MaterialTheme.typography.caption.color.copy(ContentAlpha.disabled))
+        val baseTextStyle = MaterialTheme.typography.bodySmall
+            .copy(MaterialTheme.typography.bodySmall.color.copy(ContentAlpha.disabled))
         Text(
             text = stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE),
             style = baseTextStyle,
         )
 
         val linkSpanStyle = SpanStyle(
-            color = MaterialTheme.colors.primaryVariant,
+            color = MaterialTheme.colorScheme.tertiary,
             fontWeight = FontWeight.Medium,
         )
 
@@ -231,8 +235,8 @@ private fun AboutAppRow(
 fun AnnotatedClickableText(
     prefixText: String,
     linkText: String,
-    textStyle: TextStyle = MaterialTheme.typography.body1,
-    linkSpanStyle: SpanStyle = SpanStyle(color = MaterialTheme.colors.primary, fontWeight = FontWeight.Bold),
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    linkSpanStyle: SpanStyle = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold),
     onClick: () -> Unit,
 ) {
     val annotatedText = buildAnnotatedString {

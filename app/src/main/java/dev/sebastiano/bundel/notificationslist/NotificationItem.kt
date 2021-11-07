@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.sebastiano.bundel.notificationslist
 
@@ -27,18 +27,19 @@ import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.rounded.BrokenImage
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
@@ -64,10 +65,8 @@ import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
 import dev.sebastiano.bundel.storage.ImagesStorage
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.iconSize
-import dev.sebastiano.bundel.ui.notificationSnoozeBackground
-import dev.sebastiano.bundel.ui.notificationSnoozeForeground
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
@@ -104,7 +103,7 @@ private fun previewNotification(context: Context) = ActiveNotification(
 @Preview
 @Composable
 private fun NotificationItemLightPreview() {
-    BundelTheme {
+    BundelYouTheme {
         SnoozableNotificationItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
@@ -116,7 +115,7 @@ private fun NotificationItemLightPreview() {
 @Preview
 @Composable
 private fun NotificationItemDarkPreview() {
-    BundelTheme(darkModeOverride = true) {
+    BundelYouTheme(darkTheme = true) {
         SnoozableNotificationItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
@@ -125,6 +124,7 @@ private fun NotificationItemDarkPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod") // Kinda has to be :(
 @Composable
 internal fun SnoozableNotificationItem(
@@ -205,7 +205,7 @@ private fun SnoozeBackground(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = MaterialTheme.colors.notificationSnoozeBackground,
+                color = MaterialTheme.colorScheme.tertiary,
                 shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f)),
             ),
     ) {
@@ -216,7 +216,7 @@ private fun SnoozeBackground(
             Icon(
                 Icons.Default.Timer,
                 contentDescription = "Snooze",
-                tint = MaterialTheme.colors.notificationSnoozeForeground,
+                tint = MaterialTheme.colorScheme.onTertiary,
             )
         }
     }
@@ -229,6 +229,7 @@ private fun ActiveNotification.ifClickable(onClick: (ActiveNotification) -> Unit
         {} // No-op
     }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun NotificationItem(
     activeNotification: ActiveNotification,
@@ -297,7 +298,7 @@ private fun NotificationMetadata(notification: PersistableNotification) {
             Image(appIcon, stringResource(id = R.string.app_icon_content_description, appName), Modifier.size(16.dp))
             Spacer(modifier = Modifier.size(singlePadding()))
         }
-        CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.caption) {
+        CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodySmall) {
             Text(appName, Modifier.weight(1F, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (notification.showTimestamp) Timestamp(notification)
         }
@@ -333,14 +334,14 @@ private fun NotificationContent(
                 Icons.Rounded.BrokenImage,
                 stringResource(R.string.notification_no_icon_content_description),
                 modifier = Modifier.size(iconSize()),
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
             )
         }
         Column {
             if (notification.title != null) {
                 Text(
                     text = notification.title.trim(),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(start = singlePadding())
                 )
@@ -349,7 +350,7 @@ private fun NotificationContent(
             if (notification.text != null) {
                 Text(
                     text = notification.text.trim(),
-                    style = MaterialTheme.typography.body2,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = singlePadding())
                 )
             }

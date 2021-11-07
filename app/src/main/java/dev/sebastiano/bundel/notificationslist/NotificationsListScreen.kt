@@ -18,13 +18,13 @@ import androidx.lifecycle.flowWithLifecycle
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notifications.PersistableNotification
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 
 @Preview
 @Composable
 fun NotificationsListEmptyLightPreview() {
-    BundelTheme {
+    BundelYouTheme {
         NotificationsListScreen(
             activeNotifications = emptyList(),
             onNotificationClick = {},
@@ -36,7 +36,7 @@ fun NotificationsListEmptyLightPreview() {
 @Preview
 @Composable
 fun NotificationsListEmptyDarkPreview() {
-    BundelTheme(darkModeOverride = true) {
+    BundelYouTheme(darkTheme = true) {
         NotificationsListScreen(
             activeNotifications = emptyList(),
             onNotificationClick = {},
@@ -59,7 +59,7 @@ private val activeNotification = ActiveNotification(
 @Preview
 @Composable
 fun NotificationsListLightPreview() {
-    BundelTheme {
+    BundelYouTheme {
         NotificationsListScreen(
             activeNotifications = listOf(activeNotification),
             onNotificationClick = {},
@@ -71,7 +71,7 @@ fun NotificationsListLightPreview() {
 @Preview
 @Composable
 fun NotificationsListDarkPreview() {
-    BundelTheme(darkModeOverride = true) {
+    BundelYouTheme(darkTheme = true) {
         NotificationsListScreen(
             activeNotifications = listOf(activeNotification),
             onNotificationClick = {},

@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -30,7 +30,7 @@ internal fun NotificationsListEmptyState(modifier: Modifier = Modifier) {
         ) {
             Text(stringResource(R.string.sad_face), fontSize = 72.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = stringResource(R.string.notifications_empty_text), style = MaterialTheme.typography.caption)
+            Text(text = stringResource(R.string.notifications_empty_text), style = MaterialTheme.typography.bodySmall)
         }
     }
 }

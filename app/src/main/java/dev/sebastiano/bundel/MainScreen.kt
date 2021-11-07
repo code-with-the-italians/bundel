@@ -2,6 +2,7 @@ package dev.sebastiano.bundel
 
 import android.content.Context
 import android.text.format.DateUtils
+import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,14 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainScreenWithBottomNav(
     lifecycle: Lifecycle,
@@ -58,12 +58,10 @@ internal fun MainScreenWithBottomNav(
     onSettingsClick: () -> Unit
 ) {
     val navController = rememberAnimatedNavController()
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { NotificationsListTopAppBar(onSettingsClick) },
-        scaffoldState = scaffoldState,
         bottomBar = { MainScreenBottomNavigation(navController) }
     ) { innerPadding ->
         val scope = rememberCoroutineScope()
@@ -82,17 +80,17 @@ internal fun MainScreenWithBottomNav(
                     notification.interactions.main.send()
                 },
                 onNotificationDismiss = { notification ->
-                    scope.launch { handleNotificationSnooze(scope, preferences, scaffoldState, notification, context) }
+                    scope.launch { handleNotificationSnooze(scope, preferences, notification, context) }
                 }
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 private suspend fun handleNotificationSnooze(
     coroutineScope: CoroutineScope,
     preferences: Preferences,
-    scaffoldState: ScaffoldState,
     notification: ActiveNotification,
     context: Context
 ) {
@@ -101,7 +99,8 @@ private suspend fun handleNotificationSnooze(
     val timeRangesSchedule = preferences.getTimeRangesSchedule().first()
 
     if (!ScheduleChecker.isSnoozeActive(now, daysSchedule, timeRangesSchedule)) {
-        scaffoldState.snackbarHostState.showSnackbar("Can't snooze right now, sorry pal")
+        // TODO use snackbars once they're available to YOU
+        Toast.makeText(context, "Can't snooze right now, sorry pal", Toast.LENGTH_SHORT).show()
     } else {
         val dalekSebDurationMillis = ScheduleChecker.calculateSnoozeDelay(now, daysSchedule, timeRangesSchedule)
 
@@ -114,7 +113,8 @@ private suspend fun handleNotificationSnooze(
                 false
             )
 
-            scaffoldState.snackbarHostState.showSnackbar("Snoozing until $formattedDelay...")
+            // TODO use snackbars once they're available to YOU
+            Toast.makeText(context, "Snoozing until $formattedDelay...", Toast.LENGTH_SHORT).show()
         }
 
         BundelNotificationListenerService.snooze(notification, dalekSebDurationMillis)
@@ -178,7 +178,7 @@ private fun NotificationsListTopAppBar(onSettingsActionClick: () -> Unit) {
         }
     }
 
-    TopAppBar(
+    SmallTopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -187,7 +187,7 @@ private fun NotificationsListTopAppBar(onSettingsActionClick: () -> Unit) {
                     modifier = Modifier.size(36.dp)
                 )
                 Spacer(modifier = Modifier.width(20.dp))
-                Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.h4)
+                Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.headlineSmall)
             }
         },
         actions = { ActionsMenu() }

@@ -7,7 +7,7 @@ import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.lifecycle.Lifecycle
@@ -28,7 +28,7 @@ import dev.sebastiano.bundel.navigation.splashScreenGraph
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.storage.DataRepository
-import dev.sebastiano.bundel.ui.BundelTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.defaultEnterTransition
 import dev.sebastiano.bundel.ui.defaultExitTransition
 import dev.sebastiano.bundel.ui.defaultPopEnterTransition
@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import androidx.compose.material.MaterialTheme as MaterialTheme2
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -66,12 +67,12 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val systemUiController = rememberSystemUiController()
 
-            BundelTheme {
+            BundelYouTheme {
                 SetupSystemUi(systemUiController)
 
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
-                    sheetShape = MaterialTheme.shapes.small
+                    sheetShape = MaterialTheme2.shapes.small
                 ) {
                     AnimatedNavHost(
                         navController = navController,
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun SetupSystemUi(systemUiController: SystemUiController) {
-        val barsColor = MaterialTheme.colors.primaryVariant
+        val barsColor = MaterialTheme.colorScheme.tertiary
         SideEffect {
             systemUiController.setStatusBarColor(color = barsColor)
             systemUiController.setNavigationBarColor(color = barsColor)

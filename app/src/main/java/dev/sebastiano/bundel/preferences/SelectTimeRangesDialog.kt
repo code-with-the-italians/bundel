@@ -11,9 +11,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,8 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
 import dev.sebastiano.bundel.onboarding.TimeRangeRow
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipBackgroundColor
-import dev.sebastiano.bundel.ui.regularThemeMaterialChipContentColor
 import dev.sebastiano.bundel.ui.singlePadding
 
 @Composable
@@ -74,12 +72,12 @@ private fun LazyListScope.RangesListContent(
 
         TimeRangeRow(
             expandedPillAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ),
             normalPillAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ),
             timeRange = timeRange,
             canBeRemoved = timeRangesSchedule.canRemoveRanges,
@@ -101,8 +99,8 @@ private fun LazyListScope.RangesListContent(
                     .padding(horizontal = 8.dp)
                     .alpha(ContentAlpha.medium),
                 normalPillAppearance = checkedMaterialPillAppearance(
-                    backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(false),
-                    contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(false)
+                    backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
                 timeRange = null,
                 enabled = false

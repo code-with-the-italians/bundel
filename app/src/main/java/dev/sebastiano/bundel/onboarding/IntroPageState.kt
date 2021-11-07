@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -29,7 +29,7 @@ import dev.sebastiano.bundel.util.currentOrientation
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 fun IntroPagePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             val england = IntroPageState()
             IntroPage(pageState = england)
@@ -40,7 +40,7 @@ fun IntroPagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
 @Composable
 fun IntroPageLandscapePreview() {
-    BundelOnboardingTheme {
+    BundelOnboardingYouTheme {
         Surface {
             val england = IntroPageState()
             IntroPage(pageState = england, orientation = Orientation.Landscape)
@@ -105,10 +105,10 @@ private fun CrashlyticsSwitch(
             checked = crashReportingEnabled,
             onCheckedChange = null,
             colors = SwitchDefaults.colors(
-                uncheckedThumbColor = MaterialTheme.colors.secondary,
-                uncheckedTrackColor = MaterialTheme.colors.onSecondary,
-                checkedThumbColor = MaterialTheme.colors.secondary,
-                checkedTrackColor = MaterialTheme.colors.onSecondary
+                uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                uncheckedTrackColor = MaterialTheme.colorScheme.onSecondary,
+                checkedThumbColor = MaterialTheme.colorScheme.secondary,
+                checkedTrackColor = MaterialTheme.colorScheme.onSecondary
             )
         )
 

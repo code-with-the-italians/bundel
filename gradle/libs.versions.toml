@@ -4,8 +4,9 @@ activityCompose="1.4.0"
 appCompat="1.4.0-rc01"
 assertk="0.25"
 coil="2.0.0-alpha02"
-compose="1.1.0-beta02"
-daggerHilt="2.40"
+compose = "1.1.0-beta02"
+composeMaterial3 = "1.0.0-alpha01"
+daggerHilt = "2.40"
 datastore="1.0.0"
 desugar="1.1.5"
 firebaseBom="29.0.0"
@@ -35,9 +36,9 @@ timber="5.0.1"
 androidx-activity-activityCompose={ module="androidx.activity:activity-compose", version.ref="activityCompose" }
 androidx-appCompat={ module="androidx.appcompat:appcompat", version.ref="appCompat" }
 androidx-compose-compiler={ module="androidx.compose.compiler:compiler", version.ref="compose" }
-androidx-compose-foundation={ module="androidx.compose.foundation:foundation", version.ref="compose" }
-androidx-compose-material={ module="androidx.compose.material:material", version.ref="compose" }
-androidx-compose-materialIconsExtended={ module="androidx.compose.material:material-icons-extended", version.ref="compose" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
+androidx-compose-materialIconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
 androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
 androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
@@ -87,9 +88,9 @@ junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.
 kotlinx-coroutines-test={ module="org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref="kotlinCoroutines" }
 
 [bundles]
-accompanist=["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations", "google-accompanistNavMaterial"]
-compose=["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
-datastore=["google-protobuf-javalite", "androidx-datastore"]
+accompanist = ["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations", "google-accompanistNavMaterial"]
+compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
+datastore = ["google-protobuf-javalite", "androidx-datastore"]
 firebase=["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
 hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
 hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
