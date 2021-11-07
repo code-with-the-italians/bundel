@@ -76,10 +76,10 @@ class MainActivity : AppCompatActivity() {
                     AnimatedNavHost(
                         navController = navController,
                         startDestination = NavigationRoute.SplashScreen.route,
-                        enterTransition = { initial, target -> defaultEnterTransition(initial, target) },
-                        exitTransition = { initial, target -> defaultExitTransition(initial, target) },
-                        popEnterTransition = { _, _ -> defaultPopEnterTransition() },
-                        popExitTransition = { _, _ -> defaultPopExitTransition() }
+                        enterTransition = { defaultEnterTransition(initialState, targetState) },
+                        exitTransition = { defaultExitTransition(initialState, targetState) },
+                        popEnterTransition = { defaultPopEnterTransition() },
+                        popExitTransition = { defaultPopExitTransition() }
                     ) {
                         splashScreenGraph(preferences) { navigationRoute ->
                             navController.navigate(navigationRoute.route)

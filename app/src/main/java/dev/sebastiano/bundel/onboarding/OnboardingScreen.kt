@@ -234,9 +234,9 @@ private fun ColumnScope.OnboardingHeader(
                     val direction = if (targetState > initialState) 1 else -1
 
                     val enterTransition = fadeIn(animationSpec = spring()) +
-                        slideIn(initialOffset = { IntOffset(direction * it.width / 5, 0) }, spring())
+                        slideIn(initialOffset = { IntOffset(direction * it.width / 5, 0) }, animationSpec = spring())
                     val exitTransition = fadeOut(animationSpec = spring()) +
-                        slideOut(targetOffset = { IntOffset(-direction * it.width / 5, 0) }, spring())
+                        slideOut(targetOffset = { IntOffset(-direction * it.width / 5, 0) }, animationSpec = spring())
                     enterTransition with exitTransition
                 }
             ) { pageIndex ->
