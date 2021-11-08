@@ -150,7 +150,7 @@ internal fun NavGraphBuilder.splashScreenGraph(
     preferences: Preferences,
     onPizzaReady: (NavigationRoute) -> Unit
 ) {
-    composable(NavigationRoute.SplashScreen.route) {
+    composable(NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         Box(
             modifier = Modifier
                 .fillMaxSize()

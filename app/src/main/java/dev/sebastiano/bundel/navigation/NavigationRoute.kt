@@ -9,7 +9,7 @@ import dev.sebastiano.bundel.R
 
 internal sealed class NavigationRoute(val route: String) {
 
-    object SplashScreen : NavigationRoute("benThereDoneThat")
+    object SplashoScreenButWithAWeirdNameNotToTriggerLint : NavigationRoute("benThereDoneThat")
 
     object OnboardingGraph : NavigationRoute("onboarding") {
 

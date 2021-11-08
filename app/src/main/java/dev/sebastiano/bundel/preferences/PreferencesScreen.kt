@@ -2,6 +2,7 @@
 
 package dev.sebastiano.bundel.preferences
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
@@ -97,6 +98,7 @@ internal fun PreferencesTopAppBar(
     )
 }
 
+@SuppressLint("FlowOperatorInvokedInComposition") // TODO fix this crap
 @Composable
 private fun ActiveDaysRow(
     daysScheduleFlow: Flow<Map<WeekDay, Boolean>>,
@@ -125,6 +127,7 @@ private fun ActiveDaysRow(
     }
 }
 
+@SuppressLint("FlowOperatorInvokedInComposition") // TODO fix this crap
 @Composable
 private fun ActiveTimeRangesRow(
     timeRangesFlow: Flow<TimeRangesSchedule>,

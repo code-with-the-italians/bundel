@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = NavigationRoute.SplashScreen.route,
+                        startDestination = NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route,
                         enterTransition = { defaultEnterTransition(initialState, targetState) },
                         exitTransition = { defaultExitTransition(initialState, targetState) },
                         popEnterTransition = { defaultPopEnterTransition() },

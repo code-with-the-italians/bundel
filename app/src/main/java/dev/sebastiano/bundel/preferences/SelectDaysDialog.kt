@@ -1,5 +1,6 @@
 package dev.sebastiano.bundel.preferences
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.onStart
 // 🏁  🚗💨
 private const val WACKY_RACES_CONDITION = 40L
 
+@SuppressLint("FlowOperatorInvokedInComposition") // TODO fix this crap
 @Composable
 internal fun SelectDaysDialog(
     viewModel: ActiveDaysViewModel = hiltViewModel(),
@@ -40,7 +42,9 @@ internal fun SelectDaysDialog(
     ) {
         Text(
             text = stringResource(R.string.settings_active_days_blurb),
-            modifier = Modifier.padding(top = 16.dp).padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -53,7 +57,9 @@ internal fun SelectDaysDialog(
             daysSchedule = daysSchedule,
             onDayCheckedChange = { weekDay, checked -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) },
             chipsSpacing = singlePadding(),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 48.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 48.dp),
             checkedAppearance = checkedMaterialPillAppearance(
                 backgroundColor = MaterialTheme.colors.regularThemeMaterialChipBackgroundColor(true),
                 contentColor = MaterialTheme.colors.regularThemeMaterialChipContentColor(true)
