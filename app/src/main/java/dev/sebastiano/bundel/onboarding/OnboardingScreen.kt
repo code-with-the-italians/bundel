@@ -135,7 +135,7 @@ private fun OnboardingScreen(
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
     val verticalScreenPadding = if (orientation == Orientation.Portrait) 16.dp else singlePadding()
-    Surface {
+    Surface(color = MaterialTheme.colorScheme.surface) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier

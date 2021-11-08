@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun SetupSystemUi(systemUiController: SystemUiController) {
-        val barsColor = MaterialTheme.colorScheme.tertiary
+        val barsColor = MaterialTheme.colorScheme.background
         SideEffect {
             systemUiController.setStatusBarColor(color = barsColor)
             systemUiController.setNavigationBarColor(color = barsColor)
