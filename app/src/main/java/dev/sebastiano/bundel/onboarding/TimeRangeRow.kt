@@ -371,6 +371,7 @@ private class SpeechBubbleShape(
             )
         }
 
+        // TODO check if this range makes sense before calling coerceIn
         val adjustedStemPosition = stemPosition.coerceIn(cornerRadius, size.width - cornerRadius - stemSize / 2)
         stem.apply {
             reset()

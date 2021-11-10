@@ -25,13 +25,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,10 +51,12 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.SetupSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -63,7 +66,7 @@ import java.util.Locale
 @Preview(name = "Onboarding screen", showSystemUi = true)
 @Composable
 private fun OnboardingScreenPreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             OnboardingScreen()
         }
@@ -73,7 +76,7 @@ private fun OnboardingScreenPreview() {
 @Preview(name = "Onboarding screen (landscape)", widthDp = 822, heightDp = 392)
 @Composable
 private fun OnboardingScreenLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             OnboardingScreen(orientation = Orientation.Landscape)
         }
@@ -83,7 +86,7 @@ private fun OnboardingScreenLandscapePreview() {
 @Preview(name = "Onboarding screen (dark theme)", showSystemUi = true)
 @Composable
 private fun OnboardingScreenDarkThemePreview() {
-    BundelOnboardingYouTheme(darkTheme = true) {
+    BundelYouTheme(darkTheme = true) {
         Surface {
             OnboardingScreen()
         }
@@ -97,7 +100,7 @@ internal fun OnboardingScreen(
     onSettingsIntentClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit
 ) {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
         val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
         val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
@@ -134,8 +137,10 @@ private fun OnboardingScreen(
     orientation: Orientation = currentOrientation(),
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
+    SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primaryContainer)
+
     val verticalScreenPadding = if (orientation == Orientation.Portrait) 16.dp else singlePadding()
-    Surface(color = MaterialTheme.colorScheme.surface) {
+    Surface(color = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -177,7 +182,7 @@ internal enum class OnboardingPage(
 @Preview(name = "Onboarding header (landscape)", widthDp = 600)
 @Composable
 private fun OnboardingHeaderLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             Column(Modifier.fillMaxWidth()) {
                 OnboardingHeader(
@@ -293,7 +298,7 @@ internal fun Modifier.onboardingPageModifier(orientation: Orientation) =
 @Preview
 @Composable
 private fun AllSetPagePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             AllSetPage()
         }
@@ -303,7 +308,7 @@ private fun AllSetPagePreview() {
 @Preview(widthDp = 822, heightDp = 392)
 @Composable
 private fun AllSetPageLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             AllSetPage(orientation = Orientation.Landscape)
         }
@@ -361,7 +366,7 @@ private fun ActionsRow(
         val scope = rememberCoroutineScope()
         val buttonColors = buttonColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = LocalContentColor.current
         )
         val buttonElevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp)
 
@@ -370,7 +375,7 @@ private fun ActionsRow(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            Button(
+            TextButton(
                 onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
                 modifier = Modifier.align(Alignment.CenterStart),
                 colors = buttonColors,
@@ -381,13 +386,14 @@ private fun ActionsRow(
         }
 
         HorizontalPagerIndicator(
+            activeColor = MaterialTheme.colorScheme.onPrimaryContainer,
             pagerState = pagerState,
             modifier = Modifier.align(Alignment.Center)
         )
 
         when {
             pagerState.currentPage < pagerState.pageCount - 1 -> {
-                Button(
+                TextButton(
                     enabled = if (needsPermission) pagerState.currentPage != 1 else true,
                     onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
                     modifier = Modifier.align(Alignment.CenterEnd),
@@ -398,7 +404,7 @@ private fun ActionsRow(
                 }
             }
             else -> {
-                Button(
+                TextButton(
                     onClick = { onOnboardingDoneClicked() },
                     modifier = Modifier.align(Alignment.CenterEnd),
                     colors = buttonColors,

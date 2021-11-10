@@ -26,8 +26,10 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.MainScreenWithBottomNav
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.SetupSystemUi
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
@@ -151,6 +153,7 @@ internal fun NavGraphBuilder.splashScreenGraph(
     onPizzaReady: (NavigationRoute) -> Unit
 ) {
     composable(NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
+        SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
         Box(
             modifier = Modifier
                 .fillMaxSize()

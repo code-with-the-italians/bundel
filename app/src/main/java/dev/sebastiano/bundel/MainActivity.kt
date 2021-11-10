@@ -10,6 +10,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -65,10 +66,9 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
-            val systemUiController = rememberSystemUiController()
 
             BundelYouTheme {
-                SetupSystemUi(systemUiController)
+                SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
 
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
@@ -103,15 +103,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    @Composable
-    private fun SetupSystemUi(systemUiController: SystemUiController) {
-        val barsColor = MaterialTheme.colorScheme.background
-        SideEffect {
-            systemUiController.setStatusBarColor(color = barsColor)
-            systemUiController.setNavigationBarColor(color = barsColor)
-        }
-    }
-
     private fun openNotificationsPreferences() {
         startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
     }
@@ -122,4 +113,15 @@ private fun Lifecycle.eventsAsFlow(): Flow<Lifecycle.Event> = callbackFlow {
     addObserver(observer)
 
     awaitClose { removeObserver(observer) }
+}
+
+@Composable
+internal fun SetupSystemUi(
+    systemUiController: SystemUiController,
+    screenBackgroundColor: Color
+) {
+    SideEffect {
+        systemUiController.setStatusBarColor(color = screenBackgroundColor)
+        systemUiController.setNavigationBarColor(color = screenBackgroundColor)
+    }
 }

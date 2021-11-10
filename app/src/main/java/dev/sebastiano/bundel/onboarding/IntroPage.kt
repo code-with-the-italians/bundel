@@ -108,7 +108,7 @@ private fun CrashlyticsSwitch(
                 uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
                 uncheckedTrackColor = MaterialTheme.colorScheme.onSecondary,
                 checkedThumbColor = MaterialTheme.colorScheme.secondary,
-                checkedTrackColor = MaterialTheme.colorScheme.onSecondary
+                checkedTrackColor = MaterialTheme.colorScheme.onSecondary,
             )
         )
 

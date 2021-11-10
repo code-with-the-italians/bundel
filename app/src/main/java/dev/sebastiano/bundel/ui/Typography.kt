@@ -1,6 +1,6 @@
 package dev.sebastiano.bundel.ui
 
-import androidx.compose.material3.Typography
+import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -34,7 +34,75 @@ private val inter = FontFamily(
     )
 )
 
-val AppTypography = Typography(
+internal val bundelTypography = Typography(
+    h1 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.Light,
+        fontSize = 96.sp
+    ),
+    h2 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.Normal,
+        fontSize = 60.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 48.sp
+    ),
+    h4 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 34.sp
+    ),
+    h5 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp
+    ),
+    h6 = TextStyle(
+        fontFamily = podkova,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp
+    ),
+    subtitle1 = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp
+    ),
+    body1 = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
+    ),
+    button = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    ),
+    caption = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp
+    ),
+    overline = TextStyle(
+        fontFamily = inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    )
+)
+
+internal val BundelYouTypography = androidx.compose.material3.Typography(
     displayLarge = TextStyle(
         fontFamily = podkova,
         fontWeight = FontWeight.W400,
