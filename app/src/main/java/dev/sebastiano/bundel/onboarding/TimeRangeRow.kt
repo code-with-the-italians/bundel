@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
@@ -73,7 +73,6 @@ import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.composables.MaterialPillAppearance
 import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
-import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
 import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
 import dev.sebastiano.bundel.preferences.schedule.PartOfHour
 import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
@@ -158,14 +157,8 @@ internal class AppThemePreviews {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
-                    expandedPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    normalPillAppearance = checkedMaterialPillAppearance(
-                        backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    ),
+                    expandedPillAppearance = onboardingCheckedPillAppearance(),
+                    normalPillAppearance = onboardingUncheckedPillAppearance(),
                     timeRange = TimeRange(LocalTime.of(9, 0), LocalTime.of(12, 30)),
                     enabled = true,
                     canBeRemoved = true
@@ -178,8 +171,8 @@ internal class AppThemePreviews {
 @Composable
 internal fun TimeRangeRow(
     modifier: Modifier = Modifier,
-    expandedPillAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
-    normalPillAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
+    expandedPillAppearance: MaterialPillAppearance = onboardingCheckedPillAppearance(),
+    normalPillAppearance: MaterialPillAppearance = onboardingUncheckedPillAppearance(),
     pickerBackgroundColor: Color = MaterialTheme.colorScheme.surface,
     timeRange: TimeRange? = null,
     enabled: Boolean = true,
@@ -285,7 +278,7 @@ private fun RemoveIcon(
 private fun ColumnScope.ExpandableTimePicker(
     expanded: ExpandedRangeExtremity,
     @Px stemPosition: Float,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
     timeRange: TimeRange?,
     minimumAllowableFrom: LocalTime?,
     maximumAllowableTo: LocalTime?,
@@ -370,8 +363,8 @@ private class SpeechBubbleShape(
             )
         }
 
-        // TODO check if this range makes sense before calling coerceIn
-        val adjustedStemPosition = stemPosition.coerceIn(cornerRadius, size.width - cornerRadius - stemSize / 2)
+        val adjustedStemPosition = kotlin.runCatching { stemPosition.coerceIn(cornerRadius, size.width - cornerRadius - stemSize / 2) }
+            .getOrNull() ?: stemPosition
         stem.apply {
             reset()
             moveTo(adjustedStemPosition, 0f)
@@ -400,7 +393,7 @@ private fun TimePicker(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        val textStyle = MaterialTheme.typography.headlineLarge
+        val textStyle = MaterialTheme.typography.displayLarge
         var selectedPart by remember { mutableStateOf(PartOfHour.HOUR) }
 
         val selectedPartColor = MaterialTheme.colorScheme.primary
@@ -504,7 +497,7 @@ private fun TimePillButton(
 ) {
     MaterialPill(
         modifier = modifier
-            .clip(CircleShape)
+            .clip(RoundedCornerShape(8.dp))
             .appendIf(enabled) { clickable(role = Role.Button, onClick = onClick) },
         appearance = pillAppearance
     ) {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -108,7 +107,6 @@ internal fun ScheduleHoursPage(
                 val maximumAllowedTo = if (index < items.count() - 1) items[index + 1].value.from else null
 
                 TimeRangeRow(
-                    pickerBackgroundColor = MaterialTheme.colorScheme.secondary,
                     timeRange = timeRange,
                     canBeRemoved = hoursSchedulePageState.timeRangesSchedule.canRemoveRanges,
                     minimumAllowableFrom = minimumAllowedFrom,
@@ -127,7 +125,7 @@ internal fun ScheduleHoursPage(
                 item {
                     Box(modifier = Modifier.clickable { hoursSchedulePageState.onAddTimeRange() }) {
                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-                            TimeRangeRow(pickerBackgroundColor = MaterialTheme.colorScheme.secondary, timeRange = null, enabled = false)
+                            TimeRangeRow(timeRange = null, enabled = false)
                         }
                     }
                 }

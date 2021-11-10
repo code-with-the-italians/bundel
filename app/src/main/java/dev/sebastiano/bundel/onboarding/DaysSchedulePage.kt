@@ -60,6 +60,18 @@ private fun DaysSchedulePageLandscapePreview() {
 }
 
 @Composable
+internal fun onboardingCheckedPillAppearance() = checkedMaterialPillAppearance(
+    backgroundColor = MaterialTheme.colorScheme.inversePrimary,
+    contentColor = MaterialTheme.colorScheme.primary,
+)
+
+@Composable
+internal fun onboardingUncheckedPillAppearance() = uncheckedMaterialPillAppearance(
+    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+)
+
+@Composable
 internal fun DaysSchedulePage(
     pageState: DaysSchedulePageState,
     orientation: Orientation = currentOrientation()
@@ -92,14 +104,8 @@ internal fun DaysSchedulePage(
             onDayCheckedChange = pageState.onDayCheckedChange,
             chipsSpacing = singlePadding(),
             modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
-            checkedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colorScheme.inversePrimary,
-                contentColor = MaterialTheme.colorScheme.primary,
-            ),
-            uncheckedAppearance = uncheckedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
+            checkedAppearance = onboardingCheckedPillAppearance(),
+            uncheckedAppearance = onboardingUncheckedPillAppearance()
         )
 
         Spacer(modifier = Modifier.height(happyBirthdayMark))
