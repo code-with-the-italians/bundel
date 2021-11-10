@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +27,28 @@ import dev.sebastiano.bundel.ui.BundelYouTheme
 
 @Composable
 @Preview
-internal fun ChipPreview() {
+internal fun DefaultChipPreview() {
     BundelYouTheme {
-        Surface {
+        Surface(modifier = Modifier.padding(8.dp)) {
+            var checked by remember { mutableStateOf(false) }
+            MaterialChip(
+                checked = checked,
+                onCheckedChanged = {
+                    checked = it
+                    println("Click! $checked")
+                }
+            ) {
+                Text("Ciao Ivan")
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+internal fun FunkyChipPreview() {
+    BundelYouTheme {
+        Surface(modifier = Modifier.padding(8.dp)) {
             var checked by remember { mutableStateOf(false) }
             MaterialChip(
                 checked = checked,
@@ -43,6 +61,7 @@ internal fun ChipPreview() {
                     borderWidth = 4.dp
                 ),
                 checkedAppearance = checkedMaterialPillAppearance(
+                    backgroundColor = Color.LightGray,
                     contentColor = Color.Yellow,
                     borderColor = Color.Red,
                     borderWidth = 1.dp
@@ -54,6 +73,9 @@ internal fun ChipPreview() {
     }
 }
 
+private val defaultPillPaddingValues = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
+private val defaultRoundedCornerShape = RoundedCornerShape(8.dp)
+
 @Composable
 internal fun MaterialChip(
     enabled: Boolean = true,
@@ -61,13 +83,13 @@ internal fun MaterialChip(
     checkedAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
     uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
     elevation: Dp = 0.dp,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+    contentPadding: PaddingValues = defaultPillPaddingValues,
     onCheckedChanged: (checked: Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
     MaterialPill(
         modifier = Modifier
-            .clip(CircleShape)
+            .clip(defaultRoundedCornerShape)
             .toggleable(
                 value = checked,
                 enabled = enabled,
@@ -83,18 +105,18 @@ internal fun MaterialChip(
 
 @Composable
 internal fun checkedMaterialPillAppearance(
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface,
-    contentColor: Color = contentColorFor(backgroundColor),
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp
 ) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
 
 @Composable
 internal fun uncheckedMaterialPillAppearance(
-    backgroundColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = .54f),
-    contentColor: Color = contentColorFor(backgroundColor),
-    borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
+    borderWidth: Dp = 1.dp
 ) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
 
 internal data class MaterialPillAppearance(
@@ -106,9 +128,9 @@ internal data class MaterialPillAppearance(
 
 @Composable
 @Preview
-private fun PillPreview() {
+private fun BasePillPreview() {
     BundelYouTheme {
-        Surface {
+        Surface(modifier = Modifier.padding(8.dp)) {
             MaterialPill {
                 Text("I am a pill hello")
             }
@@ -121,7 +143,7 @@ internal fun MaterialPill(
     modifier: Modifier = Modifier,
     appearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
     elevation: Dp = 0.dp,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+    contentPadding: PaddingValues = defaultPillPaddingValues,
     content: @Composable () -> Unit
 ) {
     val backgroundColor by animateColorAsState(appearance.backgroundColor)
@@ -130,7 +152,7 @@ internal fun MaterialPill(
     val borderWidth by animateDpAsState(appearance.borderWidth)
 
     Surface(
-        shape = CircleShape,
+        shape = defaultRoundedCornerShape,
         color = backgroundColor,
         contentColor = contentColor,
         border = BorderStroke(borderWidth, borderColor),

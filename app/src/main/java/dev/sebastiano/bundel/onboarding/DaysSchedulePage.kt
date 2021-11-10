@@ -91,7 +91,15 @@ internal fun DaysSchedulePage(
             daysSchedule = pageState.daysSchedule,
             onDayCheckedChange = pageState.onDayCheckedChange,
             chipsSpacing = singlePadding(),
-            modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding)
+            modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
+            checkedAppearance = checkedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colorScheme.inversePrimary,
+                contentColor = MaterialTheme.colorScheme.primary,
+            ),
+            uncheckedAppearance = uncheckedMaterialPillAppearance(
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
         )
 
         Spacer(modifier = Modifier.height(happyBirthdayMark))
@@ -119,14 +127,14 @@ private fun DaysPickerBundelYouThemePreview() {
                 daysSchedule = newSchedule
             },
             chipsSpacing = singlePadding(),
-            checkedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            ),
-            uncheckedAppearance = checkedMaterialPillAppearance(
-                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+//            checkedAppearance = checkedMaterialPillAppearance(
+//                backgroundColor = MaterialTheme.colorScheme.surface,
+//                contentColor = MaterialTheme.colorScheme.onSurface
+//            ),
+//            uncheckedAppearance = checkedMaterialPillAppearance(
+//                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+//                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+//            )
         )
     }
 }

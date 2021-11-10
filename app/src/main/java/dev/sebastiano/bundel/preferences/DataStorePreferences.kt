@@ -126,7 +126,15 @@ internal class DataStorePreferences(
 
         internal const val DEFAULT_CRASHLYTICS_ENABLED = false
 
-        internal val DEFAULT_DAYS_SCHEDULE = WeekDay.values().map { it to true }.toMap()
+        internal val DEFAULT_DAYS_SCHEDULE = mapOf(
+            WeekDay.MONDAY to true,
+            WeekDay.TUESDAY to true,
+            WeekDay.WEDNESDAY to true,
+            WeekDay.THURSDAY to true,
+            WeekDay.FRIDAY to true,
+            WeekDay.SATURDAY to false,
+            WeekDay.SUNDAY to false,
+        )
 
         internal val DEFAULT_HOURS_SCHEDULE = TimeRangesSchedule()
     }
