@@ -32,28 +32,6 @@ fun BundelYouTheme(
 }
 
 @Composable
-fun BundelOnboardingYouTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    val colorScheme = when {
-        dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-        dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
-        darkTheme -> OnboardingLightColorsSmol
-        else -> OnboardingLightColorsSmol
-    }
-
-    BundelOnboardingTheme {
-        Material3MaterialTheme(
-            colorScheme = colorScheme,
-            typography = BundelYouTypography,
-            content = content
-        )
-    }
-}
-
-@Composable
 internal fun BundelTheme(
     darkModeOverride: Boolean? = null,
     content: @Composable () -> Unit
@@ -63,18 +41,6 @@ internal fun BundelTheme(
         typography = bundelTypography,
         // some people just want to watch the world burn
         shapes = MaterialTheme.shapes.copy(large = MaterialTheme.shapes.small),
-        content = content
-    )
-}
-
-@Composable
-internal fun BundelOnboardingTheme(
-    darkModeOverride: Boolean? = null,
-    content: @Composable () -> Unit
-) {
-    MaterialTheme(
-        colors = bundelOnboardingColors(darkModeOverride),
-        typography = bundelTypography,
         content = content
     )
 }

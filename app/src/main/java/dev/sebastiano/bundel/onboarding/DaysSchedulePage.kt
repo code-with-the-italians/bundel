@@ -33,7 +33,6 @@ import dev.sebastiano.bundel.composables.MaterialPillAppearance
 import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
 import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
@@ -43,7 +42,7 @@ import java.util.Locale
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun DaysSchedulePagePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             DaysSchedulePage(DaysSchedulePageState())
         }
@@ -53,7 +52,7 @@ private fun DaysSchedulePagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
 @Composable
 private fun DaysSchedulePageLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             DaysSchedulePage(DaysSchedulePageState(), orientation = Orientation.Landscape)
         }
@@ -135,7 +134,7 @@ private fun DaysPickerBundelYouThemePreview() {
 @Preview(group = "DaysPicker", showBackground = true)
 @Composable
 private fun DaysPickerOnboardingThemePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         var daysSchedule by remember {
             mutableStateOf(WeekDay.values().associate { it to true })
         }

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -35,7 +35,7 @@ import dev.sebastiano.bundel.util.currentOrientation
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 private fun HoursSchedulePagePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             ScheduleHoursPage(HoursSchedulePageState())
         }
@@ -47,7 +47,7 @@ private fun HoursSchedulePagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 622, heightDp = 422)
 @Composable
 private fun HoursSchedulePageLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             ScheduleHoursPage(HoursSchedulePageState(), orientation = Orientation.Landscape)
         }

@@ -78,7 +78,6 @@ import dev.sebastiano.bundel.preferences.schedule.ExpandedRangeExtremity
 import dev.sebastiano.bundel.preferences.schedule.PartOfHour
 import dev.sebastiano.bundel.preferences.schedule.TimePickerModel
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
-import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.appendIf
@@ -94,7 +93,7 @@ internal class OnboardingPreviews {
     @Preview(name = "Inactive Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowOnboardingInactivePreview() {
-        BundelOnboardingYouTheme {
+        BundelYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -110,7 +109,7 @@ internal class OnboardingPreviews {
     @Preview(name = "Active Night", group = "Onboarding", uiMode = Configuration.UI_MODE_NIGHT_YES)
     @Composable
     fun TimeRangeRowOnboardingActivePreview() {
-        BundelOnboardingYouTheme {
+        BundelYouTheme {
             Surface {
                 TimeRangeRow(
                     modifier = Modifier.fillMaxWidth(),

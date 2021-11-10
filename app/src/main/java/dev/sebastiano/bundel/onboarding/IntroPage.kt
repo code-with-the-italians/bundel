@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.ui.BundelOnboardingYouTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -29,7 +29,7 @@ import dev.sebastiano.bundel.util.currentOrientation
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
 fun IntroPagePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             val england = IntroPageState()
             IntroPage(pageState = england)
@@ -40,7 +40,7 @@ fun IntroPagePreview() {
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true, widthDp = 822, heightDp = 392)
 @Composable
 fun IntroPageLandscapePreview() {
-    BundelOnboardingYouTheme {
+    BundelYouTheme {
         Surface {
             val england = IntroPageState()
             IntroPage(pageState = england, orientation = Orientation.Landscape)
