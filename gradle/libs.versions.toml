@@ -9,8 +9,9 @@ composeMaterial3 = "1.0.0-alpha01"
 daggerHilt = "2.40"
 datastore="1.0.0"
 desugar="1.1.5"
-firebaseBom="29.0.0"
-gradlePlugins-agp="7.0.3"
+firebaseBom = "29.0.0"
+glance = "1.0.0-SNAPSHOT"
+gradlePlugins-agp = "7.0.3"
 gradlePlugins-crashlytics="2.8.0"
 gradlePlugins-detekt="1.18.1"
 gradlePlugins-gms="4.3.10"
@@ -44,8 +45,9 @@ androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
 androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
 androidx-compose-uiTest-manifest={ module="androidx.compose.ui:ui-test-manifest", version.ref="compose" }
 androidx-compose-uiTest-junit4={ module="androidx.compose.ui:ui-test-junit4", version.ref="compose" }
-androidx-datastore={ module="androidx.datastore:datastore", version.ref="datastore" }
-androidx-hilt-hiltCommon={ module="androidx.hilt:hilt-common", version.ref="hilt" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+androidx-hilt-hiltCommon = { module = "androidx.hilt:hilt-common", version.ref = "hilt" }
 androidx-hilt-hiltCompiler={ module="androidx.hilt:hilt-compiler", version.ref="hilt" }
 androidx-hilt-hiltLifecycleViewmodel={ module="androidx.hilt:hilt-lifecycle-viewmodel", version.ref="hiltLifecycleViewmodel" }
 androidx-hilt-hiltNavigationCompose={ module="androidx.hilt:hilt-navigation-compose", version.ref="hiltNavigationCompose" }

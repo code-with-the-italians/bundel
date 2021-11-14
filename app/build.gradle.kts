@@ -103,6 +103,7 @@ dependencies {
 
     implementation(libs.androidx.activity.activityCompose)
     implementation(libs.androidx.appCompat)
+    implementation(libs.androidx.glance)
     implementation(libs.androidx.hilt.hiltNavigationCompose)
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.bundles.accompanist)
