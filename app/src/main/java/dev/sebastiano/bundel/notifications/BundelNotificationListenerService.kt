@@ -3,6 +3,7 @@ package dev.sebastiano.bundel.notifications
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import dagger.hilt.android.AndroidEntryPoint
+import dev.sebastiano.bundel.glance.BundelAppWidgetReceiver.Companion.updateWidgets
 import dev.sebastiano.bundel.storage.DataRepository
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,10 @@ internal class BundelNotificationListenerService : NotificationListenerService()
                 repository.saveNotification(notification)
             }
         }
-        Timber.i("Notifications listener connected")
+
+        launch {
+            updateWidgets(notificationsCount = notifications.filterNot { it.persistableNotification.isGroup }.size)
+        }
 
         collectJob = launch {
             snoozedNotificationsFlow.collect {
@@ -75,6 +79,10 @@ internal class BundelNotificationListenerService : NotificationListenerService()
                 currentNotifications += activeNotification
             }
 
+            launch {
+                updateWidgets(notificationsCount = currentNotifications.filterNot { it.persistableNotification.isGroup }.size)
+            }
+
             mutableNotificationsFlow.value = currentNotifications
                 .distinctBy { it.persistableNotification.uniqueId }
                 .sortedByDescending { it.persistableNotification.timestamp }
@@ -91,6 +99,10 @@ internal class BundelNotificationListenerService : NotificationListenerService()
             return
         }
         mutableNotificationsFlow.value = mutableNotificationsFlow.value - existing
+
+        launch {
+            updateWidgets(notificationsCount = mutableNotificationsFlow.value.filterNot { it.persistableNotification.isGroup }.size)
+        }
     }
 
     private fun snooze(snoozedNotification: SnoozedNotification) {
