@@ -5,4 +5,4 @@
     android:resizeMode="horizontal|vertical"
     android:minResizeWidth="36dp"
     android:minResizeHeight="36dp"
-    android:updatePeriodMillis="123456789" />
+    android:updatePeriodMillis="0" />
