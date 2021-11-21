@@ -18,8 +18,9 @@ gradlePlugins-gms="4.3.10"
 gradlePlugins-junit5="1.8.0.0"
 gradlePlugins-kotlinter="3.6.0"
 gradlePlugins-ksp="1.5.31-1.0.0"
-gradlePlugins-protobuf="0.8.17"
-gradlePlugins-versionsBenManes="0.39.0"
+gradlePlugins-protobuf = "0.8.17"
+gradlePlugins-versionCatalog = "0.2.0"
+gradlePlugins-versionsBenManes = "0.39.0"
 junit="5.8.1"
 hilt="1.0.0"
 hiltLifecycleViewmodel="1.0.0-alpha03"
@@ -82,8 +83,9 @@ gradlePlugins-hilt={ module="com.google.dagger:hilt-android-gradle-plugin", vers
 gradlePlugins-junit5={ module="de.mannodermaus.gradle.plugins:android-junit5", version.ref="gradlePlugins-junit5" }
 gradlePlugins-kotlin={ module="org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref="kotlin" }
 gradlePlugins-kotlinter={ module="org.jmailen.gradle:kotlinter-gradle", version.ref="gradlePlugins-kotlinter" }
-gradlePlugins-protobuf={ module="gradle.plugin.com.google.protobuf:protobuf-gradle-plugin", version.ref="gradlePlugins-protobuf" }
-gradlePlugins-versionsBenManes={ module="com.github.ben-manes:gradle-versions-plugin", version.ref="gradlePlugins-versionsBenManes" }
+gradlePlugins-protobuf = { module = "gradle.plugin.com.google.protobuf:protobuf-gradle-plugin", version.ref = "gradlePlugins-protobuf" }
+gradlePlugins-versionCatalogUpdates = { module = "nl.littlerobots.vcu:plugin", version.ref = "gradlePlugins-versionCatalog" }
+gradlePlugins-versionsBenManes = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "gradlePlugins-versionsBenManes" }
 jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
 junit-jupiter-api={ module="org.junit.jupiter:junit-jupiter-api", version.ref="junit"}
 junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.ref="junit"}
