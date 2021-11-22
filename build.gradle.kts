@@ -64,8 +64,23 @@ dependencies {
     dummyGoogleServices(files(rootProject.file("build-config/dummy-data/dummy-google-services.json")))
 }
 
-tasks.named<DependencyUpdatesTask>("dependencyUpdates").configure {
-    rejectVersionIf {
-        isNonStable(candidate.version) && !isNonStable(currentVersion)
+tasks.withType<DependencyUpdatesTask> {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                when {
+                    isNonStable(candidate.version) && !isNonStable(currentVersion) -> {
+                        reject("Updating stable to non stable is not allowed")
+                    }
+                    candidate.module == "kotlin-gradle-plugin" && candidate.version != libs.versions.kotlin.get() -> {
+                        reject("Keep Kotlin version on the version specified in libs.versions.toml")
+                    }
+                    // KSP versions are compound versions, starting with the kotlin version
+                    candidate.group == "com.google.devtools.ksp" && !candidate.version.startsWith(libs.versions.kotlin.get()) -> {
+                        reject("KSP needs to stick to Kotlin version")
+                    }
+                }
+            }
+        }
     }
 }
