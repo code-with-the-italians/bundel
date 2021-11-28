@@ -10,11 +10,11 @@
   <img alt="Apache 2.0 license" src="https://img.shields.io/github/license/code-with-the-italians/bundel"/>
   </a>
   &nbsp;
-  <a href="http://cwti.link/twitch" target=_blank>
+  <a href="https://cwti.link/twitch" target=_blank>
     <img alt="Watch us code on Twitch" src="https://img.shields.io/twitch/status/codewiththeitalians?logo=twitch&logoColor=white"/>
   </a>
   &nbsp;
-  <a href="http://cwti.link/twitter" target=_blank>
+  <a href="https://cwti.link/twitter" target=_blank>
     <img alt="Follow us on Twitter" src="https://img.shields.io/twitter/follow/codewiththeita?label=follow%20us"/>
   </a>
 </p>
@@ -55,7 +55,7 @@ This app, Bundel, is our first in this live coding project of ours — who knows
 ### I want to watch y'all crazies code
 The good news is, it's really easy to do! To keep up to date with all that's happening, you should
 [follow @codewiththeita](https://cwti.link/twitter) on Twitter. If Twitter isn't your
-thing — we understand! — we also make announcements [on Telegram](https://cwti.link/telegram).
+thing — we understand! — we also make announcements [on Telegram](cwti.link).
 
 We live stream [on Twitch](https://cwti.link/twitch) and [on YouTube](https://cwti.link/yt).
 You can also find the whole archive of previous streams over on YouTube.
@@ -65,7 +65,7 @@ We regularly stream ourselves coding on this app. We are _generally_ live at the
 * Sundays, at 17:00 CEST / 11 AM EST / 8 AM PST
 
 Dates and times may vary though, so watch out for announcements. Or, you know, add
-[this nifty iCal subscription](http://cwti.link/cwi-ical) to your calendar. You can find some instructions
+[this nifty iCal subscription](https://cwti.link/ical) to your calendar. You can find some instructions
 [here](https://twitter.com/codewiththeita/status/1389220980506173445).
 
 ### I want to contribute
@@ -98,7 +98,7 @@ Bundel is licensed under the [Apache 2.0 license](LICENSE).
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
