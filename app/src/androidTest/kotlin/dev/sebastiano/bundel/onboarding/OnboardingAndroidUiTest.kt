@@ -7,7 +7,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.ui.BundelOnboardingTheme
+import dev.sebastiano.bundel.ui.BundelYouTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -22,7 +22,7 @@ internal class OnboardingAndroidUiTest {
     @Test
     fun should_go_to_second_page_when_clicking_next_button() {
         composeTestRule.setContent {
-            BundelOnboardingTheme {
+            BundelYouTheme {
                 Surface {
 //                    OnboardingScreen()
                 }
@@ -40,7 +40,7 @@ internal class OnboardingAndroidUiTest {
     @Test
     fun should_not_show_back_button_on_first_page() {
         composeTestRule.setContent {
-            BundelOnboardingTheme {
+            BundelYouTheme {
                 Surface {
 //                    OnboardingScreen()
                 }
@@ -54,7 +54,7 @@ internal class OnboardingAndroidUiTest {
     @Test
     fun should_hide_back_button_when_getting_back_to_first_page() {
         composeTestRule.setContent {
-            BundelOnboardingTheme {
+            BundelYouTheme {
                 Surface {
 //                    OnboardingScreen()
                 }
