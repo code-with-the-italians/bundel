@@ -65,7 +65,7 @@ We regularly stream ourselves coding on this app. We are _generally_ live at the
 * Sundays, at 17:00 CEST / 11 AM EST / 8 AM PST
 
 Dates and times may vary though, so watch out for announcements. Or, you know, add
-[this nifty iCal subscription](https://cwti.link/ical) to your calendar. You can find some instructions
+[this nifty iCal subscription](https://cwti.link/cal) to your calendar. You can find some instructions
 [here](https://twitter.com/codewiththeita/status/1389220980506173445).
 
 ### I want to contribute
