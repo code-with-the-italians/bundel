@@ -1,7 +1,6 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.plugins
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
@@ -124,6 +123,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.uiTest.manifest)
 
     testImplementation(kotlin("reflect"))
+    testImplementation(libs.bundles.compose.test)
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
