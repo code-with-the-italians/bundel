@@ -2,19 +2,19 @@
   <img alt="Bundel logo" src="art/logo_horiz@2x.png" /><br/>
 
 
-  <a href="https://github.com/rock3r/Bundel/actions/workflows/buildbot.yml" target=_blank>
-    <img alt="GitHub Workflow Status (branch)" src="https://img.shields.io/github/workflow/status/rock3r/bundel/buildbot/main?logo=github"/>
+  <a href="https://github.com/code-with-the-italians/Bundel/actions/workflows/buildbot.yml" target=_blank>
+    <img alt="GitHub Workflow Status (branch)" src="https://img.shields.io/github/workflow/status/code-with-the-italians/bundel/buildbot/main?logo=github"/>
   </a>
   &nbsp;
-  <a href="https://github.com/rock3r/Bundel/blob/main/LICENSE" target=_blank>
-  <img alt="Apache 2.0 license" src="https://img.shields.io/github/license/rock3r/bundel"/>
+  <a href="https://github.com/code-with-the-italians/Bundel/blob/main/LICENSE" target=_blank>
+  <img alt="Apache 2.0 license" src="https://img.shields.io/github/license/code-with-the-italians/bundel"/>
   </a>
   &nbsp;
-  <a href="http://bit.ly/cwi-twitch" target=_blank>
+  <a href="http://cwti.link/twitch" target=_blank>
     <img alt="Watch us code on Twitch" src="https://img.shields.io/twitch/status/codewiththeitalians?logo=twitch&logoColor=white"/>
   </a>
   &nbsp;
-  <a href="https://twitter.com/codewiththeita" target=_blank>
+  <a href="http://cwti.link/twitter" target=_blank>
     <img alt="Follow us on Twitter" src="https://img.shields.io/twitter/follow/codewiththeita?label=follow%20us"/>
   </a>
 </p>
@@ -31,8 +31,8 @@ can expect continued development and fixes, horrible temporary design, and all t
 through when we're prototyping something. But it will get better! Nice things just need time.
 
 ## Why this app, why open source
-This project was born out of an idea [Ivan Morgillo](https://github.com/hamen) and myself had: we wanted to
-learn using [Jetpack Compose](https://developer.android.com/jetpack/compose), and maybe catch up on some
+This project was born out of an idea [Ivan Morgillo](https://github.com/hamen) and [Sebastiano Poggi](https://github.com/rock3r)
+had: we wanted to learn using [Jetpack Compose](https://developer.android.com/jetpack/compose), and maybe catch up on some
 other cool Android stuff. But side projects never really get completed, and at the same time, just putting
 the code out there wouldn't really give much insight into the _how_ and _why_ things are done a certain way.
 Open source is a great way to sharing knowledge, and this being a side project for us, that was a given. But
@@ -48,17 +48,16 @@ the way, you're welcome!).
 This app, Bundel, is our first in this live coding project of ours — who knows what will come next.
 
 
-
-<a href="https://twitter.com/codewiththeita" target=_blank>
-  <img alt="Code with the Italians logo" width="512px" src="https://github.com/rock3r/Bundel/raw/main/art/CWI-logo-horizontal.svg"/>
+<a href="https://cwti.link/twitter" target=_blank>
+  <img alt="Code with the Italians logo" width="512px" src="https://github.com/code-with-the-italians/Bundel/raw/main/art/CWI-logo-horizontal.svg"/>
 </a>
 
 ### I want to watch y'all crazies code
 The good news is, it's really easy to do! To keep up to date with all that's happening, you should
-[follow @codewiththeita](https://twitter.com/codewiththeita) on Twitter. If Twitter isn't your
-thing — we understand! — we also make announcements [on Telegram](https://t.me/code_with_the_italians).
+[follow @codewiththeita](https://cwti.link/twitter) on Twitter. If Twitter isn't your
+thing — we understand! — we also make announcements [on Telegram](https://cwti.link/telegram).
 
-We live stream [on Twitch](http://bit.ly/cwi-twitch) and [on YouTube](http://bit.ly/cwi-yt).
+We live stream [on Twitch](https://cwti.link/twitch) and [on YouTube](https://cwti.link/yt).
 You can also find the whole archive of previous streams over on YouTube.
 
 We regularly stream ourselves coding on this app. We are _generally_ live at these times:
@@ -66,7 +65,7 @@ We regularly stream ourselves coding on this app. We are _generally_ live at the
 * Sundays, at 17:00 CEST / 11 AM EST / 8 AM PST
 
 Dates and times may vary though, so watch out for announcements. Or, you know, add
-[this nifty iCal subscription](http://bit.ly/cwi-ical) to your calendar. You can find some instructions
+[this nifty iCal subscription](http://cwti.link/cwi-ical) to your calendar. You can find some instructions
 [here](https://twitter.com/codewiththeita/status/1389220980506173445).
 
 ### I want to contribute
