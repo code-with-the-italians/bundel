@@ -17,6 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,6 +101,7 @@ private fun CrashlyticsSwitch(
     Row(
         modifier = Modifier
             .clickable { onCrashlyticsEnabledChanged(!crashReportingEnabled) }
+            .semantics(properties = { set(SemanticsProperties.ToggleableState, ToggleableState(crashReportingEnabled)) })
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {

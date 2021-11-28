@@ -30,11 +30,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments += "useTestStorageService" to "true"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+
 
     buildFeatures {
         compose = true
@@ -46,7 +52,7 @@ android {
 
     lint {
         lintConfig = rootProject.file("build-config/lint.xml")
-        isWarningsAsErrors = true
+        //isWarningsAsErrors = true
         sarifReport = true
     }
 
@@ -123,12 +129,14 @@ dependencies {
     debugImplementation(libs.androidx.compose.uiTest.manifest)
 
     testImplementation(kotlin("reflect"))
-    testImplementation(libs.bundles.compose.test)
+    androidTestImplementation(libs.bundles.compose.test)
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    androidTestUtil("androidx.test.services:test-services:1.4.1-rc01")
+    androidTestUtil("androidx.test:orchestrator:1.4.1-rc01")
 
     dummyGoogleServicesJson(projects.bundel)
 }
