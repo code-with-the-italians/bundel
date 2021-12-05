@@ -4,6 +4,7 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id("com.android.application")
@@ -99,6 +100,7 @@ val dummyGoogleServicesJson: Configuration by configurations.creating {
 }
 
 dependencies {
+    implementation("androidx.test.uiautomator:uiautomator:2.2.0")
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
     implementation(libs.androidx.activity.activityCompose)
@@ -130,8 +132,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     testRuntimeOnly(libs.junit.jupiter.engine)
-    androidTestUtil("androidx.test.services:test-services:1.4.1-rc01")
-    androidTestUtil("androidx.test:orchestrator:1.4.1-rc01")
+    androidTestUtil(libs.bundles.androidx.testUtils)
 
     dummyGoogleServicesJson(projects.bundel)
 }
@@ -175,8 +176,20 @@ tasks {
         jvmTarget = "1.8"
         reports {
             sarif {
-                enabled = true
+                required.set(true)
             }
+        }
+    }
+
+    val pushGoldenImages = register<Exec>("pushGoldenImages") {
+        val file = File(rootDir, "culo")
+        inputs.files(file)
+        workingDir(android.adbExecutable.parentFile.absolutePath)
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            // FUCK YOU GRADLE
+            commandLine("cmd", "/c", android.adbExecutable.name, "push", file, "/sdcard/")
+        } else {
+            commandLine(android.adbExecutable.name, "push", file, "/sdcard/")
         }
     }
 
@@ -241,5 +254,7 @@ tasks {
             .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
         named("processDebugGoogleServices")
             .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
+
+        named("connectedAndroidTest").dependsOn(pushGoldenImages)
     }
 }

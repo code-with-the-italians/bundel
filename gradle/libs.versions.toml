@@ -38,17 +38,17 @@ room="2.4.0-beta01"
 timber="5.0.1"
 
 [libraries]
-androidx-activity-activityCompose={ module="androidx.activity:activity-compose", version.ref="activityCompose" }
-androidx-appCompat={ module="androidx.appcompat:appcompat", version.ref="appCompat" }
-androidx-compose-compiler={ module="androidx.compose.compiler:compiler", version.ref="compose" }
+androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
+androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
 androidx-compose-materialIconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
-androidx-compose-runtimeLivedata={ module="androidx.compose.runtime:runtime-livedata", version.ref="compose" }
-androidx-compose-ui={ module="androidx.compose.ui:ui", version.ref="compose" }
-androidx-compose-uiTooling={ module="androidx.compose.ui:ui-tooling", version.ref="compose" }
-androidx-compose-uiTest-manifest={ module="androidx.compose.ui:ui-test-manifest", version.ref="compose" }
-androidx-compose-uiTest-junit4={ module="androidx.compose.ui:ui-test-junit4", version.ref="compose" }
+androidx-compose-runtimeLivedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-compose-uiTest-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
+androidx-compose-uiTest-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+androidx-compose-uiTooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 androidx-hilt-hiltCommon = { module = "androidx.hilt:hilt-common", version.ref = "hilt" }
@@ -61,28 +61,30 @@ androidx-navigation-navigationCompose = { module = "androidx.navigation:navigati
 androidx-room-roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-roomRuntime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
-androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
-androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
-androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 androidx-test-compose-ui-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose" }
 androidx-test-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
+androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
+androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidx-test" }
+androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
-com-android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 coilKt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+com-android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 google-accompanistFlowLayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
+google-accompanistNavAnimations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
+google-accompanistNavMaterial = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 google-accompanistPager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 google-accompanistPagerIndicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 google-accompanistSystemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
-google-accompanistNavAnimations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
-google-accompanistNavMaterial = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 google-dagger-dagger = { module = "com.google.dagger:dagger", version.ref = "daggerHilt" }
-google-dagger-daggerCompiler={ module="com.google.dagger:dagger-compiler", version.ref="daggerHilt" }
-google-dagger-hiltAndroid={ module="com.google.dagger:hilt-android", version.ref="daggerHilt" }
-google-dagger-hiltCompiler={ module="com.google.dagger:hilt-compiler", version.ref="daggerHilt" }
-google-firebase-bom={ module="com.google.firebase:firebase-bom", version.ref="firebaseBom" }
-google-firebase-analytics-ktx={ module="com.google.firebase:firebase-analytics-ktx" }
-google-firebase-crashlytics-ktx={ module="com.google.firebase:firebase-crashlytics-ktx" }
+google-dagger-daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerHilt" }
+google-dagger-hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
+google-dagger-hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerHilt" }
+google-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+google-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 google-protobuf-javalite={ module="com.google.protobuf:protobuf-javalite", version.ref="protobuf" }
 gradlePlugins-android={ module="com.android.tools.build:gradle", version.ref="gradlePlugins-agp" }
 gradlePlugins-crashlytics={ module="com.google.firebase:firebase-crashlytics-gradle", version.ref="gradlePlugins-crashlytics" }
@@ -102,6 +104,7 @@ kotlinx-coroutines-test={ module="org.jetbrains.kotlinx:kotlinx-coroutines-test"
 
 [bundles]
 accompanist = ["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations", "google-accompanistNavMaterial"]
+androidx-testUtils = ["androidx-test-services", "androidx-test-orchestrator"]
 compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
 compose-test = ["androidx-test-junit", "androidx-test-core", "androidx-test-rules", "androidx-test-espresso-core", "androidx-test-compose-ui-junit4", "androidx-test-compose-ui-test-manifest"]
 datastore = ["google-protobuf-javalite", "androidx-datastore"]
