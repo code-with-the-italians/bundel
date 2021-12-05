@@ -55,7 +55,7 @@ This app, Bundel, is our first in this live coding project of ours — who knows
 ### I want to watch y'all crazies code
 The good news is, it's really easy to do! To keep up to date with all that's happening, you should
 [follow @codewiththeita](https://cwti.link/twitter) on Twitter. If Twitter isn't your
-thing — we understand! — we also make announcements [on Telegram](cwti.link).
+thing — we understand! — we also make announcements [on Telegram](https://cwti.link/telegram).
 
 We live stream [on Twitch](https://cwti.link/twitch) and [on YouTube](https://cwti.link/yt).
 You can also find the whole archive of previous streams over on YouTube.
