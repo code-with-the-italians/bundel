@@ -182,9 +182,12 @@ tasks {
     }
 
     val pushGoldenImages = register<Exec>("pushGoldenImages") {
-        val file = File(rootDir, "culo")
+        val file = File(rootDir, "golden-images")
         inputs.files(file)
+        outputs.files()
+
         workingDir(android.adbExecutable.parentFile.absolutePath)
+
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             // FUCK YOU GRADLE
             commandLine("cmd", "/c", android.adbExecutable.name, "push", file, "/sdcard/")

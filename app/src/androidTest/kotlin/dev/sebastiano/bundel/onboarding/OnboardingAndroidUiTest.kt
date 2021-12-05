@@ -35,6 +35,9 @@ internal class OnboardingAndroidUiTest {
     @get:Rule
     val nameRule = TestName()
 
+    @get:Rule
+    val testStorageRule = PrepareTestStorageRule()
+
     private val resources: Resources
         get() = composeTestRule.activity.resources
 
