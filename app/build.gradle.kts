@@ -87,11 +87,6 @@ detekt {
     source = files("src/main/java", "src/main/kotlin")
     config = rootProject.files("build-config/detekt.yml")
     buildUponDefaultConfig = true
-    reports {
-        sarif {
-            enabled = true
-        }
-    }
 }
 
 val dummyGoogleServicesJson: Configuration by configurations.creating {
@@ -178,6 +173,11 @@ tasks {
     withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"
+        reports {
+            sarif {
+                enabled = true
+            }
+        }
     }
 
     val lintReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")

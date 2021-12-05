@@ -175,3 +175,8 @@ style:
     active: true
   VarCouldBeVal:
     active: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - Composable
