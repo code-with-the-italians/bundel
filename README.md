@@ -47,7 +47,6 @@ the way, you're welcome!).
 
 This app, Bundel, is our first in this live coding project of ours — who knows what will come next.
 
-
 <a href="https://cwti.link/twitter" target=_blank>
   <img alt="Code with the Italians logo" width="512px" src="https://github.com/code-with-the-italians/Bundel/raw/main/art/CWI-logo-horizontal.svg"/>
 </a>
@@ -61,8 +60,9 @@ We live stream [on Twitch](https://cwti.link/twitch) and [on YouTube](https://cw
 You can also find the whole archive of previous streams over on YouTube.
 
 We regularly stream ourselves coding on this app. We are _generally_ live at these times:
-* Wednesdays, at 18:30 CEST / 12:30 PM EST / 9:30 AM PST
-* Sundays, at 17:00 CEST / 11 AM EST / 8 AM PST
+
+* Wednesdays at 18:30 CE(S)T ([other timezone?](https://www.timeanddate.com/worldclock/converter.html?hour=18&min=30&p1=215&p2=136&p3=tz_et&p4=tz_pt&p5=tz_ist&p6=tz_jst))
+* Sundays at 17:00 CE(S)T ([other timezone?](https://www.timeanddate.com/worldclock/converter.html?hour=17&p1=215&p2=136&p3=tz_et&p4=tz_pt&p5=tz_ist&p6=tz_jst))
 
 Dates and times may vary though, so watch out for announcements. Or, you know, add
 [this nifty iCal subscription](https://cwti.link/cal) to your calendar. You can find some instructions
