@@ -7,17 +7,17 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("com.google.devtools.ksp") version "1.5.31-1.0.0"
-    id("dagger.hilt.android.plugin")
-    id("com.google.protobuf")
-    id("io.gitlab.arturbosch.detekt")
-    id("org.jmailen.kotlinter")
-    id("com.google.firebase.crashlytics")
-    id("de.mannodermaus.android-junit5")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.crashlytics)
+    alias(libs.plugins.android.junit5)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlinter)
 }
 
 android {
@@ -125,14 +125,14 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.uiTest.manifest)
 
-    testImplementation(kotlin("reflect"))
+    androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     androidTestImplementation(libs.bundles.compose.test)
+    androidTestUtil(libs.bundles.androidx.testUtils)
+    testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.uiTest.junit4)
     testRuntimeOnly(libs.junit.jupiter.engine)
-    androidTestUtil(libs.bundles.androidx.testUtils)
 
     dummyGoogleServicesJson(projects.bundel)
 }
@@ -196,26 +196,26 @@ tasks {
         }
     }
 
-    val lintReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")
+    val lintReportReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")
     afterEvaluate {
         // Needs to be in afterEvaluate because it's not created yet otherwise
-        named<AndroidLintTask>("lintRelease") {
-            sarifReportOutputFile.set(lintReleaseSarifOutput)
+        named<AndroidLintTask>("lintReportRelease") {
+            sarifReportOutputFile.set(lintReportReleaseSarifOutput)
         }
     }
 
     val staticAnalysis by registering {
         val detektRelease by getting(Detekt::class)
-        val androidLintRelease = named<AndroidLintTask>("lintRelease")
+        val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-        dependsOn(detekt, detektRelease, androidLintRelease, lintKotlin)
+        dependsOn(detekt, detektRelease, androidLintReportRelease, lintKotlin)
     }
 
     register<Sync>("collectSarifReports") {
         val detektRelease by getting(Detekt::class)
-        val androidLintRelease = named<AndroidLintTask>("lintRelease")
+        val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-        mustRunAfter(detekt, detektRelease, androidLintRelease, lintKotlin, staticAnalysis)
+        mustRunAfter(detekt, detektRelease, androidLintReportRelease, lintKotlin, staticAnalysis)
 
         from(detektRelease.sarifReportFile) {
             rename { "detekt-release.sarif" }
@@ -223,7 +223,7 @@ tasks {
         from(detekt.get().sarifReportFile) {
             rename { "detekt.sarif" }
         }
-        from(lintReleaseSarifOutput) {
+        from(lintReportReleaseSarifOutput) {
             rename { "android-lint.sarif" }
         }
 

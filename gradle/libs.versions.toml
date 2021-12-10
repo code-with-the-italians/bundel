@@ -1,8 +1,8 @@
 [versions]
 accompanist = "0.21.2-beta"
 activityCompose = "1.4.0"
-androidx-testExt = "1.1.4-alpha03"
 androidx-test = "1.4.1-alpha03"
+androidx-testExt = "1.1.4-alpha03"
 appCompat = "1.4.0-rc01"
 assertk = "0.25"
 coil = "2.0.0-alpha02"
@@ -15,27 +15,28 @@ espresso-core = "3.5.0-alpha03"
 firebaseBom = "29.0.0"
 glance = "1.0.0-SNAPSHOT"
 gradlePlugins-agp = "7.2.0-alpha05"
-gradlePlugins-crashlytics = "2.8.0"
+gradlePlugins-crashlytics = "2.8.1"
 gradlePlugins-detekt = "1.19.0"
 gradlePlugins-gms = "4.3.10"
-gradlePlugins-junit5="1.8.0.0"
-gradlePlugins-kotlinter="3.6.0"
-gradlePlugins-ksp="1.5.31-1.0.0"
+gradlePlugins-hilt = "2.40.5"
+gradlePlugins-junit5 = "1.8.0.0"
+gradlePlugins-kotlinter = "3.6.0"
+gradlePlugins-ksp = "1.5.31-1.0.0"
 gradlePlugins-protobuf = "0.8.17"
 gradlePlugins-versionCatalog = "0.2.1"
 gradlePlugins-versionsBenManes = "0.39.0"
-junit="5.8.1"
-hilt="1.0.0"
-hiltLifecycleViewmodel="1.0.0-alpha03"
-hiltNavigationCompose="1.0.0-alpha03"
-kotlin="1.5.31"
-kotlinCoroutines="1.5.2"
-lifecycle="2.4.0"
-lifecycleViewmodelCompose="1.0.0-alpha07"
-navigationCompose="2.4.0-beta02"
-protobuf="3.10.0"
-room="2.4.0-beta01"
-timber="5.0.1"
+hilt = "1.0.0"
+hiltLifecycleViewmodel = "1.0.0-alpha03"
+hiltNavigationCompose = "1.0.0-alpha03"
+junit = "5.8.1"
+kotlin = "1.5.31"
+kotlinCoroutines = "1.5.2"
+lifecycle = "2.4.0"
+lifecycleViewmodelCompose = "1.0.0-alpha07"
+navigationCompose = "2.4.0-beta02"
+protobuf = "3.10.0"
+room = "2.4.0-beta01"
+timber = "5.0.1"
 
 [libraries]
 androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -66,9 +67,9 @@ androidx-test-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
+androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
 androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidx-test" }
-androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 coilKt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 com-android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
@@ -85,22 +86,11 @@ google-dagger-hiltCompiler = { module = "com.google.dagger:hilt-compiler", versi
 google-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 google-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-google-protobuf-javalite={ module="com.google.protobuf:protobuf-javalite", version.ref="protobuf" }
-gradlePlugins-android={ module="com.android.tools.build:gradle", version.ref="gradlePlugins-agp" }
-gradlePlugins-crashlytics={ module="com.google.firebase:firebase-crashlytics-gradle", version.ref="gradlePlugins-crashlytics" }
-gradlePlugins-detekt={ module="io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref="gradlePlugins-detekt" }
-gradlePlugins-gms={ module="com.google.gms:google-services", version.ref="gradlePlugins-gms" }
-gradlePlugins-hilt={ module="com.google.dagger:hilt-android-gradle-plugin", version.ref="daggerHilt" }
-gradlePlugins-junit5={ module="de.mannodermaus.gradle.plugins:android-junit5", version.ref="gradlePlugins-junit5" }
-gradlePlugins-kotlin={ module="org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref="kotlin" }
-gradlePlugins-kotlinter={ module="org.jmailen.gradle:kotlinter-gradle", version.ref="gradlePlugins-kotlinter" }
-gradlePlugins-protobuf = { module = "gradle.plugin.com.google.protobuf:protobuf-gradle-plugin", version.ref = "gradlePlugins-protobuf" }
-gradlePlugins-versionCatalogUpdates = { module = "nl.littlerobots.vcu:plugin", version.ref = "gradlePlugins-versionCatalog" }
-gradlePlugins-versionsBenManes = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "gradlePlugins-versionsBenManes" }
-jakes-timber-timber={ module="com.jakewharton.timber:timber", version.ref="timber" }
-junit-jupiter-api={ module="org.junit.jupiter:junit-jupiter-api", version.ref="junit"}
-junit-jupiter-engine={ module="org.junit.jupiter:junit-jupiter-engine", version.ref="junit"}
-kotlinx-coroutines-test={ module="org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref="kotlinCoroutines" }
+google-protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
+jakes-timber-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 
 [bundles]
 accompanist = ["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations", "google-accompanistNavMaterial"]
@@ -108,22 +98,23 @@ androidx-testUtils = ["androidx-test-services", "androidx-test-orchestrator"]
 compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
 compose-test = ["androidx-test-junit", "androidx-test-core", "androidx-test-rules", "androidx-test-espresso-core", "androidx-test-compose-ui-junit4", "androidx-test-compose-ui-test-manifest"]
 datastore = ["google-protobuf-javalite", "androidx-datastore"]
-firebase=["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
-hilt=["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
-hiltKapt=["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
-lifecycle=["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
-room=["androidx-room-roomKtx", "androidx-room-roomRuntime"]
+firebase = ["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
+hilt = ["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
+hiltKapt = ["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
+lifecycle = ["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
+room = ["androidx-room-roomKtx", "androidx-room-roomRuntime"]
 
 [plugins]
-android={ id="com.android.application", version.ref="gradlePlugins-agp" }
-crashlytics={ id="com.google.firebase.crashlytics", version.ref="gradlePlugins-crashlytics" }
-detekt={ id="io.gitlab.arturbosch.detekt", version.ref="gradlePlugins-detekt" }
-googleServices={ id="com.google.gms.google-services", version.ref="gradlePlugins-gms" }
-hilt={ id="dagger.hilt.android.plugin", version.ref="daggerHilt" }
-junit5={ id="de.mannodermaus.android-junit5", version.ref="gradlePlugins-junit5" }
-kotlinAndroid={ id="org.jetbrains.kotlin.android", version.ref="kotlin" }
-kapt={ id="org.jetbrains.kotlin.kapt", version.ref="kotlin" }
-kotlinter={ id="org.jmailen.kotlinter", version.ref="gradlePlugins-kotlinter" }
-ksp={ id="com.google.devtools.ksp", version.ref="gradlePlugins-ksp" }
-protobuf={ id="com.google.protobuf", version.ref="gradlePlugins-protobuf" }
-versionsBenManes={ id="com.github.ben-manes.versions", version.ref="gradlePlugins-versionsBenManes" }
+android-application = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "gradlePlugins-junit5" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "gradlePlugins-crashlytics" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "gradlePlugins-detekt" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "gradlePlugins-gms" }
+hilt = { id = "dagger.hilt.android.plugin", version.ref = "gradlePlugins-hilt" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "gradlePlugins-kotlinter" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
+protobuf = { id = "com.google.protobuf", version.ref = "gradlePlugins-protobuf" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradlePlugins-versionCatalog" }
+versionsBenManes = { id = "com.github.ben-manes.versions", version.ref = "gradlePlugins-versionsBenManes" }
