@@ -137,6 +137,10 @@ dependencies {
     dummyGoogleServicesJson(projects.bundel)
 }
 
+shot {
+    applicationId = android.defaultConfig.applicationId
+}
+
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${project.libs.versions.protobuf.get()}"

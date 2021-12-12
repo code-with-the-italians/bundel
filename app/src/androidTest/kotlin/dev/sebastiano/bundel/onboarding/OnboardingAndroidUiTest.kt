@@ -7,15 +7,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
-import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.test.core.graphics.writeToTestStorage
+import com.karumi.shot.ScreenshotTest
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import org.junit.Ignore
@@ -27,7 +24,7 @@ import org.junit.rules.TestName
 * If this test is executed via gradle managed devices, the saved image files will be stored at
 * build/outputs/managed_device_android_test_additional_output/debugAndroidTest/managedDevice/[DeviceModel]Api[ApiVersion]/
 */
-internal class OnboardingAndroidUiTest {
+internal class OnboardingAndroidUiTest : ScreenshotTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
@@ -36,7 +33,7 @@ internal class OnboardingAndroidUiTest {
     val nameRule = TestName()
 
     @get:Rule
-    val testStorageRule = PrepareTestStorageRule()
+    val permissionsRule = PrepareDevicePermissionsRule()
 
     private val resources: Resources
         get() = composeTestRule.activity.resources
@@ -65,17 +62,14 @@ internal class OnboardingAndroidUiTest {
     fun intro_page_should_look_nice() {
         composeTestRule.setContent {
             BundelYouTheme {
-                var crashReportingEnabled by remember { mutableStateOf(false) }
+                var crashReportingEnabled by remember { mutableStateOf(true) }
                 IntroPage(
                     IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
                 )
             }
         }
 
-        composeTestRule.onRoot()
-            .captureToImage()
-            .asAndroidBitmap()
-            .writeToTestStorage(nameRule.methodName)
+        compareScreenshot(composeTestRule)
     }
 
     @Ignore("Yes")
