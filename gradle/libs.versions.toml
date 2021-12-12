@@ -14,7 +14,7 @@ desugar = "1.1.5"
 espresso-core = "3.5.0-alpha03"
 firebaseBom = "29.0.0"
 glance = "1.0.0-SNAPSHOT"
-gradlePlugins-agp = "7.2.0-alpha05"
+gradlePlugins-agp = "7.2.0-alpha04"
 gradlePlugins-crashlytics = "2.8.1"
 gradlePlugins-detekt = "1.19.0"
 gradlePlugins-gms = "4.3.10"
@@ -23,6 +23,7 @@ gradlePlugins-junit5 = "1.8.0.0"
 gradlePlugins-kotlinter = "3.6.0"
 gradlePlugins-ksp = "1.5.31-1.0.0"
 gradlePlugins-protobuf = "0.8.17"
+gradlePlugins-shot = "5.12.1"
 gradlePlugins-versionCatalog = "0.2.1"
 gradlePlugins-versionsBenManes = "0.39.0"
 hilt = "1.0.0"
@@ -116,5 +117,6 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "gradlePlugins-kotlinter" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "gradlePlugins-protobuf" }
+shot = { id = "shot", version.ref = "gradlePlugins-shot" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradlePlugins-versionCatalog" }
 versionsBenManes = { id = "com.github.ben-manes.versions", version.ref = "gradlePlugins-versionsBenManes" }

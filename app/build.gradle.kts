@@ -4,7 +4,6 @@ import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
-import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     alias(libs.plugins.android.application)
@@ -18,6 +17,7 @@ plugins {
     alias(libs.plugins.googleServices)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.shot)
 }
 
 android {
@@ -30,7 +30,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.karumi.shot.ShotTestRunner"
         testInstrumentationRunnerArguments += "useTestStorageService" to "true"
 
         ksp {
@@ -181,21 +181,6 @@ tasks {
         }
     }
 
-    val pushGoldenImages = register<Exec>("pushGoldenImages") {
-        val file = File(rootDir, "golden-images")
-        inputs.files(file)
-        outputs.files()
-
-        workingDir(android.adbExecutable.parentFile.absolutePath)
-
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            // FUCK YOU GRADLE
-            commandLine("cmd", "/c", android.adbExecutable.name, "push", file, "/sdcard/")
-        } else {
-            commandLine(android.adbExecutable.name, "push", file, "/sdcard/")
-        }
-    }
-
     val lintReportReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")
     afterEvaluate {
         // Needs to be in afterEvaluate because it's not created yet otherwise
@@ -257,7 +242,5 @@ tasks {
             .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
         named("processDebugGoogleServices")
             .dependsOn(copyDummyGoogleServicesJson, checkGoogleServicesJson)
-
-        named("connectedAndroidTest").dependsOn(pushGoldenImages)
     }
 }

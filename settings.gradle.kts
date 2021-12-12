@@ -16,6 +16,9 @@ pluginManagement {
                 "com.google.firebase.crashlytics" -> {
                     useModule("com.google.firebase.crashlytics:com.google.firebase.crashlytics.gradle.plugin:${requested.version}")
                 }
+                "shot" -> {
+                    useModule("com.karumi:shot:${requested.version}")
+                }
             }
         }
     }
