@@ -14,7 +14,10 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_bundel_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:fullBackupContent="@xml/full_backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:targetApi="s">
 
         <activity
             android:name=".MainActivity"

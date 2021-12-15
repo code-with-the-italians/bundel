@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <exclude domain="root">./</exclude>
+    </cloud-backup>
+
+    <device-transfer>
+        <exclude domain="root">./</exclude>
+    </device-transfer>
+</data-extraction-rules>
