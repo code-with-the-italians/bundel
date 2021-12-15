@@ -9,9 +9,9 @@ import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -35,6 +35,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
     }
 
     override fun onListenerConnected() {
+        Timber.d("Notifications listener connected")
         isConnected = true
         val notifications = activeNotifications.mapNotNull { it.toActiveNotificationOrNull(this) }
         mutableNotificationsFlow.value = notifications
@@ -122,7 +123,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         private val mutableNotificationsFlow = MutableStateFlow(emptyList<ActiveNotification>())
         private val snoozedNotificationsFlow = MutableSharedFlow<SnoozedNotification>()
 
-        val activeNotificationsFlow: Flow<List<ActiveNotification>> = mutableNotificationsFlow
+        val activeNotificationsFlow: StateFlow<List<ActiveNotification>> = mutableNotificationsFlow
 
         suspend fun snooze(notification: ActiveNotification, durationMillis: Int = 5_000) {
             snoozedNotificationsFlow.emit(SnoozedNotification(notification.persistableNotification.key, durationMillis))
