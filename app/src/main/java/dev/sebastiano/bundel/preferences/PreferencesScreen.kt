@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,6 +60,7 @@ internal fun PreferencesScreen(
     onSelectTimeRangesClicked: () -> Unit,
     onLicensesLinkClick: () -> Unit,
     onSourcesLinkClick: () -> Unit,
+    onDebugPreferencesClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
     Scaffold(
@@ -78,7 +80,23 @@ internal fun PreferencesScreen(
             Divider()
 
             AboutAppRow(onSourcesLinkClick, onLicensesLinkClick)
+
+            if (BuildConfig.DEBUG) {
+                Divider()
+
+                DebugPreferencesRow(onDebugPreferencesClick)
+            }
         }
+    }
+}
+
+@Composable
+private fun DebugPreferencesRow(onDebugPreferencesClick: () -> Unit) {
+    TextButton(onClick = onDebugPreferencesClick,
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp)) {
+        Text(text = "Post a notification...")
     }
 }
 

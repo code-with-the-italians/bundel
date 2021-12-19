@@ -1,5 +1,7 @@
 package dev.sebastiano.bundel.navigation
 
+import android.app.NotificationManager
+import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +17,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.NotificationChannelCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
@@ -41,6 +48,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @OptIn(
     ExperimentalComposeUiApi::class,
@@ -59,12 +67,14 @@ internal fun NavGraphBuilder.settingsGraph(
         composable(
             route = NavigationRoute.SettingsGraph.SettingsScreen.route
         ) {
+            val context = LocalContext.current
             PreferencesScreen(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
                 onSelectDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectDays.route) },
                 onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) },
                 onLicensesLinkClick = { navController.navigate(NavigationRoute.SettingsGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
+                onDebugPreferencesClick = { postTestNotification(context) },
                 onBackPress = { navController.popBackStack() },
             )
         }
@@ -92,6 +102,19 @@ internal fun NavGraphBuilder.settingsGraph(
             SelectTimeRangesDialog(onDialogDismiss = { navController.popBackStack() })
         }
     }
+}
+
+private fun postTestNotification(context: Context) {
+    val notificationManager = NotificationManagerCompat.from(context)
+    val channel = NotificationChannelCompat.Builder("test", NotificationManager.IMPORTANCE_DEFAULT).build()
+    notificationManager.createNotificationChannel(channel)
+    val id = Random.nextInt()
+    val notification = NotificationCompat.Builder(context, channel.id)
+        .setContentTitle("I am a test, hi")
+        .setContentText("Just in case it wasn't clear")
+        .setSmallIcon(IconCompat.createWithResource(context, R.drawable.ic_bundel_icon))
+        .build()
+    notificationManager.notify(id, notification)
 }
 
 @ExperimentalAnimationApi
