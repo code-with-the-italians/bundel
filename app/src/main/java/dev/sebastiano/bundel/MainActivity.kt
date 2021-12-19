@@ -10,6 +10,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -28,12 +29,15 @@ import dev.sebastiano.bundel.navigation.settingsGraph
 import dev.sebastiano.bundel.navigation.splashScreenGraph
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.preferences.Preferences
+import dev.sebastiano.bundel.preferences.isWinteryEasterEggEnabled
 import dev.sebastiano.bundel.storage.DataRepository
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.defaultEnterTransition
 import dev.sebastiano.bundel.ui.defaultExitTransition
 import dev.sebastiano.bundel.ui.defaultPopEnterTransition
 import dev.sebastiano.bundel.ui.defaultPopExitTransition
+import dev.sebastiano.bundel.ui.modifiers.snowfall.rudolf
+import dev.sebastiano.bundel.util.appendIf
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -72,7 +76,8 @@ class MainActivity : AppCompatActivity() {
 
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
-                    sheetShape = MaterialTheme2.shapes.small
+                    sheetShape = MaterialTheme2.shapes.small,
+                    modifier = Modifier.appendIf(isWinteryEasterEggEnabled()) { rudolf() }
                 ) {
                     AnimatedNavHost(
                         navController = navController,

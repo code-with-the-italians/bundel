@@ -1,4 +1,4 @@
-package dev.sebastiano.bundel.ui.overlay
+package dev.sebastiano.bundel.ui.modifiers.overlay
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent

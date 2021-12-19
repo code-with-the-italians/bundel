@@ -12,11 +12,11 @@
         android:name=".BundelApplication"
         android:theme="@style/Bundel.Theme"
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/full_backup_rules"
         android:icon="@mipmap/ic_bundel_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:fullBackupContent="@xml/full_backup_rules"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         tools:targetApi="s">
 
         <activity

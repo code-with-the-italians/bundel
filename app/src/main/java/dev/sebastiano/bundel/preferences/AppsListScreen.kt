@@ -46,8 +46,8 @@ import coil.compose.rememberImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.ui.BundelYouTheme
-import dev.sebastiano.bundel.ui.overlay.StrikethroughOverlay
-import dev.sebastiano.bundel.ui.overlay.animatedOverlay
+import dev.sebastiano.bundel.ui.modifiers.overlay.StrikethroughOverlay
+import dev.sebastiano.bundel.ui.modifiers.overlay.animatedOverlay
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 

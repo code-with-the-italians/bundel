@@ -1,4 +1,4 @@
-package dev.sebastiano.bundel.ui.overlay
+package dev.sebastiano.bundel.ui.modifiers.overlay
 
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
