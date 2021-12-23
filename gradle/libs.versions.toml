@@ -1,48 +1,46 @@
 [versions]
-accompanist = "0.21.2-beta"
+accompanist = "0.22.0-rc"
 activityCompose = "1.4.0"
 androidx-test = "1.4.1-alpha03"
 androidx-testExt = "1.1.4-alpha03"
-appCompat = "1.4.0-rc01"
+appCompat = "1.4.0"
 assertk = "0.25"
-coil = "2.0.0-alpha02"
-compose = "1.1.0-beta02"
-composeMaterial3 = "1.0.0-alpha01"
-daggerHilt = "2.40"
+coil = "2.0.0-alpha05"
+compose = "1.1.0-rc01"
+composeMaterial3 = "1.0.0-alpha02"
+daggerHilt = "2.40.5"
 datastore = "1.0.0"
 desugar = "1.1.5"
 espresso-core = "3.5.0-alpha03"
-firebaseBom = "29.0.0"
+firebaseBom = "29.0.3"
 glance = "1.0.0-alpha01"
 gradlePlugins-agp = "7.2.0-alpha06"
 gradlePlugins-crashlytics = "2.8.1"
 gradlePlugins-detekt = "1.19.0"
 gradlePlugins-gms = "4.3.10"
-gradlePlugins-hilt = "2.40.5"
-gradlePlugins-junit5 = "1.8.0.0"
-gradlePlugins-kotlinter = "3.6.0"
-gradlePlugins-ksp = "1.5.31-1.0.0"
+gradlePlugins-junit5 = "1.8.2.0"
+gradlePlugins-kotlinter = "3.8.0"
+gradlePlugins-ksp = "1.5.31-1.0.1"
 gradlePlugins-protobuf = "0.8.18"
-gradlePlugins-shot = "5.12.1"
 gradlePlugins-versionCatalog = "0.2.1"
 gradlePlugins-versionsBenManes = "0.39.0"
 hilt = "1.0.0"
 hiltLifecycleViewmodel = "1.0.0-alpha03"
-hiltNavigationCompose = "1.0.0-alpha03"
-junit = "5.8.1"
-kotlin = "1.5.31"
-kotlinCoroutines = "1.5.2"
+hiltNavigationCompose = "1.0.0-rc01"
+junit = "5.8.2"
+kotlin = "1.6.10"
+kotlinCoroutines = "1.6.0"
 lifecycle = "2.4.0"
-lifecycleViewmodelCompose = "1.0.0-alpha07"
-navigationCompose = "2.4.0-beta02"
-protobuf = "3.10.0"
-room = "2.4.0-beta01"
+lifecycleViewmodelCompose = "2.4.0"
+navigationCompose = "2.4.0-rc01"
+protobuf = "3.19.1"
+room = "2.4.0"
 timber = "5.0.1"
 
 [libraries]
 androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
-androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose" }
+androidx-compose-compiler = "androidx.compose.compiler:compiler:1.1.0-rc02"
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
 androidx-compose-materialIconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
@@ -68,9 +66,9 @@ androidx-test-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
-androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test" }
+androidx-test-orchestrator = "androidx.test:orchestrator:1.4.1"
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidx-test" }
-androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidx-test" }
+androidx-test-services = "androidx.test.services:test-services:1.4.1"
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 coilKt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 com-android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
@@ -94,14 +92,14 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 
 [bundles]
-accompanist = ["google-accompanistFlowLayout", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController", "google-accompanistNavAnimations", "google-accompanistNavMaterial"]
-androidx-testUtils = ["androidx-test-services", "androidx-test-orchestrator"]
+accompanist = ["google-accompanistFlowLayout", "google-accompanistNavAnimations", "google-accompanistNavMaterial", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]
+androidx-testUtils = ["androidx-test-orchestrator", "androidx-test-services"]
 compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui", "androidx-compose-uiTooling"]
-compose-test = ["androidx-test-junit", "androidx-test-core", "androidx-test-rules", "androidx-test-espresso-core", "androidx-test-compose-ui-junit4", "androidx-test-compose-ui-test-manifest"]
-datastore = ["google-protobuf-javalite", "androidx-datastore"]
+compose-test = ["androidx-test-compose-ui-junit4", "androidx-test-compose-ui-test-manifest", "androidx-test-core", "androidx-test-espresso-core", "androidx-test-junit", "androidx-test-rules"]
+datastore = ["androidx-datastore", "google-protobuf-javalite"]
 firebase = ["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
-hilt = ["google-dagger-dagger", "google-dagger-hiltAndroid", "androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel"]
-hiltKapt = ["google-dagger-daggerCompiler", "google-dagger-hiltCompiler", "androidx-hilt-hiltCompiler"]
+hilt = ["androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel", "google-dagger-dagger", "google-dagger-hiltAndroid"]
+hiltKapt = ["androidx-hilt-hiltCompiler", "google-dagger-daggerCompiler", "google-dagger-hiltCompiler"]
 lifecycle = ["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
 room = ["androidx-room-roomKtx", "androidx-room-roomRuntime"]
 
@@ -111,12 +109,10 @@ android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "gradleP
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "gradlePlugins-crashlytics" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "gradlePlugins-detekt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gradlePlugins-gms" }
-hilt = { id = "dagger.hilt.android.plugin", version.ref = "gradlePlugins-hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "gradlePlugins-kotlinter" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "gradlePlugins-protobuf" }
-shot = { id = "shot", version.ref = "gradlePlugins-shot" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "gradlePlugins-versionCatalog" }
 versionsBenManes = { id = "com.github.ben-manes.versions", version.ref = "gradlePlugins-versionsBenManes" }
