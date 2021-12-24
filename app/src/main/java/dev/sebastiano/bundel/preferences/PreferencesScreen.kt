@@ -65,7 +65,7 @@ internal fun PreferencesScreen(
 ) {
     Scaffold(
         topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) }
-    ) { _ ->
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
 
@@ -92,10 +92,12 @@ internal fun PreferencesScreen(
 
 @Composable
 private fun DebugPreferencesRow(onDebugPreferencesClick: () -> Unit) {
-    TextButton(onClick = onDebugPreferencesClick,
+    TextButton(
+        onClick = onDebugPreferencesClick,
         Modifier
             .fillMaxWidth()
-            .padding(8.dp)) {
+            .padding(8.dp)
+    ) {
         Text(text = "Post a notification...")
     }
 }

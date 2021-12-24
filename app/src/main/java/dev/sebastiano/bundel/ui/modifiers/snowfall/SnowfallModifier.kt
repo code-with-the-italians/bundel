@@ -117,7 +117,7 @@ private data class SnowfallState(
                 Snowflake(
                     radius = sizeRange.random(),
                     position = canvasSize.randomPosition(),
-                    angle = angleSeed.random() / angleSeed * angleVariance + (Math.PI.toFloat() / 2f) - (angleVariance / 2f),
+                    angle = angleSeed.random() / angleSeed * angleVariance + Math.PI.toFloat() / 2f - angleVariance / 2f,
                     angleSeedRange = angleSeedRange,
                     angleDivider = angleDivider,
                     incrementFactor = incrementFactorRange.random(),
