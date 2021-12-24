@@ -29,7 +29,7 @@ import dev.sebastiano.bundel.ui.singlePadding
 
 @Composable
 internal fun SelectTimeRangesDialog(
-    viewModel: EnglebertViewModel = hiltViewModel(),
+    viewModel: ActiveTimeRangesViewModel = hiltViewModel(),
     onDialogDismiss: () -> Unit
 ) {
     Card {
@@ -62,7 +62,7 @@ internal fun SelectTimeRangesDialog(
 @Suppress("FunctionName")
 private fun LazyListScope.RangesListContent(
     timeRangesSchedule: TimeRangesSchedule,
-    viewModel: EnglebertViewModel
+    viewModel: ActiveTimeRangesViewModel
 ) {
     val items = timeRangesSchedule.timeRanges.withIndex().toList()
 

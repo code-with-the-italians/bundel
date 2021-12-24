@@ -5,11 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
@@ -29,7 +32,7 @@ import dev.sebastiano.bundel.navigation.preferencesGraph
 import dev.sebastiano.bundel.navigation.splashScreenGraph
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.preferences.Preferences
-import dev.sebastiano.bundel.preferences.isWinteryEasterEggEnabled
+import dev.sebastiano.bundel.preferences.WinteryEasterEggViewModel
 import dev.sebastiano.bundel.storage.DataRepository
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.defaultEnterTransition
@@ -60,6 +63,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     internal lateinit var preferences: Preferences
 
+    private val winteryEasterEggViewModel: WinteryEasterEggViewModel by viewModels()
+
     @OptIn(
         ExperimentalAnimationApi::class,
         ExperimentalMaterialNavigationApi::class
@@ -70,6 +75,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
+            val showWinteryEasterEgg by winteryEasterEggViewModel.shouldShowWinteryEasterEgg()
+                .collectAsState(initial = false)
 
             BundelYouTheme {
                 SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
@@ -77,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
                     sheetShape = MaterialTheme2.shapes.small,
-                    modifier = Modifier.appendIf(isWinteryEasterEggEnabled()) { rudolf() }
+                    modifier = Modifier.appendIf(showWinteryEasterEgg) { rudolf() }
                 ) {
                     AnimatedNavHost(
                         navController = navController,

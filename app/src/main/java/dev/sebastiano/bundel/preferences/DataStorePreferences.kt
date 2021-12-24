@@ -36,8 +36,28 @@ internal class DataStorePreferences(
     override suspend fun setIsCrashlyticsEnabled(enabled: Boolean) {
         try {
             dataStore.updateData { it.toBuilder().setIsCrashlyticsEnabled(enabled).build() }
-        } catch (ignored: IOException) {
-            Timber.e(ignored, "Unable to store new isCrashlyticsEnabled value: $enabled")
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new isCrashlyticsEnabled value: $enabled")
+        }
+    }
+
+    override fun isWinteryEasterEggEnabled(): Flow<Boolean> =
+        dataStore.data.map { it.isWinteryEasterEggEnabled }
+            .catch { throwable ->
+                when (throwable) {
+                    is IOException -> {
+                        Timber.e(throwable, "Error while reading wintery easter egg enabled state")
+                        emit(DEFAULT_WINTERY_EASTER_EGG_ENABLED)
+                    }
+                    else -> throw throwable
+                }
+            }
+
+    override suspend fun setWinteryEasterEggEnabled(enabled: Boolean) {
+        try {
+            dataStore.updateData { it.toBuilder().setIsWinteryEasterEggEnabled(enabled).build() }
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new isWinteryEasterEggEnabled value: $enabled")
         }
     }
 
@@ -49,9 +69,7 @@ internal class DataStorePreferences(
                         Timber.e(throwable, "Error while reading excluded packages")
                         emit(emptySet())
                     }
-                    else -> {
-                        throw throwable
-                    }
+                    else -> throw throwable
                 }
             }
 
@@ -63,8 +81,8 @@ internal class DataStorePreferences(
                     .addAllExcludedPackages(excludedPackages)
                     .build()
             }
-        } catch (ignored: IOException) {
-            Timber.e(ignored, "Unable to store new excluded packages value: $excludedPackages")
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new excluded packages value: $excludedPackages")
         }
     }
 
@@ -74,8 +92,8 @@ internal class DataStorePreferences(
     override suspend fun setIsOnboardingSeen(onboardingSeen: Boolean) {
         try {
             dataStore.updateData { it.toBuilder().setIsOnboardingSeen(onboardingSeen).build() }
-        } catch (ignored: IOException) {
-            Timber.e(ignored, "Unable to store new isOnboardingSeen value: $onboardingSeen")
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new isOnboardingSeen value: $onboardingSeen")
         }
     }
 
@@ -93,8 +111,8 @@ internal class DataStorePreferences(
                     .putAllScheduleDays(daysSchedule.mapKeys { it.key.name })
                     .build()
             }
-        } catch (ignored: IOException) {
-            Timber.e(ignored, "Unable to store new daysSchedule value: $daysSchedule")
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new daysSchedule value: $daysSchedule")
         }
     }
 
@@ -117,14 +135,16 @@ internal class DataStorePreferences(
                     .addAllTimeRanges(protoTimeRanges)
                     .build()
             }
-        } catch (ignored: IOException) {
-            Timber.e(ignored, "Unable to store new timeRangesSchedule value: $timeRangesSchedule")
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new timeRangesSchedule value: $timeRangesSchedule")
         }
     }
 
     companion object {
 
         internal const val DEFAULT_CRASHLYTICS_ENABLED = false
+
+        internal const val DEFAULT_WINTERY_EASTER_EGG_ENABLED = true
 
         internal val DEFAULT_DAYS_SCHEDULE = mapOf(
             WeekDay.MONDAY to true,

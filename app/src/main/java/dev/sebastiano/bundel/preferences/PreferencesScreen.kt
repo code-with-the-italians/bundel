@@ -9,12 +9,17 @@ import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
+import androidx.compose.material.Switch
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
@@ -53,8 +59,9 @@ import kotlinx.coroutines.flow.map
 @Composable
 internal fun PreferencesScreen(
     activeDaysViewModel: ActiveDaysViewModel = hiltViewModel(),
-    activeTimeRangesViewModel: EnglebertViewModel = hiltViewModel(),
+    activeTimeRangesViewModel: ActiveTimeRangesViewModel = hiltViewModel(),
     excludedAppsViewModel: ExcludedAppsViewModel = hiltViewModel(),
+    winteryEasterEggViewModel: WinteryEasterEggViewModel = hiltViewModel(),
     onSelectAppsClicked: () -> Unit,
     onSelectDaysClicked: () -> Unit,
     onSelectTimeRangesClicked: () -> Unit,
@@ -79,6 +86,12 @@ internal fun PreferencesScreen(
 
             Divider()
 
+            if (winteryEasterEggViewModel.isWinteryEasterEggPeriod()) {
+                val easterEggEnabled by winteryEasterEggViewModel.easterEggEnabledFlow.collectAsState(initial = DataStorePreferences.DEFAULT_WINTERY_EASTER_EGG_ENABLED)
+                EasterEggEnabledSwitchRow(easterEggEnabled) { winteryEasterEggViewModel.setEnabled(it) }
+
+                Divider()
+            }
             AboutAppRow(onSourcesLinkClick, onLicensesLinkClick)
 
             if (BuildConfig.DEBUG) {
@@ -91,14 +104,14 @@ internal fun PreferencesScreen(
 }
 
 @Composable
-private fun DebugPreferencesRow(onDebugPreferencesClick: () -> Unit) {
-    TextButton(
-        onClick = onDebugPreferencesClick,
-        Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+fun EasterEggEnabledSwitchRow(easterEggEnabled: Boolean, onEnableChange: (Boolean) -> Unit) {
+    Row(
+        Modifier.settingsRow(clickable = true, onClick = { onEnableChange(!easterEggEnabled) }),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Post a notification...")
+        Text(text = "Enable wintery easter egg", Modifier.weight(1f))
+        Spacer(Modifier.width(8.dp))
+        Switch(checked = easterEggEnabled, onCheckedChange = { onEnableChange(!easterEggEnabled) })
     }
 }
 
@@ -281,6 +294,23 @@ fun AnnotatedClickableText(
             if (annotation != null) onClick()
         }
     )
+}
+
+// TODO move to its own screen
+@Composable
+private fun DebugPreferencesRow(onDebugPreferencesClick: () -> Unit) {
+    Column(Modifier.settingsRow(clickable = false)) {
+        Text(text = "Debug settings")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = onDebugPreferencesClick,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(text = "Post a test notification")
+        }
+    }
 }
 
 private fun Modifier.settingsRow(clickable: Boolean, onClick: () -> Unit = {}): Modifier =

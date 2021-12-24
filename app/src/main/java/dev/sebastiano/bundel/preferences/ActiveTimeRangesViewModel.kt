@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-internal class EnglebertViewModel @Inject constructor(
+internal class ActiveTimeRangesViewModel @Inject constructor(
     private val preferences: Preferences
 ) : ViewModel() {
 
