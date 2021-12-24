@@ -25,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.sebastiano.bundel.navigation.NavigationRoute
 import dev.sebastiano.bundel.navigation.mainScreenGraph
 import dev.sebastiano.bundel.navigation.onboardingGraph
-import dev.sebastiano.bundel.navigation.settingsGraph
+import dev.sebastiano.bundel.navigation.preferencesGraph
 import dev.sebastiano.bundel.navigation.splashScreenGraph
 import dev.sebastiano.bundel.notifications.needsNotificationsPermission
 import dev.sebastiano.bundel.preferences.Preferences
@@ -94,10 +94,10 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             needsNotificationsPermissionFlow = needsNotificationsPermission,
                             preferences = preferences,
-                            onOpenSettingsClick = { openNotificationsPreferences() }
+                            onOpenNotificationPreferencesClick = { openNotificationsPreferences() }
                         )
                         mainScreenGraph(navController, lifecycle, repository, preferences)
-                        settingsGraph(navController, ::onOpenUrlClick)
+                        preferencesGraph(navController, ::onOpenUrlClick)
                     }
                 }
             }

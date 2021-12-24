@@ -94,7 +94,7 @@ private fun OnboardingScreenDarkThemePreview() {
 internal fun OnboardingScreen(
     viewModel: OnboardingViewModel,
     needsPermission: Boolean,
-    onSettingsIntentClick: () -> Unit,
+    onOpenNotificationPreferencesClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit
 ) {
     BundelYouTheme {
@@ -108,7 +108,7 @@ internal fun OnboardingScreen(
                 crashReportingEnabled = crashReportingEnabled,
                 onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
             ),
-            notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onSettingsIntentClick),
+            notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onOpenNotificationPreferencesClick),
             daysSchedulePageState = DaysSchedulePageState(
                 daysSchedule = daysSchedule,
                 onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) }

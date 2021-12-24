@@ -56,23 +56,23 @@ import kotlin.random.Random
     ExperimentalAnimationApi::class,
     FlowPreview::class
 )
-internal fun NavGraphBuilder.settingsGraph(
+internal fun NavGraphBuilder.preferencesGraph(
     navController: NavHostController,
     onUrlClick: (String) -> Unit
 ) {
     navigation(
-        route = NavigationRoute.SettingsGraph.route,
-        startDestination = NavigationRoute.SettingsGraph.SettingsScreen.route
+        route = NavigationRoute.PreferencesGraph.route,
+        startDestination = NavigationRoute.PreferencesGraph.PreferencesScreen.route
     ) {
         composable(
-            route = NavigationRoute.SettingsGraph.SettingsScreen.route
+            route = NavigationRoute.PreferencesGraph.PreferencesScreen.route
         ) {
             val context = LocalContext.current
             PreferencesScreen(
-                onSelectAppsClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectApps.route) },
-                onSelectDaysClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectDays.route) },
-                onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.SettingsGraph.SelectTimeRanges.route) },
-                onLicensesLinkClick = { navController.navigate(NavigationRoute.SettingsGraph.Licenses.route) },
+                onSelectAppsClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectApps.route) },
+                onSelectDaysClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectDays.route) },
+                onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectTimeRanges.route) },
+                onLicensesLinkClick = { navController.navigate(NavigationRoute.PreferencesGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
                 onDebugPreferencesClick = { postTestNotification(context) },
                 onBackPress = { navController.popBackStack() },
@@ -80,23 +80,23 @@ internal fun NavGraphBuilder.settingsGraph(
         }
 
         composable(
-            route = NavigationRoute.SettingsGraph.SelectApps.route
+            route = NavigationRoute.PreferencesGraph.SelectApps.route
         ) {
             AppsListScreen(onBackPress = { navController.popBackStack() })
         }
 
         composable(
-            route = NavigationRoute.SettingsGraph.Licenses.route
+            route = NavigationRoute.PreferencesGraph.Licenses.route
         ) {
             LicensesScreen(onBackPress = { navController.popBackStack() })
         }
 
-        bottomSheet(route = NavigationRoute.SettingsGraph.SelectDays.route) {
+        bottomSheet(route = NavigationRoute.PreferencesGraph.SelectDays.route) {
             SelectDaysDialog(onDialogDismiss = { navController.popBackStack() })
         }
 
         dialog(
-            route = NavigationRoute.SettingsGraph.SelectTimeRanges.route,
+            route = NavigationRoute.PreferencesGraph.SelectTimeRanges.route,
             dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             SelectTimeRangesDialog(onDialogDismiss = { navController.popBackStack() })
@@ -132,7 +132,7 @@ internal fun NavGraphBuilder.mainScreenGraph(
         startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
     ) {
         composable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
-            MainScreenWithBottomNav(lifecycle, repository, preferences) { navController.navigate(NavigationRoute.SettingsGraph.route) }
+            MainScreenWithBottomNav(lifecycle, repository, preferences) { navController.navigate(NavigationRoute.PreferencesGraph.route) }
         }
     }
 }
@@ -142,7 +142,7 @@ internal fun NavGraphBuilder.onboardingGraph(
     navController: NavHostController,
     needsNotificationsPermissionFlow: Flow<Boolean>,
     preferences: Preferences,
-    onOpenSettingsClick: () -> Unit
+    onOpenNotificationPreferencesClick: () -> Unit
 ) {
     navigation(
         route = NavigationRoute.OnboardingGraph.route,
@@ -155,7 +155,7 @@ internal fun NavGraphBuilder.onboardingGraph(
             OnboardingScreen(
                 viewModel = hiltViewModel(),
                 needsPermission = needsNotificationsPermission,
-                onSettingsIntentClick = onOpenSettingsClick,
+                onOpenNotificationPreferencesClick = onOpenNotificationPreferencesClick,
                 onOnboardingDoneClicked = {
                     scope.launch { preferences.setIsOnboardingSeen(true) }
                     navController.navigate(

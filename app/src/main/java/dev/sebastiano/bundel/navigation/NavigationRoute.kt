@@ -33,17 +33,17 @@ internal sealed class NavigationRoute(val route: String) {
         }
     }
 
-    object SettingsGraph : NavigationRoute("settings") {
+    object PreferencesGraph : NavigationRoute("preferences") {
 
-        object SettingsScreen : NavigationRoute("settings.screen")
+        object PreferencesScreen : NavigationRoute("preferences.screen")
 
-        object SelectApps : NavigationRoute("settings.select_apps")
+        object SelectApps : NavigationRoute("preferences.select_apps")
 
-        object SelectDays : NavigationRoute("settings.babbadibuppi")
+        object SelectDays : NavigationRoute("preferences.babbadibuppi")
 
-        object SelectTimeRanges : NavigationRoute("settings.time-ranges")
+        object SelectTimeRanges : NavigationRoute("preferences.time-ranges")
 
-        object Licenses : NavigationRoute("settings.absentFriends")
+        object Licenses : NavigationRoute("preferences.absentFriends")
     }
 
     interface BottomNavNavigationRoute {

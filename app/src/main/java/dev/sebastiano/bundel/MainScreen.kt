@@ -55,13 +55,13 @@ internal fun MainScreenWithBottomNav(
     lifecycle: Lifecycle,
     repository: DataRepository,
     preferences: Preferences,
-    onSettingsClick: () -> Unit
+    onPreferencesClick: () -> Unit
 ) {
     val navController = rememberAnimatedNavController()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { NotificationsListTopAppBar(onSettingsClick) },
+        topBar = { NotificationsListTopAppBar(onPreferencesClick) },
         bottomBar = { MainScreenBottomNavigation(navController) }
     ) { innerPadding ->
         val scope = rememberCoroutineScope()
@@ -167,13 +167,13 @@ private fun NavGraphBuilder.mainScreen(
 }
 
 @Composable
-private fun NotificationsListTopAppBar(onSettingsActionClick: () -> Unit) {
+private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
     @Composable
     fun ActionsMenu() {
-        IconButton(onClick = onSettingsActionClick) {
+        IconButton(onClick = onPreferencesActionClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_round_settings_24),
-                contentDescription = stringResource(id = R.string.menu_settings_content_description)
+                contentDescription = stringResource(id = R.string.menu_preferences_content_description)
             )
         }
     }
