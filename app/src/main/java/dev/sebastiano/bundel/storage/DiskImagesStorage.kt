@@ -42,7 +42,7 @@ internal class DiskImagesStorage @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val iconBitmap = icon.loadDrawable(application).toBitmap()
-            iconBitmap.compress(getCachedImageFormat().format, 0, iconFile.outputStream())
+            iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }
 
@@ -71,7 +71,7 @@ internal class DiskImagesStorage @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val iconBitmap = icon.loadDrawable(application).toBitmap()
-            iconBitmap.compress(getCachedImageFormat().format, 0, iconFile.outputStream())
+            iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }
 
@@ -102,13 +102,13 @@ internal class DiskImagesStorage @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ImageFormat.WEBP else ImageFormat.PNG
 
     private enum class ImageFormat(
-        val format: Bitmap.CompressFormat,
+        val format: () -> Bitmap.CompressFormat,
         val extension: String
     ) {
 
-        PNG(Bitmap.CompressFormat.PNG, "png"),
+        PNG({ Bitmap.CompressFormat.PNG }, "png"),
 
         @RequiresApi(Build.VERSION_CODES.R)
-        WEBP(Bitmap.CompressFormat.WEBP_LOSSLESS, "webp")
+        WEBP({ Bitmap.CompressFormat.WEBP_LOSSLESS }, "webp")
     }
 }
