@@ -195,13 +195,12 @@ private fun ExcludedLabel(
                 }
             }
             .alpha(labelAlpha),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
     ) {
         Text(
             text = stringResource(id = R.string.label_excluded),
             fontSize = MaterialTheme.typography.bodySmall.fontSize,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            fontWeight = FontWeight.Medium
         )
     }
 }
