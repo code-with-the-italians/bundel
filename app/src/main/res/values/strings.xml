@@ -62,4 +62,8 @@
         <item quantity="one">%d excluded app</item>
         <item quantity="other">%d excluded apps</item>
     </plurals>
+
+    <!-- TODO move to debug sourceset -->
+    <string name="channel_test_notifications_name">Test Notifications</string>
+    <string name="channel_test_notifications_description">Dummy notifications used to test Bundel\'s functionality</string>
 </resources>

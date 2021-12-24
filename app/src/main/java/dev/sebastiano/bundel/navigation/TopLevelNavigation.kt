@@ -106,7 +106,10 @@ internal fun NavGraphBuilder.settingsGraph(
 
 private fun postTestNotification(context: Context) {
     val notificationManager = NotificationManagerCompat.from(context)
-    val channel = NotificationChannelCompat.Builder("test", NotificationManager.IMPORTANCE_DEFAULT).build()
+    val channel = NotificationChannelCompat.Builder("test", NotificationManager.IMPORTANCE_DEFAULT)
+        .setName(context.getString(R.string.channel_test_notifications_name))
+        .setDescription(context.getString(R.string.channel_test_notifications_description))
+        .build()
     notificationManager.createNotificationChannel(channel)
     val id = Random.nextInt()
     val notification = NotificationCompat.Builder(context, channel.id)
