@@ -104,6 +104,7 @@ dependencies {
 
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
+    implementation(libs.bundles.composeUiTooling)
     implementation(libs.bundles.datastore)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
@@ -122,7 +123,6 @@ dependencies {
     ksp(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
 
-    debugImplementation(libs.bundles.composeUiTooling)
     debugImplementation(libs.androidx.compose.ui.uiTest.manifest)
 
     testImplementation(kotlin("reflect"))
