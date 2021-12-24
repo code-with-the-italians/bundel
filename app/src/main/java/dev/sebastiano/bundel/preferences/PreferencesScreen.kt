@@ -87,7 +87,8 @@ internal fun PreferencesScreen(
             Divider()
 
             if (winteryEasterEggViewModel.isWinteryEasterEggPeriod()) {
-                val easterEggEnabled by winteryEasterEggViewModel.easterEggEnabledFlow.collectAsState(initial = DataStorePreferences.DEFAULT_WINTERY_EASTER_EGG_ENABLED)
+                val easterEggEnabled by winteryEasterEggViewModel.easterEggEnabledFlow
+                    .collectAsState(initial = DataStorePreferences.DEFAULT_WINTERY_EASTER_EGG_ENABLED)
                 EasterEggEnabledSwitchRow(easterEggEnabled) { winteryEasterEggViewModel.setEnabled(it) }
 
                 Divider()
@@ -190,7 +191,6 @@ private fun ActiveTimeRangesRow(
 }
 
 @Composable
-@ExperimentalAnimationApi
 private fun ExcludedAppsRow(
     excludedAppsCountFlow: Flow<Int>,
     onSelectAppsClicked: () -> Unit,

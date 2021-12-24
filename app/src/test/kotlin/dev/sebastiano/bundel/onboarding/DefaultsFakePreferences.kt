@@ -7,13 +7,21 @@ import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-internal object DefaultsFakePreferences: Preferences {
+internal object DefaultsFakePreferences : Preferences {
 
     override fun isCrashlyticsEnabled(): Flow<Boolean> = flow {
         emit(false)
     }
 
     override suspend fun setIsCrashlyticsEnabled(enabled: Boolean) {
+        // No-op
+    }
+
+    override fun isWinteryEasterEggEnabled(): Flow<Boolean> = flow {
+        emit(false)
+    }
+
+    override suspend fun setWinteryEasterEggEnabled(enabled: Boolean) {
         // No-op
     }
 

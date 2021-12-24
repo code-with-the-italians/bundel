@@ -297,10 +297,13 @@ private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
         modifier = Modifier.weight(1F),
         transitionSpec = {
             if (targetState.ordinal > initialState.ordinal) {
-                // Going to next page
-                fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start) with fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
+                val enterTransition = fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start)
+                val exitTransition = fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
+                enterTransition with exitTransition
             } else {
-                fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End) with fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
+                val enterTransition = fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
+                val exitTransition = fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
+                enterTransition with exitTransition
             }
         }
     ) { targetPage ->
