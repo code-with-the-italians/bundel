@@ -50,6 +50,7 @@ androidx-activity-activityCompose = { module = "androidx.activity:activity-compo
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
 androidx-compose-compiler = "androidx.compose.compiler:compiler:1.1.0-rc02"
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
 androidx-compose-materialIconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeMaterialIconsExt" }
 androidx-compose-runtimeLivedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "composeRuntimeLivedata" }
@@ -83,8 +84,6 @@ com-android-tools-desugar = { module = "com.android.tools:desugar_jdk_libs", ver
 google-accompanistFlowLayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 google-accompanistNavAnimations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 google-accompanistNavMaterial = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
-google-accompanistPager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
-google-accompanistPagerIndicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 google-accompanistSystemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 google-dagger-dagger = { module = "com.google.dagger:dagger", version.ref = "daggerHilt" }
 google-dagger-daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerHilt" }
@@ -100,9 +99,9 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 
 [bundles]
-accompanist = ["google-accompanistFlowLayout", "google-accompanistNavAnimations", "google-accompanistNavMaterial", "google-accompanistPager", "google-accompanistPagerIndicators", "google-accompanistSystemUIController"]
+accompanist = ["google-accompanistFlowLayout", "google-accompanistNavAnimations", "google-accompanistNavMaterial", "google-accompanistSystemUIController"]
 androidxTestUtils = ["androidx-test-orchestrator", "androidx-test-services"]
-compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
+compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material3", "androidx-compose-material", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
 composeUiTooling = ["androidx-compose-ui-uiTooling", "androidx-compose-ui-uiTooling-preview"]
 composeTest = ["androidx-compose-ui-uiTest-junit4", "androidx-compose-ui-uiTest-manifest", "androidx-test-core", "androidx-test-espresso-core", "androidx-test-ext-junit", "androidx-test-rules"]
 datastore = ["androidx-datastore", "google-protobuf-javalite"]

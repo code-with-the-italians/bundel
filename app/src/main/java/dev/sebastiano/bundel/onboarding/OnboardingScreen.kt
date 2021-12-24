@@ -1,9 +1,10 @@
-@file:OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+@file:OptIn(ExperimentalAnimationApi::class)
 
 package dev.sebastiano.bundel.onboarding
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.spring
@@ -36,7 +37,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,11 +49,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupSystemUi
@@ -60,7 +58,6 @@ import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Preview(name = "Onboarding screen", showSystemUi = true)
@@ -147,23 +144,29 @@ private fun OnboardingScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp, vertical = verticalScreenPadding)
         ) {
-            val pagerState = rememberPagerState()
+            var currentPage by remember { mutableStateOf(OnboardingPage.Intro) }
             val onboardingPagerState = OnboardingPagerState(
-                pagerState = pagerState,
+                currentPage = currentPage,
                 introPageState = introPageState,
                 notificationsAccessPageState = notificationsAccessPageState,
                 daysSchedulePageState = daysSchedulePageState,
                 hoursSchedulePageState = hoursSchedulePageState
             )
 
-            OnboardingHeader(orientation, pagerState.targetPage)
+            OnboardingHeader(orientation, currentPage)
 
             OnboardingPager(state = onboardingPagerState)
 
             val actionsRowTopSpace = if (orientation == Orientation.Portrait) 32.dp else singlePadding()
             Spacer(modifier = Modifier.height(actionsRowTopSpace))
 
-            ActionsRow(pagerState, needsPermission, onOnboardingDoneClicked)
+            ActionsRow(
+                currentPage = currentPage,
+                needsPermission = needsPermission,
+                onNextButtonClick = { currentPage = currentPage.next() },
+                onPrevButtonClick = { currentPage = currentPage.previous() },
+                onOnboardingDoneClicked = onOnboardingDoneClicked
+            )
         }
     }
 }
@@ -176,7 +179,19 @@ internal enum class OnboardingPage(
     NotificationsPermission(R.string.onboarding_notifications_permission_title),
     DaysSchedule(R.string.onboarding_schedule_title),
     HoursSchedule(R.string.onboarding_schedule_title),
-    AllSet(R.string.onboarding_all_set)
+    AllSet(R.string.onboarding_all_set);
+
+    fun previous(): OnboardingPage {
+        val values = values()
+        check(this != values.first()) { "This is already the first page" }
+        return values[ordinal - 1]
+    }
+
+    fun next(): OnboardingPage {
+        val values = values()
+        check(this != values.last()) { "This is already the last page" }
+        return values[ordinal + 1]
+    }
 }
 
 @Preview(name = "Onboarding header (landscape)", widthDp = 600)
@@ -187,18 +202,19 @@ private fun OnboardingHeaderLandscapePreview() {
             Column(Modifier.fillMaxWidth()) {
                 OnboardingHeader(
                     orientation = Orientation.Landscape,
-                    pageIndex = OnboardingPage.Intro.ordinal
+                    currentPage = OnboardingPage.Intro
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Suppress("unused") // We rely on being inside a Column
 @Composable
 private fun ColumnScope.OnboardingHeader(
     orientation: Orientation,
-    pageIndex: Int
+    currentPage: OnboardingPage
 ) {
     if (orientation == Orientation.Portrait) {
         Spacer(modifier = Modifier.height(24.dp))
@@ -234,7 +250,7 @@ private fun ColumnScope.OnboardingHeader(
             Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
 
             AnimatedContent(
-                targetState = pageIndex,
+                targetState = currentPage,
                 transitionSpec = {
                     val direction = if (targetState > initialState) 1 else -1
 
@@ -244,9 +260,9 @@ private fun ColumnScope.OnboardingHeader(
                         slideOut(targetOffset = { IntOffset(-direction * it.width / 5, 0) }, animationSpec = spring())
                     enterTransition with exitTransition
                 }
-            ) { pageIndex ->
+            ) { targetPage ->
                 PageTitle(
-                    text = stringResource(id = OnboardingPage.values()[pageIndex].pageTitle),
+                    text = stringResource(id = targetPage.pageTitle),
                     textAlign = TextAlign.End
                 )
             }
@@ -267,7 +283,7 @@ internal fun PageTitle(text: String, textAlign: TextAlign = TextAlign.Center) {
 }
 
 private data class OnboardingPagerState(
-    val pagerState: PagerState,
+    val currentPage: OnboardingPage,
     val introPageState: IntroPageState,
     val notificationsAccessPageState: NotificationsAccessPageState,
     val daysSchedulePageState: DaysSchedulePageState,
@@ -276,8 +292,19 @@ private data class OnboardingPagerState(
 
 @Composable
 private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
-    HorizontalPager(count = 5, state = state.pagerState, modifier = Modifier.weight(1F)) {
-        when (OnboardingPage.values()[it]) {
+    AnimatedContent(
+        targetState = state.currentPage,
+        modifier = Modifier.weight(1F),
+        transitionSpec = {
+            if (targetState.ordinal > initialState.ordinal) {
+                // Going to next page
+                fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start) with fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
+            } else {
+                fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End) with fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
+            }
+        }
+    ) { targetPage ->
+        when (targetPage) {
             OnboardingPage.Intro -> IntroPage(state.introPageState)
             OnboardingPage.NotificationsPermission -> NotificationsAccessPage(state.notificationsAccessPageState)
             OnboardingPage.DaysSchedule -> DaysSchedulePage(state.daysSchedulePageState)
@@ -358,12 +385,13 @@ private fun AllSetPage(orientation: Orientation = currentOrientation()) {
 
 @Composable
 private fun ActionsRow(
-    pagerState: PagerState,
+    currentPage: OnboardingPage,
     needsPermission: Boolean,
+    onPrevButtonClick: () -> Unit,
+    onNextButtonClick: () -> Unit,
     onOnboardingDoneClicked: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        val scope = rememberCoroutineScope()
         val buttonColors = buttonColors(
             containerColor = Color.Transparent,
             contentColor = LocalContentColor.current
@@ -371,12 +399,12 @@ private fun ActionsRow(
         val buttonElevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp)
 
         AnimatedVisibility(
-            visible = pagerState.currentPage > 0,
+            visible = currentPage.ordinal > 0,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
             TextButton(
-                onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+                onClick = onPrevButtonClick,
                 modifier = Modifier.align(Alignment.CenterStart),
                 colors = buttonColors,
                 elevation = buttonElevation
@@ -385,17 +413,19 @@ private fun ActionsRow(
             }
         }
 
-        HorizontalPagerIndicator(
+        val indicatorState by remember { mutableStateOf(IndicatorState(OnboardingPage.values().size)) }
+        indicatorState.currentPage = currentPage.ordinal
+        SimplePageIndicator(
+            state = indicatorState,
             activeColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            pagerState = pagerState,
             modifier = Modifier.align(Alignment.Center)
         )
 
         when {
-            pagerState.currentPage < pagerState.pageCount - 1 -> {
+            currentPage != OnboardingPage.values().last() -> {
                 TextButton(
-                    enabled = if (needsPermission) pagerState.currentPage != 1 else true,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                    enabled = if (needsPermission) currentPage != OnboardingPage.NotificationsPermission else true,
+                    onClick = onNextButtonClick,
                     modifier = Modifier.align(Alignment.CenterEnd),
                     colors = buttonColors,
                     elevation = buttonElevation
