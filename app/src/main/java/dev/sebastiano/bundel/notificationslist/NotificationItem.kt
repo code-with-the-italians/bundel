@@ -60,7 +60,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
@@ -267,8 +267,8 @@ internal fun NotificationItem(
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(persistableNotification)
 
-            val iconPainter = rememberImagePainter(
-                data = getIconFile(imagesStorage, persistableNotification)
+            val iconPainter = rememberAsyncImagePainter(
+                model = getIconFile(imagesStorage, persistableNotification)
             )
             NotificationContent(persistableNotification, iconPainter, interactions = null)
         }

@@ -100,20 +100,19 @@ val dummyGoogleServicesJson: Configuration by configurations.creating {
 }
 
 dependencies {
-    implementation("androidx.test.uiautomator:uiautomator:2.2.0")
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
-    implementation(libs.androidx.activity.activityCompose)
-    implementation(libs.androidx.appCompat)
-    implementation(libs.androidx.glance)
-    implementation(libs.androidx.hilt.hiltNavigationCompose)
-    implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.datastore)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.room)
+    implementation(libs.androidx.activity.activityCompose)
+    implementation(libs.androidx.appCompat)
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.hilt.hiltNavigationCompose)
+    implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.coilKt.coil.compose)
     implementation(libs.jakes.timber.timber)
 
@@ -123,16 +122,21 @@ dependencies {
     ksp(libs.androidx.room.roomCompiler)
     kapt(libs.bundles.hiltKapt)
 
-    debugImplementation(libs.androidx.compose.uiTest.manifest)
+    debugImplementation(libs.bundles.composeUiTooling)
+    debugImplementation(libs.androidx.compose.ui.uiTest.manifest)
 
-    androidTestImplementation(libs.androidx.compose.uiTest.junit4)
-    androidTestImplementation(libs.bundles.compose.test)
-    androidTestUtil(libs.bundles.androidx.testUtils)
     testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
+
     testRuntimeOnly(libs.junit.jupiter.engine)
+
+    androidTestImplementation(libs.bundles.composeTest)
+    androidTestImplementation(libs.androidx.compose.ui.uiTest.junit4)
+    androidTestImplementation(libs.androidx.test.uiAutomator)
+
+    androidTestUtil(libs.bundles.androidxTestUtils)
 
     dummyGoogleServicesJson(projects.bundel)
 }

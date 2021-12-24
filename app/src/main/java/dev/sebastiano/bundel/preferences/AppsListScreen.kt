@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -42,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.ui.BundelYouTheme
@@ -51,7 +52,7 @@ import dev.sebastiano.bundel.ui.modifiers.overlay.animatedOverlay
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalAnimationApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppsListScreen(
     viewModel: ExcludedAppsViewModel = hiltViewModel(),
@@ -213,7 +214,7 @@ private fun AppIcon(
     excludedTransition: Transition<AppFilterState>
 ) {
     val icon = appIcon ?: AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_default_icon)
-    val iconPainter = rememberImagePainter(data = icon)
+    val iconPainter = rememberAsyncImagePainter(model = icon)
 
     val strikethroughProgress by excludedTransition.animateFloat(label = "strikethroughProgress") { targetFilterState ->
         if (targetFilterState == AppFilterState.Included) 0f else 1f
