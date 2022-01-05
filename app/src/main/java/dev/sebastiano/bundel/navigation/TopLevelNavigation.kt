@@ -3,7 +3,6 @@ package dev.sebastiano.bundel.navigation
 import android.app.NotificationManager
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,13 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -183,14 +179,8 @@ internal fun NavGraphBuilder.splashScreenGraph(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primary),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.ic_bundel_launcher_foreground)),
-                contentDescription = "This is not a sandwich but a slice of pizza."
-            )
-        }
+                .background(Color.Cyan)
+        ) {}
 
         LaunchedEffect(key1 = Unit) {
             val startDestination = if (preferences.isOnboardingSeen()) {

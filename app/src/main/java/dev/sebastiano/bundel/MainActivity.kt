@@ -70,8 +70,9 @@ class MainActivity : AppCompatActivity() {
         ExperimentalMaterialNavigationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
+        var dismissSplashScreen = false
         val splashScreen = installSplashScreen()
-        // splashScreen.  TODO hold until preferences are ready
+        splashScreen.setKeepVisibleCondition { !dismissSplashScreen }
 
         super.onCreate(savedInstanceState)
 
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val showWinteryEasterEgg by winteryEasterEggViewModel.shouldShowWinteryEasterEgg()
                 .collectAsState(initial = false)
+
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                dismissSplashScreen = destination.route != NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route
+            }
 
             BundelYouTheme {
                 SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
