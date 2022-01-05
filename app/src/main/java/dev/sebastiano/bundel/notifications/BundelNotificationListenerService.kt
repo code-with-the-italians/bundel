@@ -1,3 +1,4 @@
+@file:Suppress("UnusedImports") // TODO remove once bug in Detekt 1.19.0 is fixed — see https://github.com/detekt/detekt/issues/4426
 package dev.sebastiano.bundel.notifications
 
 import android.service.notification.NotificationListenerService
