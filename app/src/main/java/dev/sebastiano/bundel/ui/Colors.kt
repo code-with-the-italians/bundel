@@ -37,7 +37,7 @@ private val md_theme_light_outline = Color(0xFF72796f)
 private val md_theme_light_inverseOnSurface = Color(0xFFf0f1eb)
 private val md_theme_light_inverseSurface = Color(0xFF2e312d)
 
-private val md_theme_dark_primary = Color(0xFF4de163)
+private val md_theme_dark_primary = Color(0xFF045510)
 private val md_theme_dark_onPrimary = Color(0xFF00390a)
 private val md_theme_dark_primaryContainer = Color(0xFF005314)
 private val md_theme_dark_onPrimaryContainer = Color(0xFF6eff7d)

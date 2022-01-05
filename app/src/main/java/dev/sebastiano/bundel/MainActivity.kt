@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -69,6 +70,9 @@ class MainActivity : AppCompatActivity() {
         ExperimentalMaterialNavigationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        // splashScreen.  TODO hold until preferences are ready
+
         super.onCreate(savedInstanceState)
 
         setContent {

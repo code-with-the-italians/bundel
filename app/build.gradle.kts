@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.bundles.room)
     implementation(libs.androidx.activity.activityCompose)
     implementation(libs.androidx.appCompat)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.glance)
     implementation(libs.androidx.hilt.hiltNavigationCompose)
     implementation(libs.androidx.navigation.navigationCompose)

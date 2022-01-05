@@ -23,7 +23,7 @@ fun BundelYouTheme(
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colorScheme = when {
         dynamicColor && darkTheme -> dynamicDarkColorScheme(context)
-        dynamicColor && !darkTheme -> dynamicLightColorScheme(context)
+        dynamicColor -> dynamicLightColorScheme(context)
         darkTheme -> DarkThemeColors
         else -> LightThemeColors
     }
