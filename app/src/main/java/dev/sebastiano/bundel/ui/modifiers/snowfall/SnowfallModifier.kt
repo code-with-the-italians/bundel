@@ -1,6 +1,10 @@
 package dev.sebastiano.bundel.ui.modifiers.snowfall
 
+import android.content.Context
+import android.graphics.drawable.Drawable
+import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +20,12 @@ import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
+import dev.sebastiano.bundel.R
 import kotlinx.coroutines.isActive
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.cos
@@ -34,6 +42,7 @@ internal fun Modifier.rudolf(
     @FloatRange(from = 0.0, to = 1.0) density: Float = .1f,
     snowflakeColor: Color = Color.White
 ): Modifier = composed {
+    val context = LocalContext.current
     var fluffyState by remember {
         mutableStateOf(
             SnowfallState(
@@ -45,7 +54,8 @@ internal fun Modifier.rudolf(
                 angleVariance = angleVariance,
                 angleDivider = angleDivider,
                 density = density,
-                color = snowflakeColor
+                color = snowflakeColor,
+                context = context
             )
         )
     }
@@ -86,15 +96,32 @@ private data class SnowfallState(
     val angleVariance: Float = .1f,
     val angleDivider: Float = 10_000f,
     @FloatRange(from = 0.0, to = 1.0) val density: Float = .1f,
-    val color: Color
+    val color: Color,
+    val context: Context
 ) {
 
     init {
         require(density in 0f..1f) { "Density must be between 0f and 1f, inclusive" }
     }
 
+//    private val snowflakeBitmapCache
+
     fun resize(size: IntSize): SnowfallState = copy(
-        snowflakes = createSnowflakes(size, sizeRange, incrementFactorRange, angleSeed, angleSeedRange, angleVariance, angleDivider, density, color)
+        snowflakes = createSnowflakes(
+            canvasSize = size,
+            displayDensity = context.resources.displayMetrics.density,
+            sizeRange = sizeRange,
+            incrementFactorRange = incrementFactorRange,
+            angleSeed = angleSeed,
+            angleSeedRange = angleSeedRange,
+            angleVariance = angleVariance,
+            angleDivider = angleDivider,
+            snowDensity = density,
+            color = color
+        ) {
+            AppCompatResources.getDrawable(context, it)!!
+                .apply { setBounds(0, 0, intrinsicWidth, intrinsicHeight) }
+        }
     )
 
     companion object {
@@ -103,19 +130,22 @@ private data class SnowfallState(
 
         private fun createSnowflakes(
             canvasSize: IntSize,
+            displayDensity: Float,
             sizeRange: ClosedRange<Float>,
             incrementFactorRange: ClosedRange<Float>,
             angleSeed: Float,
             angleSeedRange: ClosedRange<Float>,
             angleVariance: Float,
             angleDivider: Float,
-            density: Float,
-            color: Color
+            snowDensity: Float,
+            color: Color,
+            snowflakeDrawableProvider: (id: Int) -> Drawable
         ): List<Snowflake> {
-            val snowflakesCount = (canvasSize.area * density / DENSITY_DIVIDER).roundToInt()
+            val snowflakesCount = (canvasSize.area * snowDensity / DENSITY_DIVIDER).roundToInt()
             return List(snowflakesCount) {
                 Snowflake(
-                    radius = sizeRange.random(),
+                    drawable = snowflakeDrawableProvider(SnowflakeDrawable.pick().id),
+                    height = sizeRange.random() * displayDensity,
                     position = canvasSize.randomPosition(),
                     angle = angleSeed.random() / angleSeed * angleVariance + Math.PI.toFloat() / 2f - angleVariance / 2f,
                     angleSeedRange = angleSeedRange,
@@ -140,8 +170,19 @@ private fun Int.random(): Int = ThreadLocalRandom.current().nextInt(this)
 
 private fun Float.random(): Float = ThreadLocalRandom.current().nextFloat() * this
 
+private enum class SnowflakeDrawable(@DrawableRes val id: Int) {
+    BERT(R.drawable.snowflake01), // Short for Englebert
+    OLAF(R.drawable.snowflake02);
+
+    companion object {
+
+        fun pick() = values().random()
+    }
+}
+
 private class Snowflake(
-    private val radius: Float,
+    private val drawable: Drawable,
+    private val height: Float,
     private val canvasSize: IntSize,
     private val incrementFactor: Float,
     private val angleSeedRange: ClosedRange<Float>,
@@ -162,7 +203,12 @@ private class Snowflake(
     private var angle by mutableStateOf(angle)
 
     fun draw(canvas: Canvas) {
-        canvas.drawCircle(center = position, radius = radius, paint = paint)
+        // TODO draw shadow
+        canvas.withSave {
+            canvas.translate(position.x, position.y)
+            canvas.scale(height / drawable.intrinsicHeight)
+            drawable.draw(canvas.nativeCanvas)
+        }
     }
 
     fun update(elapsedMillis: Long) {
@@ -174,11 +220,11 @@ private class Snowflake(
 
         angle += angleSeedRange.random() / angleDivider
 
-        if (position.y - radius > canvasSize.height) {
-            position = position.copy(y = -radius)
+        if (position.y - height > canvasSize.height) {
+            position = position.copy(y = -height)
         }
-        if (position.x < -radius || position.x > canvasSize.width + radius) {
-            position = position.copy(x = canvasSize.width.random().toFloat(), y = -radius)
+        if (position.x < -height || position.x > canvasSize.width + height) {
+            position = position.copy(x = canvasSize.width.random().toFloat(), y = -height)
         }
     }
 
