@@ -24,7 +24,7 @@ internal class WinteryEasterEggViewModel @Inject constructor(
 
     fun shouldShowWinteryEasterEgg(): Flow<Boolean> =
         preferences.isWinteryEasterEggEnabled()
-            .map { enabled -> enabled /*&& isWinteryEasterEggPeriod()*/ } // STOPSHIP restore condition
+            .map { enabled -> enabled && isWinteryEasterEggPeriod() }
 
     fun setEnabled(enabled: Boolean) {
         viewModelScope.launch {

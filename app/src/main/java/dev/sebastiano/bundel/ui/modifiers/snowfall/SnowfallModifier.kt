@@ -17,10 +17,8 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Canvas
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.rotateRad
 import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -32,29 +30,32 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
+@Suppress("MagicNumber") // Default values...
 internal fun Modifier.rudolf(
-    sizeRange: ClosedRange<Float> = 5f..12f,
+    heightRange: ClosedRange<Float> = 8f..17f,
     incrementFactorRange: ClosedRange<Float> = 0.4f..0.8f,
-    angleSeed: Float = 25f,
-    angleSeedRange: ClosedRange<Float> = -angleSeed..angleSeed,
-    angleVariance: Float = .1f,
-    angleDivider: Float = 10_000f,
-    @FloatRange(from = 0.0, to = 1.0) density: Float = .1f,
-    snowflakeColor: Color = Color.White
+    fallAngleSeed: Float = 25f,
+    fallAngleSeedRange: ClosedRange<Float> = -fallAngleSeed..fallAngleSeed,
+    fallAngleVariance: Float = .1f,
+    fallAngleDivider: Float = 10_000f,
+    rotationAngleRadSeed: Float = 45f,
+    rotationSpeedRadPerTick: ClosedRange<Float> = -0.05f..0.05f,
+    @FloatRange(from = 0.0, to = 1.0) snowDensity: Float = .04f
 ): Modifier = composed {
     val context = LocalContext.current
     var fluffyState by remember {
         mutableStateOf(
             SnowfallState(
                 snowflakes = emptyList(),
-                sizeRange = sizeRange,
+                heightRange = heightRange,
                 incrementFactorRange = incrementFactorRange,
-                angleSeed = angleSeed,
-                angleSeedRange = angleSeedRange,
-                angleVariance = angleVariance,
-                angleDivider = angleDivider,
-                density = density,
-                color = snowflakeColor,
+                fallAngleSeed = fallAngleSeed,
+                fallAngleSeedRange = fallAngleSeedRange,
+                fallAngleVariance = fallAngleVariance,
+                fallAngleDivider = fallAngleDivider,
+                rotationAngleRadSeed = rotationAngleRadSeed,
+                rotationSpeedRadPerTick = rotationSpeedRadPerTick,
+                snowDensity = snowDensity,
                 context = context
             )
         )
@@ -89,37 +90,37 @@ internal fun Modifier.rudolf(
 
 private data class SnowfallState(
     val snowflakes: List<Snowflake>,
-    val sizeRange: ClosedRange<Float> = 5f..12f,
-    val incrementFactorRange: ClosedRange<Float> = 0.4f..0.8f,
-    val angleSeed: Float = 25f,
-    val angleSeedRange: ClosedRange<Float> = -angleSeed..angleSeed,
-    val angleVariance: Float = .1f,
-    val angleDivider: Float = 10_000f,
-    @FloatRange(from = 0.0, to = 1.0) val density: Float = .1f,
-    val color: Color,
+    val heightRange: ClosedRange<Float>,
+    val incrementFactorRange: ClosedRange<Float>,
+    val fallAngleSeed: Float,
+    val fallAngleSeedRange: ClosedRange<Float>,
+    val fallAngleVariance: Float,
+    val fallAngleDivider: Float,
+    val rotationAngleRadSeed: Float,
+    val rotationSpeedRadPerTick: ClosedRange<Float>,
+    @FloatRange(from = 0.0, to = 1.0) val snowDensity: Float,
     val context: Context
 ) {
 
     init {
-        require(density in 0f..1f) { "Density must be between 0f and 1f, inclusive" }
+        require(snowDensity in 0f..1f) { "Snow density must be between 0f and 1f, inclusive" }
     }
-
-//    private val snowflakeBitmapCache
 
     fun resize(size: IntSize): SnowfallState = copy(
         snowflakes = createSnowflakes(
             canvasSize = size,
             displayDensity = context.resources.displayMetrics.density,
-            sizeRange = sizeRange,
+            heightRange = heightRange,
             incrementFactorRange = incrementFactorRange,
-            angleSeed = angleSeed,
-            angleSeedRange = angleSeedRange,
-            angleVariance = angleVariance,
-            angleDivider = angleDivider,
-            snowDensity = density,
-            color = color
+            fallAngleRadSeed = fallAngleSeed,
+            fallAngleRadSeedRange = fallAngleSeedRange,
+            fallAngleVariance = fallAngleVariance,
+            fallAngleDivider = fallAngleDivider,
+            rotationAngleRadSeed = rotationAngleRadSeed,
+            rotationSpeedRadPerTick = rotationSpeedRadPerTick,
+            snowDensity = snowDensity
         ) {
-            AppCompatResources.getDrawable(context, it)!!
+            checkNotNull(AppCompatResources.getDrawable(context, it)) { "Snowflake drawable not found" }
                 .apply { setBounds(0, 0, intrinsicWidth, intrinsicHeight) }
         }
     )
@@ -131,28 +132,30 @@ private data class SnowfallState(
         private fun createSnowflakes(
             canvasSize: IntSize,
             displayDensity: Float,
-            sizeRange: ClosedRange<Float>,
+            heightRange: ClosedRange<Float>,
             incrementFactorRange: ClosedRange<Float>,
-            angleSeed: Float,
-            angleSeedRange: ClosedRange<Float>,
-            angleVariance: Float,
-            angleDivider: Float,
+            fallAngleRadSeed: Float,
+            fallAngleRadSeedRange: ClosedRange<Float>,
+            fallAngleVariance: Float,
+            fallAngleDivider: Float,
+            rotationAngleRadSeed: Float,
+            rotationSpeedRadPerTick: ClosedRange<Float>,
             snowDensity: Float,
-            color: Color,
             snowflakeDrawableProvider: (id: Int) -> Drawable
         ): List<Snowflake> {
             val snowflakesCount = (canvasSize.area * snowDensity / DENSITY_DIVIDER).roundToInt()
             return List(snowflakesCount) {
                 Snowflake(
                     drawable = snowflakeDrawableProvider(SnowflakeDrawable.pick().id),
-                    height = sizeRange.random() * displayDensity,
+                    height = heightRange.random() * displayDensity,
                     position = canvasSize.randomPosition(),
-                    angle = angleSeed.random() / angleSeed * angleVariance + Math.PI.toFloat() / 2f - angleVariance / 2f,
-                    angleSeedRange = angleSeedRange,
-                    angleDivider = angleDivider,
+                    fallAngleRad = fallAngleRadSeed.random() / fallAngleRadSeed * fallAngleVariance + Math.PI.toFloat() / 2f - fallAngleVariance / 2f,
+                    fallAngleSeedRadRange = fallAngleRadSeedRange,
+                    fallAngleDivider = fallAngleDivider,
+                    rotationAngleRad = rotationAngleRadSeed.random(),
+                    rotationSpeedRadPerTick = rotationSpeedRadPerTick.random(),
                     incrementFactor = incrementFactorRange.random(),
-                    canvasSize = canvasSize,
-                    paintColor = color
+                    canvasSize = canvasSize
                 )
             }
         }
@@ -170,7 +173,9 @@ private fun Int.random(): Int = ThreadLocalRandom.current().nextInt(this)
 
 private fun Float.random(): Float = ThreadLocalRandom.current().nextFloat() * this
 
+@Suppress("unused")
 private enum class SnowflakeDrawable(@DrawableRes val id: Int) {
+
     BERT(R.drawable.snowflake01), // Short for Englebert
     OLAF(R.drawable.snowflake02);
 
@@ -185,28 +190,28 @@ private class Snowflake(
     private val height: Float,
     private val canvasSize: IntSize,
     private val incrementFactor: Float,
-    private val angleSeedRange: ClosedRange<Float>,
-    private val angleDivider: Float,
+    private val fallAngleSeedRadRange: ClosedRange<Float>,
+    private val fallAngleDivider: Float,
+    private val rotationSpeedRadPerTick: Float,
     position: Offset,
-    angle: Float,
-    paintColor: Color
+    fallAngleRad: Float,
+    rotationAngleRad: Float
 ) {
 
-    private val paint: Paint = Paint().apply {
-        isAntiAlias = true
-        color = paintColor
-        style = PaintingStyle.Fill
-        alpha = incrementFactor
-    }
-
     private var position by mutableStateOf(position)
-    private var angle by mutableStateOf(angle)
+    private var fallAngleRad by mutableStateOf(fallAngleRad)
+    private var rotationAngleRad by mutableStateOf(rotationAngleRad)
 
     fun draw(canvas: Canvas) {
         // TODO draw shadow
         canvas.withSave {
+            val halfWidth = drawable.intrinsicWidth / 2f
+            val halfHeight = drawable.intrinsicHeight / 2f
+
             canvas.translate(position.x, position.y)
             canvas.scale(height / drawable.intrinsicHeight)
+            canvas.rotateRad(rotationAngleRad, halfWidth, halfHeight)
+
             drawable.draw(canvas.nativeCanvas)
         }
     }
@@ -214,11 +219,14 @@ private class Snowflake(
     fun update(elapsedMillis: Long) {
         val increment = incrementFactor * (elapsedMillis / frameDurationAt60Fps) * baseSpeedAt60Fps
 
-        val deltaX = increment * cos(angle)
-        val deltaY = increment * sin(angle)
+        val deltaX = increment * cos(fallAngleRad)
+        val deltaY = increment * sin(fallAngleRad)
         position = Offset(position.x + deltaX, position.y + deltaY)
 
-        angle += angleSeedRange.random() / angleDivider
+        fallAngleRad += fallAngleSeedRadRange.random() / fallAngleDivider
+
+        rotationAngleRad += rotationSpeedRadPerTick
+        if (rotationAngleRad > 2 * Math.PI) rotationAngleRad = 0f
 
         if (position.y - height > canvasSize.height) {
             position = position.copy(y = -height)
