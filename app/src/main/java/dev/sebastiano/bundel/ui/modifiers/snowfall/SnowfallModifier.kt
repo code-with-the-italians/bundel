@@ -177,7 +177,9 @@ private fun Float.random(): Float = ThreadLocalRandom.current().nextFloat() * th
 private enum class SnowflakeDrawable(@DrawableRes val id: Int) {
 
     BERT(R.drawable.snowflake01), // Short for Englebert
-    OLAF(R.drawable.snowflake02);
+    OLAF(R.drawable.snowflake02),
+    PIPPO(R.drawable.snowflake03),
+    FRANCO(R.drawable.snowflake04);
 
     companion object {
 
