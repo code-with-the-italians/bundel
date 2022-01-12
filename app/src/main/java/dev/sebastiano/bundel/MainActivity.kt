@@ -40,6 +40,7 @@ import dev.sebastiano.bundel.ui.defaultExitTransition
 import dev.sebastiano.bundel.ui.defaultPopEnterTransition
 import dev.sebastiano.bundel.ui.defaultPopExitTransition
 import dev.sebastiano.bundel.ui.modifiers.snowfall.rudolf
+import dev.sebastiano.bundel.util.appendIf
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
                     sheetShape = MaterialTheme2.shapes.small,
-                    modifier = Modifier.rudolf()
+                    modifier = Modifier.appendIf(showWinteryEasterEgg) { rudolf() }
                 ) {
                     AnimatedNavHost(
                         navController = navController,
