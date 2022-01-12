@@ -3,10 +3,9 @@ package dev.sebastiano.bundel.navigation
 import android.app.NotificationManager
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,10 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -45,7 +41,6 @@ import dev.sebastiano.bundel.preferences.SelectDaysDialog
 import dev.sebastiano.bundel.preferences.SelectTimeRangesDialog
 import dev.sebastiano.bundel.storage.DataRepository
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -171,8 +166,6 @@ internal fun NavGraphBuilder.onboardingGraph(
     }
 }
 
-private const val SPAGHETTI_CODE: Long = 250
-
 @ExperimentalAnimationApi
 internal fun NavGraphBuilder.splashScreenGraph(
     preferences: Preferences,
@@ -181,15 +174,10 @@ internal fun NavGraphBuilder.splashScreenGraph(
     composable(NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.primary),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = rememberVectorPainter(ImageVector.vectorResource(id = R.drawable.ic_bundel_launcher_foreground)),
-                contentDescription = "This is not a sandwich but a slice of pizza."
-            )
+            CircularProgressIndicator()
         }
 
         LaunchedEffect(key1 = Unit) {
@@ -198,8 +186,6 @@ internal fun NavGraphBuilder.splashScreenGraph(
             } else {
                 NavigationRoute.OnboardingGraph
             }
-
-            delay(SPAGHETTI_CODE)
 
             onPizzaReady(startDestination)
         }

@@ -4,12 +4,14 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
+import dev.sebastiano.bundel.navigation.NavigationRoute
 
 // Note: these transitions have been kindly donated by Chris Banes, and are the
 // same you can find in his app Tivi https://github.com/chrisbanes/tivi
@@ -19,6 +21,10 @@ internal fun AnimatedContentScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): EnterTransition {
+    if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
+        return fadeIn(tween(durationMillis = 0))
+    }
+
     val initialNavGraph = initial.destination.hostNavGraph
     val targetNavGraph = target.destination.hostNavGraph
     // If we're crossing nav graphs (bottom navigation graphs), we crossfade
@@ -34,6 +40,10 @@ internal fun AnimatedContentScope<*>.defaultExitTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): ExitTransition {
+    if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
+        return fadeOut(tween(durationMillis = 0))
+    }
+
     val initialNavGraph = initial.destination.hostNavGraph
     val targetNavGraph = target.destination.hostNavGraph
     // If we're crossing nav graphs (bottom navigation graphs), we crossfade

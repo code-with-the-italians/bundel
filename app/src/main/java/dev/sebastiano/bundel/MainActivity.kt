@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -71,7 +72,10 @@ class MainActivity : AppCompatActivity() {
         ExperimentalMaterialNavigationApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        var dismissSplashScreen = false
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepVisibleCondition { !dismissSplashScreen }
+
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -79,6 +83,12 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val showWinteryEasterEgg by winteryEasterEggViewModel.shouldShowWinteryEasterEgg()
                 .collectAsState(initial = false)
+
+            LaunchedEffect(Unit) {
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    dismissSplashScreen = destination.route != NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route
+                }
+            }
 
             BundelYouTheme {
                 SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
