@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepVisibleCondition { !dismissSplashScreen }
+        splashScreen.setKeepOnScreenCondition { !dismissSplashScreen }
 
         super.onCreate(savedInstanceState)
 
