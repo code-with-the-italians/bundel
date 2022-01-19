@@ -23,4 +23,7 @@ internal interface Preferences {
 
     fun getTimeRangesSchedule(): Flow<TimeRangesSchedule>
     suspend fun setTimeRangesSchedule(timeRangesSchedule: TimeRangesSchedule)
+
+    fun getSnoozeWindowDurationSeconds(): Flow<Int>
+    suspend fun setSnoozeWindowDurationSeconds(duration: Int)
 }

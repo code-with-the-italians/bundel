@@ -13,7 +13,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.IOException
+import java.time.Duration
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 internal class DataStorePreferences(
     private val dataStore: DataStore<BundelPreferences>
@@ -140,6 +142,21 @@ internal class DataStorePreferences(
         }
     }
 
+    override fun getSnoozeWindowDurationSeconds(): Flow<Int> =
+        dataStore.data.map { it.snoozeWindowDurationSeconds }
+
+    override suspend fun setSnoozeWindowDurationSeconds(duration: Int) {
+        try {
+            dataStore.updateData { preferences ->
+                preferences.toBuilder()
+                    .setSnoozeWindowDurationSeconds(duration)
+                    .build()
+            }
+        } catch (e: IOException) {
+            Timber.e(e, "Unable to store new snooze window duration value: $duration")
+        }
+    }
+
     companion object {
 
         internal const val DEFAULT_CRASHLYTICS_ENABLED = false
@@ -157,6 +174,8 @@ internal class DataStorePreferences(
         )
 
         internal val DEFAULT_HOURS_SCHEDULE = TimeRangesSchedule()
+
+        internal val DEFAULT_SNOOZE_WINDOW_DURATION_SECONDS = Duration.of(1, ChronoUnit.HOURS).seconds.toInt()
     }
 }
 

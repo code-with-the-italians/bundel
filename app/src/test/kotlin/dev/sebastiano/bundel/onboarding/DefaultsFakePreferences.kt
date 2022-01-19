@@ -54,4 +54,12 @@ internal object DefaultsFakePreferences : Preferences {
     override suspend fun setTimeRangesSchedule(timeRangesSchedule: TimeRangesSchedule) {
         // No-op
     }
+
+    override fun getSnoozeWindowDurationSeconds(): Flow<Int> = flow {
+        emit(DataStorePreferences.DEFAULT_SNOOZE_WINDOW_DURATION_SECONDS)
+    }
+
+    override suspend fun setSnoozeWindowDurationSeconds(duration: Int) {
+        // No-op
+    }
 }

@@ -22,4 +22,6 @@ message BundelPreferences {
     }
 
     bool isWinteryEasterEggEnabled = 7;
+
+    int32 snoozeWindowDurationSeconds = 8;
 }
