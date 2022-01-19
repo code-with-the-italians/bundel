@@ -3,6 +3,7 @@
 package dev.sebastiano.bundel.preferences
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.ExperimentalTransitionApi
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
@@ -28,15 +28,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,10 +54,13 @@ import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.BundelTheme
 import dev.sebastiano.bundel.ui.BundelYouTheme
+import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.appendIf
 import dev.sebastiano.bundel.util.pluralsResource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,12 +70,12 @@ internal fun PreferencesScreen(
     activeTimeRangesViewModel: ActiveTimeRangesViewModel = hiltViewModel(),
     excludedAppsViewModel: ExcludedAppsViewModel = hiltViewModel(),
     winteryEasterEggViewModel: WinteryEasterEggViewModel = hiltViewModel(),
+    debugPreferencesViewModel: DebugPreferencesViewModel = hiltViewModel(),
     onSelectAppsClicked: () -> Unit,
     onSelectDaysClicked: () -> Unit,
     onSelectTimeRangesClicked: () -> Unit,
     onLicensesLinkClick: () -> Unit,
     onSourcesLinkClick: () -> Unit,
-    onDebugPreferencesClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
     Scaffold(
@@ -98,9 +106,23 @@ internal fun PreferencesScreen(
             if (BuildConfig.DEBUG) {
                 Divider()
 
-                DebugPreferencesRow(onDebugPreferencesClick)
+                val context = LocalContext.current
+                DebugPreferencesRow(debugPreferencesViewModel.useShortSnoozeWindow) {
+                    handleDebugPreferenceClick(it, context, debugPreferencesViewModel)
+                }
             }
         }
+    }
+}
+
+private fun handleDebugPreferenceClick(
+    event: DebugPreferencesEvent,
+    context: Context,
+    viewModel: DebugPreferencesViewModel
+) {
+    when (event) {
+        DebugPreferencesEvent.SendTestNotification -> viewModel.postTestNotification(context)
+        is DebugPreferencesEvent.UseShortSnoozeWindow -> viewModel.setUseShortSnoozeWindow(event.enabled)
     }
 }
 
@@ -296,21 +318,64 @@ fun AnnotatedClickableText(
     )
 }
 
-// TODO move to its own screen
+@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
-private fun DebugPreferencesRow(onDebugPreferencesClick: () -> Unit) {
-    Column(Modifier.settingsRow(clickable = false)) {
-        Text(text = "Debug settings")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextButton(
-            onClick = onDebugPreferencesClick,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(text = "Post a test notification")
+private fun DebugSettingsPreview() {
+    BundelTheme {
+        Column(Modifier.fillMaxWidth()) {
+            DebugPreferencesRow(flow { emit(false) }) {}
         }
     }
+}
+
+// TODO move to its own screen
+@Composable
+private fun DebugPreferencesRow(
+    useShortSnoozeWindowFlow: Flow<Boolean>,
+    onDebugPreferenceClick: (DebugPreferencesEvent) -> Unit
+) {
+    Text(
+        text = stringResource(R.string.debug_settings_header),
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.settingsRow(clickable = false)
+    )
+
+    Text(
+        text = stringResource(R.string.debug_preference_test_notification),
+        modifier = Modifier.settingsRow(clickable = true) {
+            onDebugPreferenceClick(DebugPreferencesEvent.SendTestNotification)
+        }
+    )
+
+    val useShortSnoozeWindow by useShortSnoozeWindowFlow.collectAsState(initial = false)
+    val switchTextSpikeCam = stringResource(R.string.debug_preference_short_snooze_window)
+    Row(
+        modifier = Modifier
+            .settingsRow(clickable = true) { onDebugPreferenceClick(DebugPreferencesEvent.UseShortSnoozeWindow(!useShortSnoozeWindow)) }
+            .semantics(mergeDescendants = true) {
+                set(SemanticsProperties.Role, Role.Switch)
+                set(SemanticsProperties.Text, listOf(AnnotatedString(switchTextSpikeCam)))
+                set(SemanticsProperties.ToggleableState, ToggleableState(useShortSnoozeWindow))
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = switchTextSpikeCam,
+            modifier = Modifier
+                .padding(end = singlePadding())
+                .weight(1f)
+        )
+
+        Switch(
+            checked = useShortSnoozeWindow,
+            onCheckedChange = null
+        )
+    }
+}
+
+internal sealed class DebugPreferencesEvent {
+    object SendTestNotification : DebugPreferencesEvent()
+    data class UseShortSnoozeWindow(val enabled: Boolean) : DebugPreferencesEvent()
 }
 
 private fun Modifier.settingsRow(clickable: Boolean, onClick: () -> Unit = {}): Modifier =

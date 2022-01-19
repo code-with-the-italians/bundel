@@ -1,7 +1,5 @@
 package dev.sebastiano.bundel.navigation
 
-import android.app.NotificationManager
-import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.app.NotificationChannelCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.graphics.drawable.IconCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavGraphBuilder
@@ -31,7 +24,6 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.MainScreenWithBottomNav
-import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupSystemUi
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
@@ -43,7 +35,6 @@ import dev.sebastiano.bundel.storage.DataRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 @OptIn(
     ExperimentalComposeUiApi::class,
@@ -62,14 +53,12 @@ internal fun NavGraphBuilder.preferencesGraph(
         composable(
             route = NavigationRoute.PreferencesGraph.PreferencesScreen.route
         ) {
-            val context = LocalContext.current
             PreferencesScreen(
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectApps.route) },
                 onSelectDaysClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectDays.route) },
                 onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectTimeRanges.route) },
                 onLicensesLinkClick = { navController.navigate(NavigationRoute.PreferencesGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
-                onDebugPreferencesClick = { postTestNotification(context) },
                 onBackPress = { navController.popBackStack() },
             )
         }
@@ -97,22 +86,6 @@ internal fun NavGraphBuilder.preferencesGraph(
             SelectTimeRangesDialog(onDialogDismiss = { navController.popBackStack() })
         }
     }
-}
-
-private fun postTestNotification(context: Context) {
-    val notificationManager = NotificationManagerCompat.from(context)
-    val channel = NotificationChannelCompat.Builder("test", NotificationManager.IMPORTANCE_DEFAULT)
-        .setName(context.getString(R.string.channel_test_notifications_name))
-        .setDescription(context.getString(R.string.channel_test_notifications_description))
-        .build()
-    notificationManager.createNotificationChannel(channel)
-    val id = Random.nextInt()
-    val notification = NotificationCompat.Builder(context, channel.id)
-        .setContentTitle("I am a test, hi")
-        .setContentText("Just in case it wasn't clear")
-        .setSmallIcon(IconCompat.createWithResource(context, R.drawable.ic_bundel_icon))
-        .build()
-    notificationManager.notify(id, notification)
 }
 
 @ExperimentalAnimationApi
