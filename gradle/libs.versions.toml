@@ -7,12 +7,12 @@ androidxTestServices = "1.4.1"
 appCompat = "1.4.1"
 assertk = "0.25"
 coil = "2.0.0-alpha08"
-compose = "1.1.0"
+compose = "1.2.0-alpha03"
 composeMaterial3 = "1.0.0-alpha05"
-composeMaterialIconsExt = "1.1.0"
-composeRuntimeLivedata = "1.1.0"
-composeUiTestManifest = "1.1.0"
-composeUiTooling = "1.1.0"
+composeMaterialIconsExt = "1.2.0-alpha03"
+composeRuntimeLivedata = "1.2.0-alpha03"
+composeUiTestManifest = "1.2.0-alpha03"
+composeUiTooling = "1.2.0-alpha03"
 daggerHilt = "2.40.5"
 datastore = "1.0.0"
 desugar = "1.1.5"
@@ -49,7 +49,7 @@ uiAutomator = "2.2.0"
 [libraries]
 androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
-androidx-compose-compiler = "androidx.compose.compiler:compiler:1.1.0"
+androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version = "1.1.0" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
