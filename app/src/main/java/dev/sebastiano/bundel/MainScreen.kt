@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,9 +59,12 @@ internal fun MainScreenWithBottomNav(
     onPreferencesClick: () -> Unit
 ) {
     val navController = rememberAnimatedNavController()
+    SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar = { NotificationsListTopAppBar(onPreferencesClick) },
         bottomBar = { MainScreenBottomNavigation(navController) }
     ) { innerPadding ->

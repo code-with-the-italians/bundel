@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -76,6 +79,8 @@ class MainActivity : AppCompatActivity() {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { !dismissSplashScreen }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -91,7 +96,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             BundelYouTheme {
-                SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primary)
+                SetupTransparentSystemUi(
+                    systemUiController = rememberSystemUiController(),
+                    actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+                )
 
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
@@ -140,12 +148,20 @@ private fun Lifecycle.eventsAsFlow(): Flow<Lifecycle.Event> = callbackFlow {
 }
 
 @Composable
-internal fun SetupSystemUi(
-    systemUiController: SystemUiController,
-    screenBackgroundColor: Color
+internal fun SetupTransparentSystemUi(
+    systemUiController: SystemUiController = rememberSystemUiController(),
+    actualBackgroundColor: Color
 ) {
     SideEffect {
-        systemUiController.setStatusBarColor(color = screenBackgroundColor)
-        systemUiController.setNavigationBarColor(color = screenBackgroundColor)
+        systemUiController.setStatusBarColor(
+            color = Color.Transparent,
+            darkIcons = actualBackgroundColor.luminance() > .5f
+        )
+
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = actualBackgroundColor.luminance() > .5f,
+            navigationBarContrastEnforced = false
+        )
     }
 }

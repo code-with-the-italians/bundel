@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ContentAlpha
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelTheme
@@ -78,8 +80,11 @@ internal fun PreferencesScreen(
     onSourcesLinkClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
+    SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
+
     Scaffold(
-        topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) }
+        topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) },
+        modifier = Modifier.systemBarsPadding()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)

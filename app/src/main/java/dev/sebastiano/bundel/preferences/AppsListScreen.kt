@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
+import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.composables.MaterialPill
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.modifiers.overlay.StrikethroughOverlay
@@ -60,8 +62,11 @@ internal fun AppsListScreen(
 ) {
     val appFilterInfoList by viewModel.appFilterInfoFlow.collectAsState(initial = emptyList())
 
+    SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
     Scaffold(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .systemBarsPadding(),
         topBar = {
             PreferencesTopAppBar(
                 title = stringResource(R.string.settings_exclude_apps_title),

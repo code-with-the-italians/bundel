@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -51,7 +52,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.SetupSystemUi
+import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelYouTheme
@@ -134,10 +135,14 @@ private fun OnboardingScreen(
     orientation: Orientation = currentOrientation(),
     onOnboardingDoneClicked: () -> Unit = {}
 ) {
-    SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.primaryContainer)
+    SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
 
     val verticalScreenPadding = if (orientation == Orientation.Portrait) 16.dp else singlePadding()
-    Surface(color = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer) {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        modifier = Modifier.systemBarsPadding()
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
