@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule

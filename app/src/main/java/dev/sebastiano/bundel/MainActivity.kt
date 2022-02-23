@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -152,15 +151,16 @@ internal fun SetupTransparentSystemUi(
     systemUiController: SystemUiController = rememberSystemUiController(),
     actualBackgroundColor: Color
 ) {
+    val minLuminanceForDarkIcons = .5f
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = actualBackgroundColor.luminance() > .5f
+            darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons
         )
 
         systemUiController.setNavigationBarColor(
             color = Color.Transparent,
-            darkIcons = actualBackgroundColor.luminance() > .5f,
+            darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
             navigationBarContrastEnforced = false
         )
     }
