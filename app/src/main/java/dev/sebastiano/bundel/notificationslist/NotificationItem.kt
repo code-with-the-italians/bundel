@@ -4,16 +4,15 @@ package dev.sebastiano.bundel.notificationslist
 
 import android.content.Context
 import android.text.format.DateUtils
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -23,16 +22,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.rounded.BrokenImage
-import androidx.compose.material.rememberDismissState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,25 +51,33 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.PersistableNotification
+import dev.sebastiano.bundel.notificationslist.DismissState.Closed
+import dev.sebastiano.bundel.notificationslist.DismissState.Open
 import dev.sebastiano.bundel.storage.ImagesStorage
 import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.iconSize
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.asImageBitmap
 import dev.sebastiano.bundel.util.rememberIconPainter
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
 import android.graphics.drawable.Icon as GraphicsIcon
 
 private fun previewNotification(context: Context) = ActiveNotification(
@@ -104,7 +109,7 @@ private fun previewNotification(context: Context) = ActiveNotification(
 @Composable
 private fun NotificationItemLightPreview() {
     BundelYouTheme {
-        SnoozableNotificationItem(
+        SnoozeItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
             onNotificationDismiss = {}
@@ -116,7 +121,7 @@ private fun NotificationItemLightPreview() {
 @Composable
 private fun NotificationItemDarkPreview() {
     BundelYouTheme(darkTheme = true) {
-        SnoozableNotificationItem(
+        SnoozeItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
             onNotificationDismiss = {}
@@ -124,73 +129,67 @@ private fun NotificationItemDarkPreview() {
     }
 }
 
+private enum class DismissState {
+    Open, Closed
+}
+
+private const val SNOOZE_PREVIEW_TIMEOUT_MILLIS = 5_000L
+
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod") // Kinda has to be :(
 @Composable
-internal fun SnoozableNotificationItem(
+internal fun SnoozeItem(
     activeNotification: ActiveNotification,
     onNotificationClick: (ActiveNotification) -> Unit,
     onNotificationDismiss: (ActiveNotification) -> Unit
 ) {
-    var hasSnoozed by remember { mutableStateOf(false) }
-    var hasTriedToSnooze by remember { mutableStateOf(false) }
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
-    val dismissState = rememberDismissState(
-        confirmStateChange = {
-            when (it) {
-                DismissValue.DismissedToEnd -> {
-                    hasTriedToSnooze = !hasTriedToSnooze
-                    hasSnoozed
-                }
-                DismissValue.DismissedToStart -> {
-                    hasTriedToSnooze = false
-                    false
-                }
-                else -> false
-            }
-        },
-    )
+    var isInProgress by remember { mutableStateOf(false) }
+    val isActuallySnoozed = activeNotification.isSnoozed
+    val isEnabled = !isInProgress && !isActuallySnoozed
 
-    // TODO disable the item when it's snoozed
-    val itemAlpha by animateFloatAsState(
-        if (activeNotification.isSnoozed) ContentAlpha.disabled else 1f
-    )
+    LaunchedEffect(isInProgress) {
+        if (isInProgress) {
+            delay(SNOOZE_PREVIEW_TIMEOUT_MILLIS)
+            isInProgress = false
+        }
+    }
+    LaunchedEffect(isActuallySnoozed) {
+        isInProgress = false
+    }
 
     val coroutineScope = rememberCoroutineScope()
-    val contentOffset = if (hasTriedToSnooze) 48.dp else 0.dp
-    SwipeToDismiss(
-        modifier = Modifier.alpha(itemAlpha),
-        state = dismissState,
-        background = {
-            SnoozeBackground {
-                hasSnoozed = true
 
-                coroutineScope.launch {
-                    dismissState.reset()
-                    hasTriedToSnooze = false
-                    hasSnoozed = false
-                }
+    val openPixels = with(LocalDensity.current) { 48.dp.toPx() }
+    val anchors = mapOf(0f to Closed, openPixels to Open)
+    val state = remember { SwipeableState(initialValue = Closed) }
 
-                onNotificationDismiss(activeNotification)
-            }
-        },
-        dismissThresholds = { direction ->
-            val threshold = when (direction) {
-                DismissDirection.StartToEnd -> 0.25F
-                else -> 0F
-            }
-
-            FractionalThreshold(threshold)
-        },
-        directions = setOf(DismissDirection.StartToEnd),
+    Box(
+        Modifier
+            .swipeable(
+                orientation = Orientation.Horizontal,
+                anchors = anchors,
+                state = state,
+                enabled = isEnabled,
+                reverseDirection = isRtl
+            )
     ) {
-        val animatedOffset by animateDpAsState(targetValue = contentOffset)
-        Box(
-            modifier = Modifier.offset(x = animatedOffset)
-        ) {
+        // background
+        SnoozeBackground(modifier = Modifier.matchParentSize()) {
+            coroutineScope.launch {
+                isInProgress = true
+                state.animateTo(Closed)
+            }
+
+            onNotificationDismiss(activeNotification)
+        }
+        // item content
+        Box(modifier = Modifier.offset(offset = { IntOffset(x = state.offset.value.roundToInt(), y = 0) })) {
             NotificationItem(
                 activeNotification = activeNotification,
-                onNotificationClick = onNotificationClick
+                onNotificationClick = onNotificationClick,
+                isEnabled = isEnabled
             )
         }
     }
@@ -198,12 +197,13 @@ internal fun SnoozableNotificationItem(
 
 @Composable
 private fun SnoozeBackground(
+    modifier: Modifier = Modifier,
     cornerRadiusFactor: State<Float> = remember { mutableStateOf(1f) },
     onSnoozeClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
+            .padding(end = 10.dp)
             .background(
                 color = MaterialTheme.colorScheme.tertiary,
                 shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f)),
@@ -233,14 +233,20 @@ private fun ActiveNotification.ifClickable(onClick: (ActiveNotification) -> Unit
 @Composable
 internal fun NotificationItem(
     activeNotification: ActiveNotification,
+    isEnabled: Boolean = true,
     onNotificationClick: (ActiveNotification) -> Unit = {}
 ) {
+    val itemAlpha by animateFloatAsState(if (isEnabled) 1f else ContentAlpha.disabled)
     Card(
         modifier = Modifier.fillMaxWidth(),
         enabled = !activeNotification.isSnoozed,
         onClick = activeNotification.ifClickable { onNotificationClick(activeNotification) }
     ) {
-        Column(Modifier.padding(singlePadding())) {
+        Column(
+            Modifier
+                .padding(singlePadding())
+                .alpha(itemAlpha)
+        ) {
             NotificationMetadata(activeNotification.persistableNotification)
             NotificationContent(
                 notification = activeNotification.persistableNotification,

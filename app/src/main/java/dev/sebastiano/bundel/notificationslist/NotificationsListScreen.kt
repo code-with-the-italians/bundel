@@ -127,7 +127,7 @@ private fun NotificationsLazyColumn(
     ) {
         val items = activeNotifications.filterNot { it.persistableNotification.isGroup }
         items(items = items, key = { item -> item.persistableNotification.uniqueId }) { notification ->
-            SnoozableNotificationItem(notification, onNotificationClick, onNotificationDismiss)
+            SnoozeItem(notification, onNotificationClick, onNotificationDismiss)
         }
     }
 }
