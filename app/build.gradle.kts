@@ -66,10 +66,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = listOf(
-            "-Xopt-in=kotlin.RequiresOptIn",
-            "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        )
     }
 
     composeOptions {
@@ -80,6 +76,15 @@ android {
         resources {
             excludes += "META-INF/AL2.0"
             excludes += "META-INF/LGPL2.1"
+        }
+    }
+}
+
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+            languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
     }
 }
