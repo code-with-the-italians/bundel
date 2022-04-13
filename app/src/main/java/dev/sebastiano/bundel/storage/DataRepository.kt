@@ -17,7 +17,7 @@ internal class DataRepository @Inject constructor(
         imagesStorage.saveIconsFrom(activeNotification)
     }
 
-    fun getNotifications() =
+    fun getNotificationHistory() =
         database.dao()
             .getNotifications()
             .map { dbNotifications -> dbNotifications.map { it.toPersistableNotification() } }

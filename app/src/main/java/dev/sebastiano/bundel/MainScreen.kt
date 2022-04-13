@@ -165,7 +165,7 @@ private fun NavGraphBuilder.mainScreen(
         NotificationsListScreen(lifecycle, innerPadding, onNotificationClick, onNotificationDismiss)
     }
     composable(NavigationRoute.MainScreenGraph.History.route) {
-        val items by repository.getNotifications().collectAsState(initial = emptyList())
+        val items by repository.getNotificationHistory().collectAsState(initial = emptyList())
         NotificationsHistoryScreen(innerPadding, items)
     }
 }

@@ -2,7 +2,7 @@ package dev.sebastiano.bundel.storage
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import dev.sebastiano.bundel.storage.model.DbNotification
@@ -14,7 +14,7 @@ internal abstract class Dao {
     @Insert(onConflict = REPLACE)
     abstract suspend fun insertNotification(notification: DbNotification)
 
-    @Query("SELECT * FROM notifications")
+    @Query("SELECT * FROM notifications ORDER BY timestamp DESC")
     abstract fun getNotifications(): Flow<List<DbNotification>>
 
     @Query("DELETE FROM notifications")
