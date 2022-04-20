@@ -7,7 +7,7 @@ import dev.sebastiano.bundel.notifications.PersistableNotification
 
 @Entity(tableName = "apps")
 internal data class DbAppInfo(
-    val packageName: String,
+    @ColumnInfo("package_name") @PrimaryKey val packageName: String,
     val name: String?
 ) {
 

@@ -1,6 +1,7 @@
 package dev.sebastiano.bundel.storage
 
 import dev.sebastiano.bundel.notifications.ActiveNotification
+import dev.sebastiano.bundel.storage.model.DbAppInfo
 import dev.sebastiano.bundel.storage.model.DbNotification
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -13,7 +14,9 @@ internal class DataRepository @Inject constructor(
 ) {
 
     suspend fun saveNotification(activeNotification: ActiveNotification) {
-        database.dao().insertNotification(DbNotification.from(activeNotification.persistableNotification))
+        val sebastianoBrokeIt = database.dao()
+        sebastianoBrokeIt.insertNotification(DbNotification.from(activeNotification.persistableNotification))
+        sebastianoBrokeIt.insertAppInfo(DbAppInfo.from(activeNotification.persistableNotification.appInfo))
         imagesStorage.saveIconsFrom(activeNotification)
     }
 
