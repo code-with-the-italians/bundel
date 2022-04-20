@@ -1,8 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package dev.sebastiano.bundel.notificationslist
 
-import android.content.Context
+import android.graphics.drawable.Icon
 import android.text.format.DateUtils
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -29,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.rounded.BrokenImage
 import androidx.compose.material.swipeable
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -50,7 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -61,6 +57,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.notifications.ActiveNotification
@@ -78,9 +77,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
-import android.graphics.drawable.Icon as GraphicsIcon
 
-private fun previewNotification(context: Context) = ActiveNotification(
+private fun previewNotification() = ActiveNotification(
     persistableNotification = PersistableNotification(
         id = 1234,
         key = "1234",
@@ -90,8 +88,7 @@ private fun previewNotification(context: Context) = ActiveNotification(
         title = "Ivan Morgillo",
         appInfo = PersistableNotification.SenderAppInfo(
             "com.yeah",
-            "Yeah! messenger",
-            GraphicsIcon.createWithResource(context, R.drawable.ic_whatever_24dp)
+            "Yeah! messenger"
         ),
     ),
     interactions = ActiveNotification.Interactions(
@@ -110,7 +107,7 @@ private fun previewNotification(context: Context) = ActiveNotification(
 private fun NotificationItemLightPreview() {
     BundelYouTheme {
         SnoozeItem(
-            activeNotification = previewNotification(LocalContext.current),
+            activeNotification = previewNotification(),
             onNotificationClick = {},
             onNotificationDismiss = {}
         )
@@ -122,7 +119,7 @@ private fun NotificationItemLightPreview() {
 private fun NotificationItemDarkPreview() {
     BundelYouTheme(darkTheme = true) {
         SnoozeItem(
-            activeNotification = previewNotification(LocalContext.current),
+            activeNotification = previewNotification(),
             onNotificationClick = {},
             onNotificationDismiss = {}
         )
@@ -247,7 +244,8 @@ internal fun NotificationItem(
                 .padding(singlePadding())
                 .alpha(itemAlpha)
         ) {
-            NotificationMetadata(activeNotification.persistableNotification)
+            NotificationMetadata(activeNotification.persistableNotification, activeNotification.icons.appIcon)
+
             NotificationContent(
                 notification = activeNotification.persistableNotification,
                 iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
@@ -271,7 +269,7 @@ internal fun NotificationItem(
             .run { if (!isLastItem) padding(bottom = singlePadding()) else this }
     ) {
         Column(Modifier.padding(singlePadding())) {
-            NotificationMetadata(persistableNotification)
+            NotificationMetadata(persistableNotification, persistableNotification.appInfo.iconPath)
 
             val iconPainter = rememberAsyncImagePainter(
                 model = getIconFile(imagesStorage, persistableNotification)
@@ -291,23 +289,39 @@ private fun getIconFile(
         ?: File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.SMALL))
 
 @Composable
-private fun NotificationMetadata(notification: PersistableNotification) {
+private fun NotificationMetadata(notification: PersistableNotification, appIcon: Any?) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(bottom = singlePadding()),
         verticalAlignment = Alignment.Bottom
     ) {
-        val appIcon = notification.appInfo.icon?.asImageBitmap()
         val appName = notification.appInfo.name ?: notification.appInfo.packageName
-        if (appIcon != null) {
-            Image(appIcon, stringResource(id = R.string.app_icon_content_description, appName), Modifier.size(16.dp))
-            Spacer(modifier = Modifier.size(singlePadding()))
-        }
+
+        AppIcon(appIcon, appName)
+
         CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodySmall) {
             Text(appName, Modifier.weight(1F, fill = false), maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (notification.showTimestamp) Timestamp(notification)
         }
+    }
+}
+
+@Composable
+private fun AppIcon(appIcon: Any?, appName: String) {
+    if (appIcon is String) {
+        SubcomposeAsyncImage(
+            model = appIcon,
+            contentDescription = stringResource(id = R.string.app_icon_content_description, appName),
+        ) {
+            if (painter.state is AsyncImagePainter.State.Success) {
+                SubcomposeAsyncImageContent(Modifier.size(16.dp))
+                Spacer(modifier = Modifier.size(singlePadding()))
+            }
+        }
+    } else if (appIcon is Icon) {
+        Image(appIcon.asImageBitmap(), stringResource(id = R.string.app_icon_content_description, appName), Modifier.size(16.dp))
+        Spacer(modifier = Modifier.size(singlePadding()))
     }
 }
 

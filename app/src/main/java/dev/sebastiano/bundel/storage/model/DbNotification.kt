@@ -37,7 +37,7 @@ internal data class DbNotification(
     @ColumnInfo(name = "app_package") val appPackageName: String
 ) {
 
-    fun toPersistableNotification(appInfo: DbAppInfo?) = PersistableNotification(
+    fun toPersistableNotification(appInfo: DbAppInfo?, appIconPath: String?) = PersistableNotification(
         id = id,
         key = key,
         timestamp = timestamp,
@@ -50,6 +50,7 @@ internal data class DbNotification(
         appInfo = PersistableNotification.SenderAppInfo(
             packageName = appPackageName,
             name = appInfo?.name,
+            iconPath = appIconPath
         )
     )
 

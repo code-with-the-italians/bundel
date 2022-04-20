@@ -1,7 +1,5 @@
 package dev.sebastiano.bundel.notifications
 
-import android.graphics.drawable.Icon
-
 internal data class PersistableNotification(
     val id: Int,
     val key: String,
@@ -29,6 +27,6 @@ internal data class PersistableNotification(
     data class SenderAppInfo(
         val packageName: String,
         val name: String? = null,
-        val icon: Icon? = null
+        val iconPath: String? = null
     )
 }

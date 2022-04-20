@@ -11,10 +11,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 
 @Composable
-internal fun Icon.asImageBitmap(): ImageBitmap? =
+internal fun Icon.asImageBitmap(): ImageBitmap =
     loadDrawable(LocalContext.current)
-        ?.toBitmap()
-        ?.asImageBitmap()
+        .toBitmap()
+        .asImageBitmap()
 
 @Composable
 internal fun rememberIconPainter(icon: Icon?): Painter? {

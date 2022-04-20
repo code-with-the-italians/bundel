@@ -3,6 +3,7 @@ package dev.sebastiano.bundel.notifications
 import android.app.Notification
 import android.app.Notification.EXTRA_SHOW_WHEN
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
@@ -10,38 +11,45 @@ import android.service.notification.StatusBarNotification
 internal fun StatusBarNotification.toActiveNotificationOrNull(context: Context) =
     toActiveNotification(context).takeIf { it.isNotEmpty }
 
-internal fun StatusBarNotification.toActiveNotification(context: Context) = ActiveNotification(
-    persistableNotification = PersistableNotification(
-        id = id,
-        key = key,
-        timestamp = notification.`when`,
-        showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
-        isGroup = notification.run { groupKey != null && flags and Notification.FLAG_GROUP_SUMMARY != 0 },
-        text = text,
-        title = title,
-        subText = subText,
-        titleBig = titleBig,
-        appInfo = extractAppInfo(context.packageManager)
-    ),
-    icons = extractIcons(),
-    interactions = extractInteractions(),
-    isSnoozed = false
-)
+internal fun StatusBarNotification.toActiveNotification(context: Context): ActiveNotification {
+    val packageManager = context.packageManager
+    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
 
-private fun StatusBarNotification.extractIcons() = ActiveNotification.Icons(
+    return ActiveNotification(
+        persistableNotification = PersistableNotification(
+            id = id,
+            key = key,
+            timestamp = notification.`when`,
+            showTimestamp = notification.run { `when` != 0L && extras.getBoolean(EXTRA_SHOW_WHEN) },
+            isGroup = notification.run { groupKey != null && flags and Notification.FLAG_GROUP_SUMMARY != 0 },
+            text = text,
+            title = title,
+            subText = subText,
+            titleBig = titleBig,
+            appInfo = extractAppInfo(applicationInfo, packageManager)
+        ),
+        icons = extractIcons(applicationInfo),
+        interactions = extractInteractions(),
+        isSnoozed = false
+    )
+}
+
+private fun StatusBarNotification.extractIcons(applicationInfo: ApplicationInfo) = ActiveNotification.Icons(
+    appIcon = Icon.createWithResource(packageName, applicationInfo.icon),
     small = notification.smallIcon,
     large = notification.getLargeIcon(),
     extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG) as Icon?
 )
 
-private fun StatusBarNotification.extractAppInfo(packageManager: PackageManager): PersistableNotification.SenderAppInfo {
-    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
-    return PersistableNotification.SenderAppInfo(
+private fun StatusBarNotification.extractAppInfo(
+    applicationInfo: ApplicationInfo,
+    packageManager: PackageManager
+): PersistableNotification.SenderAppInfo =
+    PersistableNotification.SenderAppInfo(
         packageName = packageName,
         name = packageManager.getResourcesForApplication(applicationInfo).getString(applicationInfo.labelRes),
-        icon = Icon.createWithResource(packageName, applicationInfo.icon)
+        iconPath = null
     )
-}
 
 private fun StatusBarNotification.extractInteractions() = ActiveNotification.Interactions(
     main = notification.contentIntent,

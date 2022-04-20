@@ -18,12 +18,20 @@ internal class DataRepository @Inject constructor(
         sebastianoBrokeIt.insertNotification(DbNotification.from(activeNotification.persistableNotification))
         sebastianoBrokeIt.insertAppInfo(DbAppInfo.from(activeNotification.persistableNotification.appInfo))
         imagesStorage.saveIconsFrom(activeNotification)
+        val icon = activeNotification.icons.appIcon
+        if (icon != null) imagesStorage.saveAppIcon(activeNotification.persistableNotification.appInfo.packageName, icon)
     }
 
     fun getNotificationHistory() =
         database.dao()
             .getNotifications()
-            .map { it.map { (appInfo, notification) -> notification.toPersistableNotification(appInfo) } }
+            .map {
+                it.map { (appInfo, notification) ->
+                    val iconPath = imagesStorage.getAppIconPath(notification.appPackageName)
+
+                    notification.toPersistableNotification(appInfo, iconPath)
+                }
+            }
 
     suspend fun deleteNotification(notificationUniqueId: String) {
         database.dao().deleteNotificationById(notificationUniqueId)
