@@ -1,8 +1,10 @@
 package dev.sebastiano.bundel.storage.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import dev.sebastiano.bundel.notifications.PersistableNotification
 
 @Entity(tableName = "apps")
@@ -35,7 +37,7 @@ internal data class DbNotification(
     @ColumnInfo(name = "app_package") val appPackageName: String
 ) {
 
-    fun toPersistableNotification() = PersistableNotification(
+    fun toPersistableNotification(appInfo: DbAppInfo?) = PersistableNotification(
         id = id,
         key = key,
         timestamp = timestamp,
@@ -46,7 +48,8 @@ internal data class DbNotification(
         subText = subText,
         titleBig = titleBig,
         appInfo = PersistableNotification.SenderAppInfo(
-            packageName = appPackageName
+            packageName = appPackageName,
+            name = appInfo?.name,
         )
     )
 
@@ -67,3 +70,9 @@ internal data class DbNotification(
         )
     }
 }
+
+@Entity
+internal data class DbNotificationWithAppInfo(
+    @Relation(parentColumn = "app_package", entityColumn = "package_name") val appInfo: DbAppInfo?,
+    @Embedded val notification: DbNotification
+)

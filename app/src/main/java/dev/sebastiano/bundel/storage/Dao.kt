@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import dev.sebastiano.bundel.storage.model.DbAppInfo
 import dev.sebastiano.bundel.storage.model.DbNotification
+import dev.sebastiano.bundel.storage.model.DbNotificationWithAppInfo
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,7 +17,7 @@ internal abstract class Dao {
     abstract suspend fun insertNotification(notification: DbNotification)
 
     @Query("SELECT * FROM notifications ORDER BY timestamp DESC")
-    abstract fun getNotifications(): Flow<List<DbNotification>>
+    abstract fun getNotifications(): Flow<List<DbNotificationWithAppInfo>>
 
     @Query("DELETE FROM notifications")
     abstract suspend fun clearNotifications()

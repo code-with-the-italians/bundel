@@ -23,7 +23,7 @@ internal class DataRepository @Inject constructor(
     fun getNotificationHistory() =
         database.dao()
             .getNotifications()
-            .map { dbNotifications -> dbNotifications.map { it.toPersistableNotification() } }
+            .map { it.map { (appInfo, notification) -> notification.toPersistableNotification(appInfo) } }
 
     suspend fun deleteNotification(notificationUniqueId: String) {
         database.dao().deleteNotificationById(notificationUniqueId)
