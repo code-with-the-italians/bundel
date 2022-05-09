@@ -17,6 +17,7 @@ internal abstract class Dao {
     abstract suspend fun insertNotification(notification: DbNotification)
 
     @Query("SELECT * FROM notifications ORDER BY timestamp DESC")
+    @Transaction
     abstract fun getNotifications(): Flow<List<DbNotificationWithAppInfo>>
 
     @Query("DELETE FROM notifications")

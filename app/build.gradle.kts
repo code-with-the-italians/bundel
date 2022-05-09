@@ -29,6 +29,7 @@ android {
         targetSdk = 31
         versionCode = 1
         versionName = "1.0"
+        namespace = "dev.sebastiano.bundel"
 
         testInstrumentationRunner = "com.karumi.shot.ShotTestRunner"
         testInstrumentationRunnerArguments += "useTestStorageService" to "true"
