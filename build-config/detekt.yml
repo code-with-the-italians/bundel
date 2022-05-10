@@ -59,9 +59,6 @@ exceptions:
   ObjectExtendsThrowable:
     active: true
 
-formatting:
-  active: false
-
 performance:
   active: true
   SpreadOperator:
@@ -150,6 +147,9 @@ style:
     active: true
   UnnecessaryParentheses:
     active: true
+  UnnecessaryAbstractClass:
+    ignoreAnnotated:
+      - Module
   UntilInsteadOfRangeTo:
     active: true
   UnusedImports:
