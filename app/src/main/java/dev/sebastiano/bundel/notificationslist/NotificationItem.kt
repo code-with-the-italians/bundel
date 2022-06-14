@@ -1,5 +1,7 @@
 package dev.sebastiano.bundel.notificationslist
 
+import android.content.Context
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.graphics.drawable.Icon
 import android.text.format.DateUtils
 import androidx.compose.animation.core.animateFloatAsState
@@ -47,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -56,7 +59,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -78,7 +80,7 @@ import java.io.File
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
-private fun previewNotification() = ActiveNotification(
+private fun previewNotification(context: Context) = ActiveNotification(
     persistableNotification = PersistableNotification(
         id = 1234,
         key = "1234",
@@ -88,7 +90,7 @@ private fun previewNotification() = ActiveNotification(
         title = "Ivan Morgillo",
         appInfo = PersistableNotification.SenderAppInfo(
             "com.yeah",
-            "Yeah! messenger"
+            "Yeah! messenger",
         ),
     ),
     interactions = ActiveNotification.Interactions(
@@ -99,6 +101,10 @@ private fun previewNotification() = ActiveNotification(
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
         )
     ),
+    icons = ActiveNotification.Icons(
+        appIcon = Icon.createWithResource(context, R.drawable.ic_default_icon),
+        large = Icon.createWithResource(context, R.drawable.outline_interests_black_48dp),
+    ),
     isSnoozed = false
 )
 
@@ -107,19 +113,19 @@ private fun previewNotification() = ActiveNotification(
 private fun NotificationItemLightPreview() {
     BundelYouTheme {
         SnoozeItem(
-            activeNotification = previewNotification(),
+            activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
             onNotificationDismiss = {}
         )
     }
 }
 
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun NotificationItemDarkPreview() {
     BundelYouTheme(darkTheme = true) {
         SnoozeItem(
-            activeNotification = previewNotification(),
+            activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
             onNotificationDismiss = {}
         )
@@ -256,7 +262,6 @@ internal fun NotificationItem(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal fun NotificationItem(
     persistableNotification: PersistableNotification,

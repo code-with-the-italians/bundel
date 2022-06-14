@@ -2,9 +2,11 @@ package dev.sebastiano.bundel.preferences
 
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +35,7 @@ internal class DebugPreferencesViewModel @Inject constructor(
 
     fun postTestNotification(context: Context) {
         val notificationManager = NotificationManagerCompat.from(context)
+        val random = Random.nextInt(1, 1000)
         val channel = NotificationChannelCompat.Builder("test", NotificationManager.IMPORTANCE_DEFAULT)
             .setName(context.getString(R.string.channel_test_notifications_name))
             .setDescription(context.getString(R.string.channel_test_notifications_description))
@@ -40,10 +43,12 @@ internal class DebugPreferencesViewModel @Inject constructor(
         notificationManager.createNotificationChannel(channel)
 
         val id = Random.nextInt()
+        val largeIcon = (ResourcesCompat.getDrawable(context.resources, R.drawable.outline_interests_black_48dp, null) as BitmapDrawable).bitmap
         val notification = NotificationCompat.Builder(context, channel.id)
-            .setContentTitle(context.getString(R.string.debug_notification_title))
+            .setContentTitle(context.getString(R.string.debug_notification_title, random))
             .setContentText(context.getString(R.string.debug_notification_text))
             .setSmallIcon(IconCompat.createWithResource(context, R.drawable.ic_bundel_icon))
+            .setLargeIcon(largeIcon)
             .build()
         notificationManager.notify(id, notification)
     }

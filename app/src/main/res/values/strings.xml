@@ -67,7 +67,7 @@
     <string name="channel_test_notifications_name">Test Notifications</string>
     <string name="channel_test_notifications_description">Dummy notifications used to test Bundel\'s functionality</string>
     <string name="debug_preference_short_snooze_window">Use short (15\") snooze windows</string>
-    <string name="debug_notification_title">I am a test, hi</string>
+    <string name="debug_notification_title">I am a test, hi #%d</string>
     <string name="debug_notification_text">Just in case it wasn\'t clear</string>
     <string name="debug_preference_test_notification">Post a test notification</string>
     <string name="debug_settings_header">Debug settings</string>
