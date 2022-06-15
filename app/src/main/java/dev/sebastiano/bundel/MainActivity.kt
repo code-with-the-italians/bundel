@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -71,7 +73,8 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(
         ExperimentalAnimationApi::class,
-        ExperimentalMaterialNavigationApi::class
+        ExperimentalMaterialNavigationApi::class,
+        ExperimentalMaterial3WindowSizeClassApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false
@@ -83,14 +86,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(activity = this)
             val bottomSheetNavigator = rememberBottomSheetNavigator()
             val navController = rememberAnimatedNavController(bottomSheetNavigator)
             val showWinteryEasterEgg by winteryEasterEggViewModel.shouldShowWinteryEasterEgg()
                 .collectAsState(initial = false)
 
+            val splashScreenRoute = NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route
             LaunchedEffect(Unit) {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
-                    dismissSplashScreen = destination.route != NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route
+                    dismissSplashScreen = destination.route != splashScreenRoute
                 }
             }
 
@@ -107,7 +112,7 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     AnimatedNavHost(
                         navController = navController,
-                        startDestination = NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route,
+                        startDestination = splashScreenRoute,
                         enterTransition = { defaultEnterTransition(initialState, targetState) },
                         exitTransition = { defaultExitTransition(initialState, targetState) },
                         popEnterTransition = { defaultPopEnterTransition() },
@@ -122,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                             preferences = preferences,
                             onOpenNotificationPreferencesClick = { openNotificationsPreferences() }
                         )
-                        mainScreenGraph(navController, lifecycle, repository, preferences)
+                        mainScreenGraph(navController, lifecycle, repository, preferences, windowSizeClass)
                         preferencesGraph(navController, ::onOpenUrlClick)
                     }
                 }

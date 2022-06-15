@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -92,14 +93,17 @@ internal fun NavGraphBuilder.mainScreenGraph(
     navController: NavHostController,
     lifecycle: Lifecycle,
     repository: DataRepository,
-    preferences: Preferences
+    preferences: Preferences,
+    windowSizeClass: WindowSizeClass
 ) {
     navigation(
         route = NavigationRoute.MainScreenGraph.route,
         startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
     ) {
         composable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
-            MainScreenWithBottomNav(lifecycle, repository, preferences) { navController.navigate(NavigationRoute.PreferencesGraph.route) }
+            MainScreenWithBottomNav(lifecycle, repository, preferences, windowSizeClass) {
+                navController.navigate(NavigationRoute.PreferencesGraph.route)
+            }
         }
     }
 }

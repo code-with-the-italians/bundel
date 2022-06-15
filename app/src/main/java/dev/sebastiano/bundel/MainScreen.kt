@@ -7,6 +7,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -20,6 +22,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,6 +61,7 @@ internal fun MainScreenWithBottomNav(
     lifecycle: Lifecycle,
     repository: DataRepository,
     preferences: Preferences,
+    windowSizeClass: WindowSizeClass,
     onPreferencesClick: () -> Unit
 ) {
     val navController = rememberAnimatedNavController()
@@ -70,6 +76,20 @@ internal fun MainScreenWithBottomNav(
     ) { innerPadding ->
         val scope = rememberCoroutineScope()
 
+        val extraHorizontalPadding = when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 0.dp
+            WindowWidthSizeClass.Medium -> 64.dp
+            else -> 366.dp
+        }
+
+        val layoutDirection = LocalLayoutDirection.current
+        val contentPadding = PaddingValues(
+            start = innerPadding.calculateStartPadding(layoutDirection) + extraHorizontalPadding,
+            top = innerPadding.calculateTopPadding(),
+            end = innerPadding.calculateEndPadding(layoutDirection) + extraHorizontalPadding,
+            bottom = innerPadding.calculateBottomPadding(),
+        )
+
         val context = LocalContext.current
         AnimatedNavHost(
             navController,
@@ -78,15 +98,14 @@ internal fun MainScreenWithBottomNav(
             mainScreen(
                 lifecycle,
                 repository,
-                innerPadding,
+                contentPadding,
                 onNotificationClick = { notification ->
                     checkNotNull(notification.interactions.main) { "Notification has no main action, shouldn't be clickable" }
                     notification.interactions.main.send()
-                },
-                onNotificationDismiss = { notification ->
-                    scope.launch { handleNotificationSnooze(scope, preferences, notification, context) }
                 }
-            )
+            ) { notification ->
+                scope.launch { handleNotificationSnooze(scope, preferences, notification, context) }
+            }
         }
     }
 }
