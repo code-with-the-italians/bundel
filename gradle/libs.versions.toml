@@ -9,7 +9,7 @@ appCompat = "1.4.1"
 assertk = "0.25"
 coil = "2.0.0"
 compose = "1.2.0-beta01"
-composeMaterial3 = "1.0.0-alpha11"
+composeMaterial3 = "1.0.0-alpha12"
 composeUiTestJUnit4 = "1.1.1"
 daggerHilt = "2.42"
 datastore = "1.0.0"
@@ -17,7 +17,7 @@ desugar = "1.1.5"
 espresso-core = "3.5.0-alpha06"
 firebaseBom = "30.0.0"
 glance = "1.0.0-alpha03"
-gradlePlugins-agp = "7.4.0-alpha03"
+gradlePlugins-agp = "7.4.0-alpha04"
 gradlePlugins-crashlytics = "2.8.1"
 gradlePlugins-detekt = "1.20.0"
 gradlePlugins-gms = "4.3.5"
@@ -50,6 +50,7 @@ androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", ver
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
+androidx-compose-material3WindowSizeClass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "composeMaterial3" }
 androidx-compose-materialIconsExtended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 androidx-compose-runtimeLivedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
@@ -100,7 +101,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 [bundles]
 accompanist = ["google-accompanistFlowLayout", "google-accompanistNavAnimations", "google-accompanistNavMaterial", "google-accompanistSystemUIController"]
 androidxTestUtils = ["androidx-test-orchestrator", "androidx-test-services"]
-compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-material3", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
+compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-material3", "androidx-compose-material3WindowSizeClass", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
 composeTest = ["androidx-compose-ui-uiTest-junit4", "androidx-compose-ui-uiTest-manifest", "androidx-test-core", "androidx-test-espresso-core", "androidx-test-ext-junit", "androidx-test-rules"]
 composeUiTooling = ["androidx-compose-ui-uiTooling", "androidx-compose-ui-uiTooling-preview"]
 datastore = ["androidx-datastore", "google-protobuf-javalite"]
