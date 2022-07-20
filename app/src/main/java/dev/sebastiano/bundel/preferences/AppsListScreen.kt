@@ -1,10 +1,14 @@
 package dev.sebastiano.bundel.preferences
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
@@ -43,7 +47,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupTransparentSystemUi
@@ -54,6 +57,7 @@ import dev.sebastiano.bundel.ui.modifiers.overlay.animatedOverlay
 import dev.sebastiano.bundel.ui.singlePadding
 import kotlin.math.roundToInt
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun AppsListScreen(
@@ -210,7 +214,6 @@ private fun ExcludedLabel(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun AppIcon(
     appIcon: Drawable?,
@@ -220,7 +223,15 @@ private fun AppIcon(
     val icon = appIcon ?: AppCompatResources.getDrawable(LocalContext.current, R.drawable.ic_default_icon)
     val iconPainter = rememberAsyncImagePainter(model = icon)
 
-    val strikethroughProgress by excludedTransition.animateFloat(label = "strikethroughProgress") { targetFilterState ->
+    val strikethroughProgress by excludedTransition.animateFloat(label = "strikethroughProgress", transitionSpec = {
+        when {
+            AppFilterState.Excluded isTransitioningTo AppFilterState.Included ->
+                tween(700, easing = LinearEasing)
+            AppFilterState.Included isTransitioningTo AppFilterState.Excluded ->
+                tween(500, easing = LinearOutSlowInEasing)
+            else -> spring()
+        }
+    }) { targetFilterState ->
         if (targetFilterState == AppFilterState.Included) 0f else 1f
     }
     val overlay = StrikethroughOverlay(
