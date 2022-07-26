@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:filename")
+@file:JvmName("AnimatedOverlayKt")
 package dev.sebastiano.bundel.ui.modifiers.overlay
 
 import androidx.compose.ui.Modifier

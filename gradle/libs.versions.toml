@@ -1,52 +1,52 @@
 [versions]
-accompanist = "0.24.8-beta"
-activityCompose = "1.5.0-alpha05"
-androidxTest = "1.4.1-alpha06"
-androidxTestExtJUnit = "1.1.4-alpha06"
-androidxTestOrchestrator = "1.4.2-alpha03"
+accompanist = "0.24.13-rc"
+activityCompose = "1.6.0-alpha05"
+androidxTest = "1.5.0-alpha01"
+androidxTestExtJUnit = "1.1.4-alpha07"
+androidxTestOrchestrator = "1.4.2-alpha04"
+androidxTestRules = "1.4.1-alpha07"
 androidxTestServices = "1.4.1"
-appCompat = "1.4.1"
+appCompat = "1.4.2"
 assertk = "0.25"
-coil = "2.0.0"
-compose = "1.2.0-beta01"
-composeMaterial3 = "1.0.0-alpha12"
+coil = "2.1.0"
+compose = "1.3.0-alpha01"
+composeCompiler = "1.3.0-beta01"
+composeMaterial3 = "1.0.0-alpha14"
 composeUiTestJUnit4 = "1.1.1"
-daggerHilt = "2.42"
+daggerHilt = "2.43"
 datastore = "1.0.0"
-desugar = "1.1.5"
-espresso-core = "3.5.0-alpha06"
-firebaseBom = "30.0.0"
+desugar = "1.2.0"
+espresso-core = "3.5.0-alpha07"
+firebaseBom = "30.3.1"
 glance = "1.0.0-alpha03"
 gradlePlugins-agp = "7.4.0-alpha08"
-gradlePlugins-crashlytics = "2.8.1"
-gradlePlugins-detekt = "1.20.0"
-gradlePlugins-gms = "4.3.5"
-gradlePlugins-hilt = "2.40.5"
-gradlePlugins-junit5 = "1.8.2.0"
-gradlePlugins-kotlinter = "3.10.0"
-gradlePlugins-ksp = "1.6.21-1.0.5"
-gradlePlugins-protobuf = "0.8.18"
-gradlePlugins-shot = "5.14.0"
-gradlePlugins-versionCatalog = "0.3.1"
+gradlePlugins-crashlytics = "2.9.1"
+gradlePlugins-detekt = "1.21.0"
+gradlePlugins-gms = "4.3.13"
+gradlePlugins-hilt = "2.43"
+gradlePlugins-junit5 = "1.8.2.1"
+gradlePlugins-kotlinter = "3.11.1"
+gradlePlugins-ksp = "1.7.10-1.0.6"
+gradlePlugins-protobuf = "0.8.19"
+gradlePlugins-shot = "5.14.1"
+gradlePlugins-versionCatalog = "0.5.1"
 gradlePlugins-versionsBenManes = "0.42.0"
 hilt = "1.0.0"
-hiltLifecycleViewmodel = "1.0.0-alpha03"
 hiltNavigationCompose = "1.0.0"
 junit = "5.8.2"
-kotlin = "1.6.21"
-kotlinxCoroutinesTest = "1.6.1"
-lifecycle = "2.5.0-rc01"
-navigationCompose = "2.5.0-rc01"
-protobuf = "3.20.1"
-room = "2.5.0-alpha01"
-splashscreen = "1.0.0-beta02"
+kotlin = "1.7.10"
+kotlinxCoroutinesTest = "1.6.4"
+lifecycle = "2.6.0-alpha01"
+navigationCompose = "2.5.0"
+protobuf = "3.21.3"
+room = "2.5.0-alpha02"
+splashscreen = "1.0.0-rc01"
 timber = "5.0.1"
 uiAutomator = "2.2.0"
 
 [libraries]
 androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "appCompat" }
-androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
@@ -63,7 +63,6 @@ androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "d
 androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 androidx-hilt-hiltCommon = { module = "androidx.hilt:hilt-common", version.ref = "hilt" }
 androidx-hilt-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
-androidx-hilt-hiltLifecycleViewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycleViewmodel" }
 androidx-hilt-hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-lifecycleViewmodelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
@@ -75,7 +74,7 @@ androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTes
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestExtJUnit" }
 androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidxTestOrchestrator" }
-androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTest" }
+androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxTestRules" }
 androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidxTestServices" }
 androidx-test-uiAutomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiAutomator" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
@@ -101,12 +100,12 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 [bundles]
 accompanist = ["google-accompanistFlowLayout", "google-accompanistNavAnimations", "google-accompanistNavMaterial", "google-accompanistSystemUIController"]
 androidxTestUtils = ["androidx-test-orchestrator", "androidx-test-services"]
-compose = ["androidx-compose-compiler", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-material3", "androidx-compose-material3WindowSizeClass", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
+compose = ["androidx-compose-foundation", "androidx-compose-material", "androidx-compose-material3", "androidx-compose-material3WindowSizeClass", "androidx-compose-materialIconsExtended", "androidx-compose-runtimeLivedata", "androidx-compose-ui"]
 composeTest = ["androidx-compose-ui-uiTest-junit4", "androidx-compose-ui-uiTest-manifest", "androidx-test-core", "androidx-test-espresso-core", "androidx-test-ext-junit", "androidx-test-rules"]
 composeUiTooling = ["androidx-compose-ui-uiTooling", "androidx-compose-ui-uiTooling-preview"]
 datastore = ["androidx-datastore", "google-protobuf-javalite"]
 firebase = ["google-firebase-analytics-ktx", "google-firebase-crashlytics-ktx"]
-hilt = ["androidx-hilt-hiltCommon", "androidx-hilt-hiltLifecycleViewmodel", "google-dagger-dagger", "google-dagger-hiltAndroid"]
+hilt = ["androidx-hilt-hiltCommon", "google-dagger-dagger", "google-dagger-hiltAndroid"]
 hiltKapt = ["androidx-hilt-hiltCompiler", "google-dagger-daggerCompiler", "google-dagger-hiltCompiler"]
 lifecycle = ["androidx-lifecycle-lifecycleRuntimeKtx", "androidx-lifecycle-lifecycleViewmodelCompose"]
 room = ["androidx-room-roomKtx", "androidx-room-roomRuntime"]

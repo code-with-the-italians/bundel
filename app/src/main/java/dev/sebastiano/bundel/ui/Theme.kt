@@ -1,6 +1,5 @@
 package dev.sebastiano.bundel.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -13,7 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.MaterialTheme as Material3MaterialTheme
 import androidx.glance.LocalContext as GlanceLocalContext
 
-@SuppressLint("NewApi") // You're wrong, Lint.
 @Composable
 fun BundelYouTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

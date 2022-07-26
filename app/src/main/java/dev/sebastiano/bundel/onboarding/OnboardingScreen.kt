@@ -294,6 +294,7 @@ private data class OnboardingPagerState(
     val hoursSchedulePageState: HoursSchedulePageState
 )
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
     AnimatedContent(

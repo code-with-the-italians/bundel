@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalAnimationApi::class, ExperimentalTransitionApi::class)
+@file:OptIn(ExperimentalAnimationApi::class)
 
 package dev.sebastiano.bundel.preferences
 
@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -161,6 +160,7 @@ internal fun PreferencesTopAppBar(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("FlowOperatorInvokedInComposition") // TODO fix this crap
 @Composable
 private fun ActiveDaysRow(
@@ -191,6 +191,7 @@ private fun ActiveDaysRow(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("FlowOperatorInvokedInComposition") // TODO fix this crap
 @Composable
 private fun ActiveTimeRangesRow(

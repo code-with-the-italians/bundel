@@ -6,8 +6,10 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
+import dev.sebastiano.bundel.IoDispatcher
 import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.storage.ImagesStorage.NotificationIconSize
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -16,7 +18,8 @@ import javax.inject.Singleton
 
 @Singleton
 internal class DiskImagesStorage @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    @IoDispatcher private val workDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ImagesStorage {
 
     private val cacheFolder = application.cacheDir
@@ -40,14 +43,14 @@ internal class DiskImagesStorage @Inject constructor(
         val iconFile = getIconFile(notificationUniqueId, iconSize)
         if (iconFile.exists()) return
 
-        withContext(Dispatchers.IO) {
+        withContext(workDispatcher) {
             val iconBitmap = icon.loadDrawable(application).toBitmap()
             iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }
 
     override suspend fun deleteIconsFor(notificationUniqueId: String) {
-        withContext(Dispatchers.IO) {
+        withContext(workDispatcher) {
             for (iconSize in NotificationIconSize.values()) {
                 getIconFile(notificationUniqueId, iconSize).takeIf { it.exists() }
                     ?.delete()
@@ -69,14 +72,14 @@ internal class DiskImagesStorage @Inject constructor(
         // TODO check if the file as it exists is already the same as the icon (maybe check size, hash, ...?)
         if (iconFile.exists()) return
 
-        withContext(Dispatchers.IO) {
+        withContext(workDispatcher) {
             val iconBitmap = icon.loadDrawable(application).toBitmap()
             iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }
 
     override suspend fun deleteAppIcon(packageName: String) {
-        withContext(Dispatchers.IO) {
+        withContext(workDispatcher) {
             getAppIconFile(packageName).takeIf { it.exists() }
                 ?.delete()
         }
@@ -84,7 +87,7 @@ internal class DiskImagesStorage @Inject constructor(
 
     override suspend fun clear() {
         val extension = getCachedImageFormat().extension
-        withContext(Dispatchers.IO) {
+        withContext(workDispatcher) {
             cacheFolder.listFiles()
                 ?.filter { it.extension == extension }
                 ?.forEach { it.delete() }

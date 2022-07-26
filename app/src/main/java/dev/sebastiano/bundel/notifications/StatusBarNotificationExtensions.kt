@@ -54,8 +54,9 @@ private fun StatusBarNotification.extractAppInfo(
 private fun StatusBarNotification.extractInteractions() = ActiveNotification.Interactions(
     main = notification.contentIntent,
     dismiss = notification.deleteIntent,
-    actions = notification.actions?.map { ActiveNotification.Interactions.ActionItem(it.title, it.getIcon(), it.actionIntent) }
-        ?: emptyList()
+    actions = notification.actions
+        ?.map { ActiveNotification.Interactions.ActionItem(it.title, it.getIcon(), it.actionIntent) }
+        .orEmpty()
 )
 
 internal val StatusBarNotification.text: String?

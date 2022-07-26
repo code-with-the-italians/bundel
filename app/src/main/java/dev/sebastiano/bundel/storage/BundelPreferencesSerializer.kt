@@ -21,5 +21,7 @@ internal object BundelPreferencesSerializer : Serializer<BundelPreferences> {
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun writeTo(t: BundelPreferences, output: OutputStream) = t.writeTo(output)
+    override suspend fun writeTo(t: BundelPreferences, output: OutputStream) {
+        t.writeTo(output)
+    }
 }

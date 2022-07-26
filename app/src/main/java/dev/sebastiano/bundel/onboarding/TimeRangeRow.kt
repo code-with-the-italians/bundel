@@ -190,9 +190,15 @@ internal fun TimeRangeRow(
 
     Column(modifier = modifier) {
         var expandedExtremity by remember { mutableStateOf(ExpandedRangeExtremity.NONE) }
-        @Px var fromPillCenterX by remember { mutableStateOf(0f) }
-        @Px var toPillCenterX by remember { mutableStateOf(0f) }
-        @Px var stemPosition by remember { mutableStateOf(0f) }
+
+        @Px
+        var fromPillCenterX by remember { mutableStateOf(0f) }
+
+        @Px
+        var toPillCenterX by remember { mutableStateOf(0f) }
+
+        @Px
+        var stemPosition by remember { mutableStateOf(0f) }
 
         Row(
             horizontalArrangement = Arrangement.Start,

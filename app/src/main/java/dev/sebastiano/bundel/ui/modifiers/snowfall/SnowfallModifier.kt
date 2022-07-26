@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:filename")
+
 package dev.sebastiano.bundel.ui.modifiers.snowfall
 
 import android.content.Context
@@ -31,7 +33,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Suppress("MagicNumber") // Default values...
-internal fun Modifier.rudolf(
+internal fun Modifier.snowfall(
     heightRange: ClosedRange<Float> = 8f..17f,
     incrementFactorRange: ClosedRange<Float> = 0.4f..0.8f,
     fallAngleSeed: Float = 25f,

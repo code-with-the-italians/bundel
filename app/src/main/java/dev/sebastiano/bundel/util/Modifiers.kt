@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:filename")
+
 package dev.sebastiano.bundel.util
 
 import androidx.compose.ui.Modifier

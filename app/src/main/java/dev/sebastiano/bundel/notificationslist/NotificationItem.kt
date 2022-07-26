@@ -139,7 +139,7 @@ private enum class DismissState {
 private const val SNOOZE_PREVIEW_TIMEOUT_MILLIS = 5_000L
 
 @OptIn(ExperimentalMaterialApi::class)
-@Suppress("LongMethod") // Kinda has to be :(
+@Suppress("LongMethod")
 @Composable
 internal fun SnoozeItem(
     activeNotification: ActiveNotification,

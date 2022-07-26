@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:filename")
+
 package dev.sebastiano.bundel.notifications
 
 import android.content.ComponentName
