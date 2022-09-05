@@ -13,8 +13,9 @@ import androidx.core.graphics.drawable.toBitmap
 @Composable
 internal fun Icon.asImageBitmap(): ImageBitmap =
     loadDrawable(LocalContext.current)
-        .toBitmap()
-        .asImageBitmap()
+        ?.toBitmap()
+        ?.asImageBitmap()
+        ?: error("Unable to load drawable for icon $this")
 
 @Composable
 internal fun rememberIconPainter(icon: Icon?): Painter? {

@@ -87,7 +87,7 @@ internal class CannoliWidget(
 
 class MustBeTopLevelBecauseReasonsCallbackClassApi : ActionCallback {
 
-    override suspend fun onRun(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         val notificationsCount = BundelNotificationListenerService.activeNotificationsFlow.first().size
         context.updateWidgets(notificationsCount)
     }

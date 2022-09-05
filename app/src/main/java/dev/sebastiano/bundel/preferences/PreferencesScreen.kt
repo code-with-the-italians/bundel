@@ -142,6 +142,7 @@ fun EasterEggEnabledSwitchRow(easterEggEnabled: Boolean, onEnableChange: (Boolea
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PreferencesTopAppBar(
     title: String,

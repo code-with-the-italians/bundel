@@ -12,6 +12,7 @@ import dev.sebastiano.bundel.storage.ImagesStorage.NotificationIconSize
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,7 +45,12 @@ internal class DiskImagesStorage @Inject constructor(
         if (iconFile.exists()) return
 
         withContext(workDispatcher) {
-            val iconBitmap = icon.loadDrawable(application).toBitmap()
+            val iconBitmap = icon.loadDrawable(application)?.toBitmap()
+            if (iconBitmap == null) {
+                Timber.e("Unable to load notification icon drawable (notifId: $notificationUniqueId, size: ${iconSize.name})")
+                return@withContext
+            }
+
             iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }
@@ -73,7 +79,11 @@ internal class DiskImagesStorage @Inject constructor(
         if (iconFile.exists()) return
 
         withContext(workDispatcher) {
-            val iconBitmap = icon.loadDrawable(application).toBitmap()
+            val iconBitmap = icon.loadDrawable(application)?.toBitmap()
+            if (iconBitmap == null) {
+                Timber.e("Unable to load app icon drawable (app: $packageName)")
+                return@withContext
+            }
             iconBitmap.compress(getCachedImageFormat().format(), 0, iconFile.outputStream())
         }
     }

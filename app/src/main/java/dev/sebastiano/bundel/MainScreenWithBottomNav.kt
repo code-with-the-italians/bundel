@@ -189,6 +189,7 @@ private fun NavGraphBuilder.mainScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
     @Composable
