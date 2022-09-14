@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Switch
@@ -85,7 +87,9 @@ internal fun PreferencesScreen(
         topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) },
         modifier = Modifier.systemBarsPadding()
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
 
             Divider()

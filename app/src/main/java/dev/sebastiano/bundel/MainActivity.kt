@@ -28,6 +28,9 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(
         ExperimentalAnimationApi::class,
         ExperimentalMaterialNavigationApi::class,
-        ExperimentalMaterial3WindowSizeClassApi::class
+        ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalPermissionsApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false
@@ -96,6 +99,16 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     dismissSplashScreen = destination.route != splashScreenRoute
+                }
+            }
+
+            val notificationsPermissionState = rememberPermissionState(
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            // TODO this should not be done this way, really
+            if (notificationsPermissionState.status != PermissionStatus.Granted) {
+                SideEffect {
+                    notificationsPermissionState.launchPermissionRequest()
                 }
             }
 
