@@ -89,8 +89,8 @@ internal fun PreferencesScreen(
     ) {
         Column(
             modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
 

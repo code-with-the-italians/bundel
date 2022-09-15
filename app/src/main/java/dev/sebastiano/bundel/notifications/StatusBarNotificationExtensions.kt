@@ -5,8 +5,11 @@ import android.app.Notification.EXTRA_SHOW_WHEN
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.drawable.Icon
 import android.service.notification.StatusBarNotification
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 
 internal fun StatusBarNotification.toActiveNotificationOrNull(context: Context) =
     toActiveNotification(context).takeIf { it.isNotEmpty }
@@ -47,7 +50,12 @@ private fun StatusBarNotification.extractAppInfo(
 ): PersistableNotification.SenderAppInfo =
     PersistableNotification.SenderAppInfo(
         packageName = packageName,
-        name = packageManager.getResourcesForApplication(applicationInfo).getString(applicationInfo.labelRes),
+        name = if (applicationInfo.labelRes != Resources.ID_NULL) {
+            packageManager.getResourcesForApplication(applicationInfo).getString(applicationInfo.labelRes)
+        } else {
+            Firebase.crashlytics.log("Application ${applicationInfo.packageName} has no label")
+            applicationInfo.packageName
+        },
         iconPath = null
     )
 
