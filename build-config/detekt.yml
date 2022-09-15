@@ -40,6 +40,8 @@ complexity:
     active: false
   TooManyFunctions:
     active: false
+  LongMethod:
+    active: false
 
 coroutines:
   active: true

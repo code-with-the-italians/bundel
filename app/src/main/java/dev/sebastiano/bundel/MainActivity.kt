@@ -77,7 +77,8 @@ class MainActivity : AppCompatActivity() {
     @OptIn(
         ExperimentalAnimationApi::class,
         ExperimentalMaterialNavigationApi::class,
-        ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalPermissionsApi::class
+        ExperimentalMaterial3WindowSizeClassApi::class,
+        ExperimentalPermissionsApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false

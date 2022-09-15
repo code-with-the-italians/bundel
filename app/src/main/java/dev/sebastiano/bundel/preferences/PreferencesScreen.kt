@@ -87,9 +87,11 @@ internal fun PreferencesScreen(
         topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) },
         modifier = Modifier.systemBarsPadding()
     ) {
-        Column(modifier = Modifier
+        Column(
+            modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())) {
+            .verticalScroll(rememberScrollState())
+        ) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
 
             Divider()
