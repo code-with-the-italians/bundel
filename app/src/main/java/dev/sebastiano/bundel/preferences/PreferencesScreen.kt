@@ -79,6 +79,7 @@ internal fun PreferencesScreen(
     onSelectTimeRangesClicked: () -> Unit,
     onLicensesLinkClick: () -> Unit,
     onSourcesLinkClick: () -> Unit,
+    onTestWidgetClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
     SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
@@ -118,7 +119,7 @@ internal fun PreferencesScreen(
 
                 val context = LocalContext.current
                 DebugPreferencesRow(debugPreferencesViewModel.useShortSnoozeWindow) {
-                    handleDebugPreferenceClick(it, context, debugPreferencesViewModel)
+                    handleDebugPreferenceClick(it, context, debugPreferencesViewModel, onTestWidgetClick)
                 }
             }
         }
@@ -128,11 +129,13 @@ internal fun PreferencesScreen(
 private fun handleDebugPreferenceClick(
     event: DebugPreferencesEvent,
     context: Context,
-    viewModel: DebugPreferencesViewModel
+    viewModel: DebugPreferencesViewModel,
+    onTestWidgetClick: () -> Unit
 ) {
     when (event) {
         DebugPreferencesEvent.SendTestNotification -> viewModel.postTestNotification(context)
         is DebugPreferencesEvent.UseShortSnoozeWindow -> viewModel.setUseShortSnoozeWindow(event.enabled)
+        DebugPreferencesEvent.TestWidgets -> onTestWidgetClick()
     }
 }
 
@@ -360,6 +363,13 @@ private fun DebugPreferencesRow(
         }
     )
 
+    Text(
+        text = stringResource(R.string.debug_preference_test_widgets),
+        modifier = Modifier.settingsRow(clickable = true) {
+            onDebugPreferenceClick(DebugPreferencesEvent.TestWidgets)
+        }
+    )
+
     val useShortSnoozeWindow by useShortSnoozeWindowFlow.collectAsState(initial = false)
     val switchTextSpikeCam = stringResource(R.string.debug_preference_short_snooze_window)
     Row(
@@ -389,6 +399,7 @@ private fun DebugPreferencesRow(
 internal sealed class DebugPreferencesEvent {
     object SendTestNotification : DebugPreferencesEvent()
     data class UseShortSnoozeWindow(val enabled: Boolean) : DebugPreferencesEvent()
+    object TestWidgets : DebugPreferencesEvent()
 }
 
 private fun Modifier.settingsRow(clickable: Boolean, onClick: () -> Unit = {}): Modifier =

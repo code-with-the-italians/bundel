@@ -133,6 +133,8 @@ dependencies {
     kapt(libs.bundles.hiltKapt)
 
     debugImplementation(libs.androidx.compose.ui.uiTest.manifest)
+    implementation(libs.google.android.glanceTools.host) // TODO move to debug sourceset
+    debugImplementation(libs.google.android.glanceTools.viewer) // TODO move to debug sourceset
 
     testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)

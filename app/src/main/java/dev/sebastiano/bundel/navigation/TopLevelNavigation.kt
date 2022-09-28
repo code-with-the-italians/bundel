@@ -25,6 +25,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 import dev.sebastiano.bundel.MainScreenWithBottomNav
 import dev.sebastiano.bundel.SetupTransparentSystemUi
+import dev.sebastiano.bundel.glance.TestWidgetScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
@@ -32,7 +33,6 @@ import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.preferences.SelectDaysDialog
 import dev.sebastiano.bundel.preferences.SelectTimeRangesDialog
 import dev.sebastiano.bundel.storage.DataRepository
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -40,7 +40,6 @@ import kotlinx.coroutines.launch
     ExperimentalComposeUiApi::class,
     ExperimentalMaterialNavigationApi::class,
     ExperimentalAnimationApi::class,
-    FlowPreview::class
 )
 internal fun NavGraphBuilder.preferencesGraph(
     navController: NavHostController,
@@ -59,6 +58,7 @@ internal fun NavGraphBuilder.preferencesGraph(
                 onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectTimeRanges.route) },
                 onLicensesLinkClick = { navController.navigate(NavigationRoute.PreferencesGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
+                onTestWidgetClick = { navController.navigate(NavigationRoute.PreferencesGraph.TestWidget.route) },
                 onBackPress = { navController.popBackStack() },
             )
         }
@@ -73,6 +73,12 @@ internal fun NavGraphBuilder.preferencesGraph(
             route = NavigationRoute.PreferencesGraph.Licenses.route
         ) {
             LicensesScreen(onBackPress = { navController.popBackStack() })
+        }
+
+        composable(
+            route = NavigationRoute.PreferencesGraph.TestWidget.route
+        ) {
+            TestWidgetScreen()
         }
 
         bottomSheet(route = NavigationRoute.PreferencesGraph.SelectDays.route) {

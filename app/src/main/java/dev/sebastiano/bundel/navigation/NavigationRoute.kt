@@ -44,6 +44,8 @@ internal sealed class NavigationRoute(val route: String) {
         object SelectTimeRanges : NavigationRoute("preferences.time-ranges")
 
         object Licenses : NavigationRoute("preferences.absentFriends")
+
+        object TestWidget : NavigationRoute("preferences.testWidget")
     }
 
     interface BottomNavNavigationRoute {

@@ -61,7 +61,7 @@ internal class CannoliWidget(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "I'm big whoa")
+                        Text(text = "I'm big whoa 🏆")
                         Spacer(modifier = GlanceModifier.height(16.dp))
                         Text(
                             text = text,
