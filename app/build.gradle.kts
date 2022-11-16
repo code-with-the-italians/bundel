@@ -1,8 +1,5 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.android.build.gradle.internal.tasks.factory.dependsOn
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
@@ -160,9 +157,10 @@ protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${project.libs.versions.protobuf.get()}"
     }
+
     generateProtoTasks {
         all().forEach { task ->
-            task.plugins {
+            task.builtins {
                 create("java") {
                     option("lite")
                 }
