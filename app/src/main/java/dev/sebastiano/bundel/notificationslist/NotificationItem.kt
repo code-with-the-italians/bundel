@@ -90,20 +90,20 @@ private fun previewNotification(context: Context) = ActiveNotification(
         title = "Ivan Morgillo",
         appInfo = PersistableNotification.SenderAppInfo(
             "com.yeah",
-            "Yeah! messenger",
-        ),
+            "Yeah! messenger"
+        )
     ),
     interactions = ActiveNotification.Interactions(
         actions = listOf(
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
-            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia")
         )
     ),
     icons = ActiveNotification.Icons(
         appIcon = Icon.createWithResource(context, R.drawable.ic_default_icon),
-        large = Icon.createWithResource(context, R.drawable.outline_interests_black_48dp),
+        large = Icon.createWithResource(context, R.drawable.outline_interests_black_48dp)
     ),
     isSnoozed = false
 )
@@ -202,24 +202,24 @@ internal fun SnoozeItem(
 private fun SnoozeBackground(
     modifier: Modifier = Modifier,
     cornerRadiusFactor: State<Float> = remember { mutableStateOf(1f) },
-    onSnoozeClicked: () -> Unit,
+    onSnoozeClicked: () -> Unit
 ) {
     Box(
         modifier = modifier
             .padding(end = 10.dp)
             .background(
                 color = MaterialTheme.colorScheme.tertiary,
-                shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f)),
-            ),
+                shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f))
+            )
     ) {
         IconButton(
             onClick = onSnoozeClicked,
-            modifier = Modifier.align(Alignment.CenterStart),
+            modifier = Modifier.align(Alignment.CenterStart)
         ) {
             Icon(
                 Icons.Default.Timer,
                 contentDescription = "Snooze",
-                tint = MaterialTheme.colorScheme.onTertiary,
+                tint = MaterialTheme.colorScheme.onTertiary
             )
         }
     }
@@ -317,7 +317,7 @@ private fun AppIcon(appIcon: Any?, appName: String) {
     if (appIcon is String) {
         SubcomposeAsyncImage(
             model = appIcon,
-            contentDescription = stringResource(id = R.string.app_icon_content_description, appName),
+            contentDescription = stringResource(id = R.string.app_icon_content_description, appName)
         ) {
             if (painter.state is AsyncImagePainter.State.Success) {
                 SubcomposeAsyncImageContent(Modifier.size(16.dp))

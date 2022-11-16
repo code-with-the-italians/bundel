@@ -27,7 +27,7 @@ internal class ScheduleCheckerTest {
         WeekDay.THURSDAY to true,
         WeekDay.FRIDAY to true,
         WeekDay.SATURDAY to false,
-        WeekDay.SUNDAY to false,
+        WeekDay.SUNDAY to false
     )
 
     private val timeRangesSchedule = TimeRangesSchedule.of(

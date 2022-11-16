@@ -170,7 +170,7 @@ internal class DataStorePreferences(
             WeekDay.THURSDAY to true,
             WeekDay.FRIDAY to true,
             WeekDay.SATURDAY to false,
-            WeekDay.SUNDAY to false,
+            WeekDay.SUNDAY to false
         )
 
         internal val DEFAULT_HOURS_SCHEDULE = TimeRangesSchedule()

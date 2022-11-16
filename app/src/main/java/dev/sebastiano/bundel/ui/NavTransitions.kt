@@ -19,7 +19,7 @@ import dev.sebastiano.bundel.navigation.NavigationRoute
 @ExperimentalAnimationApi
 internal fun AnimatedContentScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,
-    target: NavBackStackEntry,
+    target: NavBackStackEntry
 ): EnterTransition {
     if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         return fadeIn(tween(durationMillis = 0))
@@ -38,7 +38,7 @@ internal fun AnimatedContentScope<*>.defaultEnterTransition(
 @ExperimentalAnimationApi
 internal fun AnimatedContentScope<*>.defaultExitTransition(
     initial: NavBackStackEntry,
-    target: NavBackStackEntry,
+    target: NavBackStackEntry
 ): ExitTransition {
     if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         return fadeOut(tween(durationMillis = 0))

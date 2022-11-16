@@ -19,9 +19,6 @@ indent_size = 2
 [{*.kt,*.kts}]
 ktlint_function_signature_body_expression_wrapping = multiline
 ktlint_ignore_back_ticked_identifier = true
-disabled_rules = trailing-comma,annotation
-# TODO: re-enable trailing-comma once https://github.com/pinterest/ktlint/issues/1552 is addressed
-# TODO: re-enable annotation once https://github.com/pinterest/ktlint/issues/1539 is resolved
 
 [gradlew.bat]
 end_of_line = crlf

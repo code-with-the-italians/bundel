@@ -62,13 +62,13 @@ private fun DaysSchedulePageLandscapePreview() {
 @Composable
 internal fun onboardingCheckedPillAppearance() = checkedMaterialPillAppearance(
     backgroundColor = MaterialTheme.colorScheme.inversePrimary,
-    contentColor = MaterialTheme.colorScheme.primary,
+    contentColor = MaterialTheme.colorScheme.primary
 )
 
 @Composable
 internal fun onboardingUncheckedPillAppearance() = uncheckedMaterialPillAppearance(
     backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
 )
 
 @Composable
@@ -132,7 +132,7 @@ private fun DaysPickerBundelYouThemePreview() {
                 newSchedule[weekDay] = checked
                 daysSchedule = newSchedule
             },
-            chipsSpacing = singlePadding(),
+            chipsSpacing = singlePadding()
 //            checkedAppearance = checkedMaterialPillAppearance(
 //                backgroundColor = MaterialTheme.colorScheme.surface,
 //                contentColor = MaterialTheme.colorScheme.onSurface
@@ -173,7 +173,7 @@ internal fun DaysPicker(
     chipsSpacing: Dp,
     modifier: Modifier = Modifier,
     checkedAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
-    uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
+    uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance()
 ) {
     FlowRow(
         modifier = modifier,

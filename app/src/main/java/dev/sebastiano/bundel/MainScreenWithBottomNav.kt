@@ -20,8 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -87,7 +87,7 @@ internal fun MainScreenWithBottomNav(
             start = innerPadding.calculateStartPadding(layoutDirection) + extraHorizontalPadding,
             top = innerPadding.calculateTopPadding(),
             end = innerPadding.calculateEndPadding(layoutDirection) + extraHorizontalPadding,
-            bottom = innerPadding.calculateBottomPadding(),
+            bottom = innerPadding.calculateBottomPadding()
         )
 
         val context = LocalContext.current
@@ -202,7 +202,7 @@ private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
         }
     }
 
-    SmallTopAppBar(
+    TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(

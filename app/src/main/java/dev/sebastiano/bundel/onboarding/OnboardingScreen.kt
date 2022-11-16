@@ -119,7 +119,7 @@ internal fun OnboardingScreen(
                 onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
                 onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
             ),
-            onOnboardingDoneClicked = onOnboardingDoneClicked,
+            onOnboardingDoneClicked = onOnboardingDoneClicked
         )
     }
 }

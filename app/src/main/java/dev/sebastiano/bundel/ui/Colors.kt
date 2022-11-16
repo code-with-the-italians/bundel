@@ -212,7 +212,7 @@ internal val LightThemeColors = lightColorScheme(
     onSurfaceVariant = md_theme_light_onSurfaceVariant,
     outline = md_theme_light_outline,
     inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
+    inverseSurface = md_theme_light_inverseSurface
 )
 
 internal val OnboardingLightColorsSmol = lightColorScheme(
@@ -240,7 +240,7 @@ internal val OnboardingLightColorsSmol = lightColorScheme(
     onSurfaceVariant = md_theme_light_onSurfaceVariant,
     outline = md_theme_light_outline,
     inverseOnSurface = md_theme_light_onSurface,
-    inverseSurface = md_theme_light_surface,
+    inverseSurface = md_theme_light_surface
 )
 
 internal val DarkThemeColors = darkColorScheme(
@@ -268,5 +268,5 @@ internal val DarkThemeColors = darkColorScheme(
     onSurfaceVariant = md_theme_dark_onSurfaceVariant,
     outline = md_theme_dark_outline,
     inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
+    inverseSurface = md_theme_dark_inverseSurface
 )

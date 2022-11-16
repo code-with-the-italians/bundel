@@ -16,9 +16,6 @@
     <Properties>
       <option name="KEEP_BLANK_LINES" value="true" />
     </Properties>
-    <editorconfig>
-      <option name="ENABLED" value="false" />
-    </editorconfig>
     <codeStyleSettings language="Groovy">
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

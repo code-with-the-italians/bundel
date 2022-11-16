@@ -27,9 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -157,7 +157,8 @@ internal fun PreferencesTopAppBar(
     title: String,
     onBackPress: () -> Unit
 ) {
-    SmallTopAppBar(
+    TopAppBar(
+        title = { Text(title) },
         navigationIcon = {
             IconButton(onClick = onBackPress) {
                 Icon(
@@ -165,8 +166,7 @@ internal fun PreferencesTopAppBar(
                     contentDescription = stringResource(id = R.string.menu_back_content_description)
                 )
             }
-        },
-        title = { Text(title) }
+        }
     )
 }
 
@@ -175,7 +175,7 @@ internal fun PreferencesTopAppBar(
 @Composable
 private fun ActiveDaysRow(
     daysScheduleFlow: Flow<Map<WeekDay, Boolean>>,
-    onSelectDaysClicked: () -> Unit,
+    onSelectDaysClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier.settingsRow(clickable = true, onClick = onSelectDaysClicked)
@@ -206,7 +206,7 @@ private fun ActiveDaysRow(
 @Composable
 private fun ActiveTimeRangesRow(
     timeRangesFlow: Flow<TimeRangesSchedule>,
-    onSelectTimeRangesClicked: () -> Unit,
+    onSelectTimeRangesClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier.settingsRow(clickable = true, onClick = onSelectTimeRangesClicked)
@@ -231,7 +231,7 @@ private fun ActiveTimeRangesRow(
 @Composable
 private fun ExcludedAppsRow(
     excludedAppsCountFlow: Flow<Int>,
-    onSelectAppsClicked: () -> Unit,
+    onSelectAppsClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier.settingsRow(clickable = true, onClick = onSelectAppsClicked)
@@ -276,12 +276,12 @@ private fun AboutAppRow(
             .copy(MaterialTheme.typography.bodySmall.color.copy(ContentAlpha.disabled))
         Text(
             text = stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE),
-            style = baseTextStyle,
+            style = baseTextStyle
         )
 
         val linkSpanStyle = SpanStyle(
             color = MaterialTheme.colorScheme.tertiary,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Medium
         )
 
         AnnotatedClickableText(
@@ -289,7 +289,7 @@ private fun AboutAppRow(
             linkText = stringResource(R.string.settings_about_oss_link),
             textStyle = baseTextStyle,
             linkSpanStyle = linkSpanStyle,
-            onClick = onLicensesLinkClick,
+            onClick = onLicensesLinkClick
         )
 
         AnnotatedClickableText(
@@ -297,7 +297,7 @@ private fun AboutAppRow(
             linkText = stringResource(R.string.settings_about_sources_link),
             textStyle = baseTextStyle,
             linkSpanStyle = linkSpanStyle,
-            onClick = onSourcesLinkClick,
+            onClick = onSourcesLinkClick
         )
     }
 }
@@ -308,7 +308,7 @@ fun AnnotatedClickableText(
     linkText: String,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     linkSpanStyle: SpanStyle = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold),
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     val annotatedText = buildAnnotatedString {
         append(prefixText)

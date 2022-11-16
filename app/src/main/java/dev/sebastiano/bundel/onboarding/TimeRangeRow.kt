@@ -202,7 +202,7 @@ internal fun TimeRangeRow(
 
         Row(
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             RemoveIcon(canBeRemoved, timeRange, onRemoved)
 
@@ -216,7 +216,7 @@ internal fun TimeRangeRow(
                 modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
                     fromPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
                 },
-                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.FROM) expandedPillAppearance else normalPillAppearance,
+                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.FROM) expandedPillAppearance else normalPillAppearance
             ) {
                 expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.FROM) ExpandedRangeExtremity.FROM else ExpandedRangeExtremity.NONE
                 stemPosition = fromPillCenterX
@@ -234,7 +234,7 @@ internal fun TimeRangeRow(
                 modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
                     toPillCenterX = layoutCoordinates.positionInParent().x + layoutCoordinates.size.width / 2
                 },
-                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.TO) expandedPillAppearance else normalPillAppearance,
+                pillAppearance = if (expandedExtremity == ExpandedRangeExtremity.TO) expandedPillAppearance else normalPillAppearance
             ) {
                 expandedExtremity = if (expandedExtremity != ExpandedRangeExtremity.TO) ExpandedRangeExtremity.TO else ExpandedRangeExtremity.NONE
                 stemPosition = toPillCenterX
@@ -288,7 +288,7 @@ private fun ColumnScope.ExpandableTimePicker(
     timeRange: TimeRange?,
     minimumAllowableFrom: LocalTime?,
     maximumAllowableTo: LocalTime?,
-    onTimeRangeChanged: (TimeRange) -> Unit,
+    onTimeRangeChanged: (TimeRange) -> Unit
 ) {
     @Px var cardX by remember { mutableStateOf(0f) }
 

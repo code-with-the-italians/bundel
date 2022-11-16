@@ -74,7 +74,7 @@ internal fun AppsListScreen(
         topBar = {
             PreferencesTopAppBar(
                 title = stringResource(R.string.settings_exclude_apps_title),
-                onBackPress = onBackPress,
+                onBackPress = onBackPress
             )
         }
     ) {

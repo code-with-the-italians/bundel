@@ -19,7 +19,7 @@ internal data class ActiveNotification(
         val appIcon: Icon? = null,
         val small: Icon? = null,
         val large: Icon? = null,
-        val extraLarge: Icon? = null,
+        val extraLarge: Icon? = null
     ) {
 
         val isNotEmpty: Boolean = appIcon != null || small != null || large != null || extraLarge != null

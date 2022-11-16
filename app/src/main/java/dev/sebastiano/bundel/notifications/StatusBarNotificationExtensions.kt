@@ -16,7 +16,7 @@ internal fun StatusBarNotification.toActiveNotificationOrNull(context: Context) 
 
 internal fun StatusBarNotification.toActiveNotification(context: Context): ActiveNotification {
     val packageManager = context.packageManager
-    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+    val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
 
     return ActiveNotification(
         persistableNotification = PersistableNotification(
@@ -41,7 +41,7 @@ private fun StatusBarNotification.extractIcons(applicationInfo: ApplicationInfo)
     appIcon = Icon.createWithResource(packageName, applicationInfo.icon),
     small = notification.smallIcon,
     large = notification.getLargeIcon(),
-    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG) as Icon?
+    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG, Icon::class.java)
 )
 
 private fun StatusBarNotification.extractAppInfo(
@@ -68,13 +68,13 @@ private fun StatusBarNotification.extractInteractions() = ActiveNotification.Int
 )
 
 internal val StatusBarNotification.text: String?
-    get() = notification.extras.get(Notification.EXTRA_TEXT)?.toString()
+    get() = notification.extras.getString(Notification.EXTRA_TEXT)
 
 internal val StatusBarNotification.title: String?
-    get() = notification.extras.get(Notification.EXTRA_TITLE)?.toString()
+    get() = notification.extras.getString(Notification.EXTRA_TITLE)
 
 internal val StatusBarNotification.titleBig: String?
-    get() = notification.extras.get(Notification.EXTRA_TITLE_BIG)?.toString()
+    get() = notification.extras.getString(Notification.EXTRA_TITLE_BIG)
 
 internal val StatusBarNotification.subText: String?
-    get() = notification.extras.get(Notification.EXTRA_SUB_TEXT)?.toString()
+    get() = notification.extras.getString(Notification.EXTRA_SUB_TEXT)

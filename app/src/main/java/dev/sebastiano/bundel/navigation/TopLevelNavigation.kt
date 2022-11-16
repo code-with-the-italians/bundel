@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 @OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterialNavigationApi::class,
-    ExperimentalAnimationApi::class,
+    ExperimentalAnimationApi::class
 )
 internal fun NavGraphBuilder.preferencesGraph(
     navController: NavHostController,
@@ -59,7 +59,7 @@ internal fun NavGraphBuilder.preferencesGraph(
                 onLicensesLinkClick = { navController.navigate(NavigationRoute.PreferencesGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
                 onTestWidgetClick = { navController.navigate(NavigationRoute.PreferencesGraph.TestWidget.route) },
-                onBackPress = { navController.popBackStack() },
+                onBackPress = { navController.popBackStack() }
             )
         }
 
@@ -104,7 +104,7 @@ internal fun NavGraphBuilder.mainScreenGraph(
 ) {
     navigation(
         route = NavigationRoute.MainScreenGraph.route,
-        startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
+        startDestination = NavigationRoute.MainScreenGraph.MainScreen.route
     ) {
         composable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
             MainScreenWithBottomNav(lifecycle, repository, preferences, windowSizeClass) {
@@ -123,7 +123,7 @@ internal fun NavGraphBuilder.onboardingGraph(
 ) {
     navigation(
         route = NavigationRoute.OnboardingGraph.route,
-        startDestination = NavigationRoute.OnboardingGraph.OnboardingScreen.route,
+        startDestination = NavigationRoute.OnboardingGraph.OnboardingScreen.route
     ) {
         composable(NavigationRoute.OnboardingGraph.OnboardingScreen.route) {
             val needsNotificationsPermission by needsNotificationsPermissionFlow.collectAsState(true)
@@ -136,7 +136,7 @@ internal fun NavGraphBuilder.onboardingGraph(
                 onOnboardingDoneClicked = {
                     scope.launch { preferences.setIsOnboardingSeen(true) }
                     navController.navigate(
-                        route = NavigationRoute.MainScreenGraph.MainScreen.route,
+                        route = NavigationRoute.MainScreenGraph.MainScreen.route
                     ) {
                         popUpTo(NavigationRoute.OnboardingGraph.route) {
                             inclusive = true

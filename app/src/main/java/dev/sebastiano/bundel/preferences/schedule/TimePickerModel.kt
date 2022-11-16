@@ -80,14 +80,18 @@ internal class TimePickerModel(
                 } else {
                     timeRange.from.plusMinutes(1)
                 }
-            } else timeRange.from,
+            } else {
+                timeRange.from
+            },
             to = if (rangeExtremity == ExpandedRangeExtremity.TO) {
                 if (partOfHour == PartOfHour.HOUR) {
                     timeRange.to.plusHours(1)
                 } else {
                     timeRange.to.plusMinutes(1)
                 }
-            } else timeRange.to
+            } else {
+                timeRange.to
+            }
         )
 
     fun decrementTimeRangePart(): TimeRange =
@@ -98,13 +102,17 @@ internal class TimePickerModel(
                 } else {
                     timeRange.from.minusMinutes(1)
                 }
-            } else timeRange.from,
+            } else {
+                timeRange.from
+            },
             to = if (rangeExtremity == ExpandedRangeExtremity.TO) {
                 if (partOfHour == PartOfHour.HOUR) {
                     timeRange.to.minusHours(1)
                 } else {
                     timeRange.to.minusMinutes(1)
                 }
-            } else timeRange.to
+            } else {
+                timeRange.to
+            }
         )
 }

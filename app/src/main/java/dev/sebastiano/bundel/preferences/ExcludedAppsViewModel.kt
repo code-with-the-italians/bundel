@@ -18,7 +18,7 @@ internal class ExcludedAppsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val excludedPackagesFlow = preferences.getExcludedPackages()
-    private val installedApps = packageManager.getInstalledApplications(0)
+    private val installedApps = packageManager.getInstalledApplications(PackageManager.ApplicationInfoFlags.of(0))
 
     val excludedAppsCountFlow = excludedPackagesFlow.map { it.count() }
 

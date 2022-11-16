@@ -34,7 +34,7 @@ internal fun SimplePageIndicator(
     indicatorWidth: Dp = 8.dp,
     indicatorHeight: Dp = indicatorWidth,
     spacing: Dp = indicatorWidth,
-    indicatorShape: Shape = CircleShape,
+    indicatorShape: Shape = CircleShape
 ) {
     val indicatorWidthPx = LocalDensity.current.run { indicatorWidth.roundToPx() }
     val spacingPx = LocalDensity.current.run { spacing.roundToPx() }
@@ -45,7 +45,7 @@ internal fun SimplePageIndicator(
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(spacing),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             val indicatorModifier = Modifier
                 .size(width = indicatorWidth, height = indicatorHeight)
