@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("DEPRECATION")
 @HiltViewModel
 internal class ExcludedAppsViewModel @Inject constructor(
     private val preferences: Preferences,
@@ -18,7 +19,7 @@ internal class ExcludedAppsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val excludedPackagesFlow = preferences.getExcludedPackages()
-    private val installedApps = packageManager.getInstalledApplications(PackageManager.ApplicationInfoFlags.of(0))
+    private val installedApps = packageManager.getInstalledApplications(0)
 
     val excludedAppsCountFlow = excludedPackagesFlow.map { it.count() }
 

@@ -14,9 +14,10 @@ import com.google.firebase.ktx.Firebase
 internal fun StatusBarNotification.toActiveNotificationOrNull(context: Context) =
     toActiveNotification(context).takeIf { it.isNotEmpty }
 
+@Suppress("DEPRECATION")
 internal fun StatusBarNotification.toActiveNotification(context: Context): ActiveNotification {
     val packageManager = context.packageManager
-    val applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+    val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
 
     return ActiveNotification(
         persistableNotification = PersistableNotification(
@@ -37,11 +38,12 @@ internal fun StatusBarNotification.toActiveNotification(context: Context): Activ
     )
 }
 
+@Suppress("DEPRECATION")
 private fun StatusBarNotification.extractIcons(applicationInfo: ApplicationInfo) = ActiveNotification.Icons(
     appIcon = Icon.createWithResource(packageName, applicationInfo.icon),
     small = notification.smallIcon,
     large = notification.getLargeIcon(),
-    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG, Icon::class.java)
+    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG)
 )
 
 private fun StatusBarNotification.extractAppInfo(
