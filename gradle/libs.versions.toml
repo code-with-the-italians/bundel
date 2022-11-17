@@ -1,6 +1,7 @@
 [versions]
 accompanist = "0.27.0"
 activityCompose = "1.7.0-alpha02"
+androidxFragment = "1.5.1"
 androidxTest = "1.5.0"
 androidxTestExtJUnit = "1.1.4"
 androidxTestOrchestrator = "1.4.2"
@@ -62,6 +63,7 @@ androidx-compose-ui-uiTooling-preview = { module = "androidx.compose.ui:ui-tooli
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidxFragment" }
 androidx-hilt-hiltCommon = { module = "androidx.hilt:hilt-common", version.ref = "hilt" }
 androidx-hilt-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
 androidx-hilt-hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

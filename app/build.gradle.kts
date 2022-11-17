@@ -123,6 +123,9 @@ dependencies {
     implementation(libs.coilKt.coil.compose)
     implementation(libs.jakes.timber.timber)
 
+    // Working around a corrupted Lint rule in fragment 1.5.0 (Hilt transitive dependency)
+    implementation(libs.androidx.fragment)
+
     implementation(platform(libs.google.firebase.bom))
     implementation(libs.bundles.firebase)
 
