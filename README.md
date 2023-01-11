@@ -3,19 +3,27 @@
 
 
   <a href="https://github.com/code-with-the-italians/Bundel/actions/workflows/buildbot.yml" target=_blank>
-    <img alt="GitHub Workflow Status (branch)" src="https://img.shields.io/github/workflow/status/code-with-the-italians/bundel/buildbot/main?logo=github"/>
+    <img alt="GitHub Workflow Status (branch)" src="https://img.shields.io/github/actions/workflow/status/code-with-the-italians/bundel/buildbot.yml?branch=main&logo=github&style=flat-square"/>
   </a>
   &nbsp;
   <a href="https://github.com/code-with-the-italians/Bundel/blob/main/LICENSE" target=_blank>
-  <img alt="Apache 2.0 license" src="https://img.shields.io/github/license/code-with-the-italians/bundel"/>
+  <img alt="Apache 2.0 license" src="https://img.shields.io/github/license/code-with-the-italians/bundel?style=flat-square"/>
   </a>
   &nbsp;
   <a href="https://cwti.link/twitch" target=_blank>
-    <img alt="Watch us code on Twitch" src="https://img.shields.io/twitch/status/codewiththeitalians?logo=twitch&logoColor=white"/>
+    <img alt="Watch us code on Twitch" src="https://img.shields.io/twitch/status/codewiththeitalians?logo=twitch&logoColor=white&style=flat-square"/>
+  </a>
+  &nbsp;
+  <a href="https://cwti.link/yt" target=_blank>
+    <img alt="Watch us code on YouTube" src="https://img.shields.io/youtube/channel/subscribers/UC3nAR9q1GMNS6kCRIo70vPQ?label=YouTube&logo=youtube&style=flat-square"/>
+  </a>
+  &nbsp;
+  <a href="https://cwti.link/mastodon" target=_blank>
+    <img alt="Follow us on Mastodon" src="https://img.shields.io/mastodon/follow/109276401455515757?domain=https%3A%2F%2Fandroiddev.social&label=follow%20us&logo=mastodon&logoColor=white&style=flat-square"/>
   </a>
   &nbsp;
   <a href="https://cwti.link/twitter" target=_blank>
-    <img alt="Follow us on Twitter" src="https://img.shields.io/twitter/follow/codewiththeita?label=follow%20us"/>
+    <img alt="Follow us on Twitter" src="https://img.shields.io/twitter/follow/codewiththeita?label=follow%20us&logo=twitter&logoColor=white&style=flat-square"/>
   </a>
 </p>
 
