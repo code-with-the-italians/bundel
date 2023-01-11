@@ -41,9 +41,9 @@ android {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
-
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
