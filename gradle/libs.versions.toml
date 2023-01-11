@@ -86,6 +86,7 @@ google-accompanistFlowLayout = { module = "com.google.accompanist:accompanist-fl
 google-accompanistNavAnimations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 google-accompanistNavMaterial = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 google-accompanistPermissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+google-accompanistTestHarness = { module = "com.google.accompanist:accompanist-testharness", version.ref = "accompanist" }
 google-accompanistSystemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 google-dagger-dagger = { module = "com.google.dagger:dagger", version.ref = "daggerHilt" }
 google-dagger-daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerHilt" }

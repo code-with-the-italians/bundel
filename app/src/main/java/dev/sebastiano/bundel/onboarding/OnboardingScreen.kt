@@ -64,9 +64,7 @@ import java.util.Locale
 @Composable
 private fun OnboardingScreenPreview() {
     BundelYouTheme {
-        Surface {
-            OnboardingScreen()
-        }
+        OnboardingScreen()
     }
 }
 
@@ -74,9 +72,7 @@ private fun OnboardingScreenPreview() {
 @Composable
 private fun OnboardingScreenLandscapePreview() {
     BundelYouTheme {
-        Surface {
-            OnboardingScreen(orientation = Orientation.Landscape)
-        }
+        OnboardingScreen(orientation = Orientation.Landscape)
     }
 }
 
@@ -84,9 +80,7 @@ private fun OnboardingScreenLandscapePreview() {
 @Composable
 private fun OnboardingScreenDarkThemePreview() {
     BundelYouTheme(darkTheme = true) {
-        Surface {
-            OnboardingScreen()
-        }
+        OnboardingScreen()
     }
 }
 
@@ -441,6 +435,7 @@ private fun ActionsRow(
                     Text(text = stringResource(id = R.string.next).uppercase(Locale.getDefault()))
                 }
             }
+
             else -> {
                 TextButton(
                     onClick = { onOnboardingDoneClicked() },

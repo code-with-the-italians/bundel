@@ -141,6 +141,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.bundles.composeTest)
+    androidTestImplementation(libs.google.accompanistTestHarness)
     androidTestImplementation(libs.androidx.compose.ui.uiTest.junit4)
     androidTestImplementation(libs.androidx.test.uiAutomator)
 

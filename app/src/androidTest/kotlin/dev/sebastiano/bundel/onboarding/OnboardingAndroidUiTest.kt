@@ -12,6 +12,10 @@ import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.testharness.TestHarness
 import com.karumi.shot.ScreenshotTest
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.ui.BundelYouTheme
@@ -39,13 +43,41 @@ internal class OnboardingAndroidUiTest : ScreenshotTest {
         get() = composeTestRule.activity.resources
 
     @Test
+    fun introPage_smallSize_canScroll() {
+        composeTestRule.setContent {
+            TestHarness(
+                darkMode = true,
+                size = DpSize(250.dp, 140.dp)
+            ) {
+                BundelYouTheme {
+                    var crashReportingEnabled by remember { mutableStateOf(false) }
+                    IntroPage(
+                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithText(resources.getString(R.string.onboarding_enable_crashlytics))
+            .assertExists("Switch label is missing")
+            .assertIsOff()
+            .performScrollTo()
+            .performClick()
+            .assertIsOn()
+    }
+
+    @Test
     fun intro_page_should_toggle_state_correctly() {
         composeTestRule.setContent {
-            BundelYouTheme {
-                var crashReportingEnabled by remember { mutableStateOf(false) }
-                IntroPage(
-                    IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
-                )
+            TestHarness(
+                size = DpSize(1920.dp, 1080.dp)
+            ) {
+                BundelYouTheme {
+                    var crashReportingEnabled by remember { mutableStateOf(false) }
+                    IntroPage(
+                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
+                    )
+                }
             }
         }
 
