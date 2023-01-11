@@ -27,7 +27,7 @@
   </a>
 </p>
 
-Bundel is a **digital wellbeing** Android app, helping you to focus by grouping up
+**Bundel** is a small Android app that wants to help you focus by grouping up
 notifications and only releasing them in batches, at set times. This minimises context
 switching and improves productivity, while decreasing the impulse to continuously check
 your phone.
