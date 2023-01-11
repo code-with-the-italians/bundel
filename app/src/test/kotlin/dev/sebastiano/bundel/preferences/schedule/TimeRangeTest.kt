@@ -8,8 +8,9 @@ import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import assertk.assertions.prop
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 import java.time.LocalTime
 
 private val anyTime = LocalTime.of(15, 0)
@@ -17,6 +18,7 @@ private val midnight = LocalTime.of(0, 0)
 private val elevenPm = LocalTime.of(23, 0)
 private val justBeforeMidnight = LocalTime.of(23, 59)
 
+@RunWith(Enclosed::class)
 internal class TimeRangeTest {
 
     @Test
@@ -48,7 +50,6 @@ internal class TimeRangeTest {
             .isInstanceOf(IllegalArgumentException::class)
     }
 
-    @Nested
     inner class FromBoundariesCheck {
 
         @Test
@@ -142,7 +143,6 @@ internal class TimeRangeTest {
         }
     }
 
-    @Nested
     inner class ToBoundariesCheck {
 
         @Test

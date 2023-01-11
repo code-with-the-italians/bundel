@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.crashlytics)
-    alias(libs.plugins.android.junit5)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinter)
@@ -138,10 +137,8 @@ dependencies {
 
     testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)
-    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-
-    testRuntimeOnly(libs.junit.jupiter.engine)
 
     androidTestImplementation(libs.bundles.composeTest)
     androidTestImplementation(libs.androidx.compose.ui.uiTest.junit4)
@@ -187,10 +184,6 @@ open class GenerateGoogleServicesJson : DefaultTask() {
 }
 
 tasks {
-    withType<Test> {
-        useJUnitPlatform()
-    }
-
     withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"

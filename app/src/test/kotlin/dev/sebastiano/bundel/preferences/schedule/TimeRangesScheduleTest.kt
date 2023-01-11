@@ -10,15 +10,16 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.support.expected
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 import java.time.LocalTime
 
+@RunWith(Enclosed::class)
 internal class TimeRangesScheduleTest {
 
     private val schedule = TimeRangesSchedule()
 
-    @Nested
     inner class Initialization {
 
         @Test
@@ -64,7 +65,6 @@ internal class TimeRangesScheduleTest {
         }
     }
 
-    @Nested
     inner class Appending {
 
         @Test
@@ -88,7 +88,6 @@ internal class TimeRangesScheduleTest {
         }
     }
 
-    @Nested
     inner class Updating {
 
         @Test
@@ -156,7 +155,6 @@ internal class TimeRangesScheduleTest {
         }
     }
 
-    @Nested
     inner class Removing {
 
         @Test
@@ -198,7 +196,6 @@ internal class TimeRangesScheduleTest {
         }
     }
 
-    @Nested
     inner class CanAppendAnotherRange {
 
         @Test
@@ -225,7 +222,6 @@ internal class TimeRangesScheduleTest {
         }
     }
 
-    @Nested
     inner class CanRemoveRanges {
 
         @Test

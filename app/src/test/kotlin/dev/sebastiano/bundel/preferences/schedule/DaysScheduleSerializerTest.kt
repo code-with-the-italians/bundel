@@ -4,13 +4,14 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isInstanceOf
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 import java.lang.IllegalArgumentException
 
+@RunWith(Enclosed::class)
 internal class DaysScheduleSerializerTest {
 
-    @Nested
     inner class Serialize {
 
         @Test
@@ -27,7 +28,6 @@ internal class DaysScheduleSerializerTest {
         }
     }
 
-    @Nested
     inner class Deserialize {
 
         @Test

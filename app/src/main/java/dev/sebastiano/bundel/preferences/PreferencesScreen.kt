@@ -52,7 +52,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
@@ -87,10 +86,11 @@ internal fun PreferencesScreen(
     Scaffold(
         topBar = { PreferencesTopAppBar(stringResource(id = R.string.settings), onBackPress) },
         modifier = Modifier.systemBarsPadding()
-    ) {
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
             ActiveDaysRow(activeDaysViewModel.daysScheduleFlow, onSelectDaysClicked)
@@ -114,7 +114,7 @@ internal fun PreferencesScreen(
             }
             AboutAppRow(onSourcesLinkClick, onLicensesLinkClick)
 
-            if (BuildConfig.DEBUG) {
+            if (true) { // TODO where is BuildConfig?!?
                 Divider()
 
                 val context = LocalContext.current
@@ -275,7 +275,7 @@ private fun AboutAppRow(
         val baseTextStyle = MaterialTheme.typography.bodySmall
             .copy(MaterialTheme.typography.bodySmall.color.copy(ContentAlpha.disabled))
         Text(
-            text = stringResource(R.string.settings_app_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE),
+            text = stringResource(R.string.settings_app_version, "1.0.0", 1), // TODO where is BuildConfig?!?
             style = baseTextStyle
         )
 

@@ -5,10 +5,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 import java.time.LocalTime
 
+@RunWith(Enclosed::class)
 internal class TimePickerModelTest {
 
     private val timeRange = TimeRange(
@@ -16,7 +18,6 @@ internal class TimePickerModelTest {
         to = LocalTime.of(12, 0)
     )
 
-    @Nested
     inner class FromBoundaryChecks {
 
         @Test
@@ -88,7 +89,6 @@ internal class TimePickerModelTest {
         }
     }
 
-    @Nested
     inner class ToBoundaryChecks {
 
         @Test
@@ -186,7 +186,6 @@ internal class TimePickerModelTest {
         }
     }
 
-    @Nested
     inner class Incrementing {
 
         @Test
@@ -250,7 +249,6 @@ internal class TimePickerModelTest {
         }
     }
 
-    @Nested
     inner class Decrementing {
 
         @Test

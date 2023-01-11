@@ -9,12 +9,14 @@ import assertk.assertions.isTrue
 import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
 import dev.sebastiano.bundel.preferences.schedule.WeekDay
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.Test
+import org.junit.experimental.runners.Enclosed
+import org.junit.runner.RunWith
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+@RunWith(Enclosed::class)
 internal class ScheduleCheckerTest {
 
     private val weekendDateTime = LocalDateTime.of(2021, 9, 12, 17, 45, 0, 0)
@@ -34,7 +36,6 @@ internal class ScheduleCheckerTest {
         TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0))
     )
 
-    @Nested
     inner class IsSnoozeActive {
 
         @Test
@@ -103,7 +104,6 @@ internal class ScheduleCheckerTest {
         }
     }
 
-    @Nested
     inner class CalculateSnoozeDelay {
 
         // - snooze by 15' if we are at the beginning of the range
