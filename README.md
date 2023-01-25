@@ -23,7 +23,7 @@
   </a>
   &nbsp;
   <a href="https://cwti.link/twitter" target=_blank>
-    <img alt="Follow us on Twitter" src="https://img.shields.io/twitter/follow/codewiththeita?label=follow%20us&logo=twitter&logoColor=white&style=flat-square"/>
+    <img alt="Follow us on Twitter" src="https://img.shields.io/badge/follow-%40codewiththeita-1DA1F2?logoColor=white&style=flat-square"/>
   </a>
 </p>
 
