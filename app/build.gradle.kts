@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -145,6 +146,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.uiTest.manifest)
     implementation(libs.google.android.glanceTools.host) // TODO move to debug sourceset
     debugImplementation(libs.google.android.glanceTools.viewer) // TODO move to debug sourceset
+
+    implementation(libs.kotlinx.serialization)
 
     testImplementation(kotlin("reflect"))
     testImplementation(libs.assertk)

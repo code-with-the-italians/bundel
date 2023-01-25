@@ -27,6 +27,7 @@ gradlePlugins-detekt = "1.21.0"
 gradlePlugins-gms = "4.3.14"
 gradlePlugins-hilt = "2.43.2"
 gradlePlugins-kotlinter = "3.12.0"
+gradlePlugins-kotlinxSerialization = "1.7.20"
 gradlePlugins-ksp = "1.7.20-1.0.6"
 gradlePlugins-licensee = "1.6.0"
 gradlePlugins-protobuf = "0.9.1"
@@ -38,6 +39,7 @@ hiltNavigationCompose = "1.0.0"
 junit = "4.13.2"
 kotlin = "1.7.20"
 kotlinxCoroutinesTest = "1.6.4"
+kotlinxSerialization = "1.4.1"
 lifecycle = "2.6.0-alpha03"
 navigationCompose = "2.5.3"
 protobuf = "3.21.9"
@@ -102,6 +104,7 @@ google-protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", v
 jakes-timber-timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 [bundles]
 accompanist = [
@@ -171,6 +174,7 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "gradleP
 hilt = { id = "dagger.hilt.android.plugin", version.ref = "gradlePlugins-hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "gradlePlugins-kotlinxSerialization" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "gradlePlugins-kotlinter" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
 licensee = { id = "app.cash.licensee", version.ref = "gradlePlugins-licensee" }
