@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.shot)
+    alias(libs.plugins.licensee)
 }
 
 android {
@@ -67,12 +68,22 @@ android {
         jvmTarget = "1.8"
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "META-INF/AL2.0"
             excludes += "META-INF/LGPL2.1"
         }
     }
+
+    applicationVariants.all {
+        mergeAssetsProvider.dependsOn(tasks.named("scaryEyes"))
+    }
+}
+
+licensee {
+    allow("Apache-2.0")
+    allow("BSD-3-Clause")
+    allowUrl("https://developer.android.com/studio/terms.html")
 }
 
 hilt {
@@ -249,6 +260,15 @@ tasks {
                 )
             }
         }
+    }
+
+    // This copies the Licensee json file to the app assets folder
+    register<Copy>("scaryEyes") {
+        from("$buildDir/reports/licensee/release/artifacts.json") {
+            rename { "licences.json" }
+        }
+        into("$projectDir/src/main/assets")
+        dependsOn("licenseeRelease")
     }
 
     afterEvaluate {
