@@ -28,6 +28,7 @@ import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.glance.TestWidgetScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
+import dev.sebastiano.bundel.preferences.LicensesScreen
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.preferences.SelectDaysDialog
