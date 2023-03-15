@@ -2,8 +2,12 @@
 
 package dev.sebastiano.bundel.preferences
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
@@ -19,9 +23,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Switch
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +39,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,7 +60,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.R
 import dev.sebastiano.bundel.SetupTransparentSystemUi
@@ -346,6 +360,7 @@ private fun DebugSettingsPreview() {
 }
 
 // TODO move to its own screen
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun DebugPreferencesRow(
     useShortSnoozeWindowFlow: Flow<Boolean>,
@@ -357,12 +372,16 @@ private fun DebugPreferencesRow(
         modifier = Modifier.settingsRow(clickable = false)
     )
 
-    Text(
-        text = stringResource(R.string.debug_preference_test_notification),
-        modifier = Modifier.settingsRow(clickable = true) {
-            onDebugPreferenceClick(DebugPreferencesEvent.SendTestNotification)
-        }
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        NotificationsRowWithPermission(onDebugPreferenceClick)
+    } else {
+        Text(
+            text = stringResource(R.string.debug_preference_test_notification),
+            modifier = Modifier.settingsRow(clickable = true) {
+                onDebugPreferenceClick(DebugPreferencesEvent.SendTestNotification)
+            }
+        )
+    }
 
     Text(
         text = stringResource(R.string.debug_preference_test_widgets),
@@ -394,6 +413,62 @@ private fun DebugPreferencesRow(
             checked = useShortSnoozeWindow,
             onCheckedChange = null
         )
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@Composable
+private fun NotificationsRowWithPermission(onDebugPreferenceClick: (DebugPreferencesEvent) -> Unit) {
+    val context = LocalContext.current
+
+    val notificationsPermission = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS) { granted ->
+        if (granted) {
+            onDebugPreferenceClick(DebugPreferencesEvent.SendTestNotification)
+        } else {
+            Toast.makeText(context, "I AM SAD APP NOW", Toast.LENGTH_LONG).show()
+        }
+    }
+    var showRationale by remember { mutableStateOf(false) }
+
+    AnimatedContent(targetState = showRationale) {
+        if (it) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("We need your permission!", style = MaterialTheme.typography.headlineSmall)
+                Text("In order to send notification our awesome app needs access to the Notification permission. This permission simply allows us to send notifications and you can revoke it at any point if you don't like it.\n\nAlthough, in order to perform the send test notification you need to accept it in the next dialog")
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        onClick = {
+                            showRationale = false
+                            notificationsPermission.launchPermissionRequest()
+                        }) {
+                        Text("Continue")
+                    }
+                    Button(
+                        onClick = {
+                            showRationale = false
+                        }) {
+                        Text("No, thanks")
+                    }
+                }
+            }
+        } else {
+            Text(
+                text = stringResource(R.string.debug_preference_test_notification),
+                modifier = Modifier.settingsRow(clickable = true) {
+                    when {
+                        notificationsPermission.status.isGranted -> onDebugPreferenceClick(DebugPreferencesEvent.SendTestNotification)
+                        notificationsPermission.status.shouldShowRationale -> showRationale = true
+                        else -> notificationsPermission.launchPermissionRequest()
+                    }
+                }
+            )
+        }
     }
 }
 

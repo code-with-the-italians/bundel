@@ -77,8 +77,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(
         ExperimentalAnimationApi::class,
         ExperimentalMaterialNavigationApi::class,
-        ExperimentalMaterial3WindowSizeClassApi::class,
-        ExperimentalPermissionsApi::class
+        ExperimentalMaterial3WindowSizeClassApi::class
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false
@@ -100,16 +99,6 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     dismissSplashScreen = destination.route != splashScreenRoute
-                }
-            }
-
-            val notificationsPermissionState = rememberPermissionState(
-                android.Manifest.permission.POST_NOTIFICATIONS
-            )
-            // TODO this should not be done this way, really
-            if (notificationsPermissionState.status != PermissionStatus.Granted) {
-                SideEffect {
-                    notificationsPermissionState.launchPermissionRequest()
                 }
             }
 

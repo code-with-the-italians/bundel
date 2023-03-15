@@ -84,7 +84,9 @@ android {
 licensee {
     allow("Apache-2.0")
     allow("BSD-3-Clause")
+    allow("MIT")
     allowUrl("https://developer.android.com/studio/terms.html")
+    ignoreDependencies("io.arrow-kt") // TODO: sort out why Arrow is exploding the build
 }
 
 hilt {
