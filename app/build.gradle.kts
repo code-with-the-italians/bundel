@@ -19,7 +19,7 @@ plugins {
 }
 
 android {
-    compileSdkPreview = "UpsideDownCake"
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "dev.sebastiano.bundel"
@@ -76,9 +76,9 @@ android {
         }
     }
 
-//    applicationVariants.all {
-//        mergeAssetsProvider.dependsOn(tasks.named("scaryEyes"))
-//    }
+    applicationVariants.all {
+        mergeAssetsProvider.dependsOn(tasks.named("scaryEyes"))
+    }
 }
 
 licensee {
@@ -92,7 +92,6 @@ hilt {
 }
 
 kotlin {
-    jvmToolchain(8)
     sourceSets {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
