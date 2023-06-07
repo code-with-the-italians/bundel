@@ -31,8 +31,8 @@ android {
         namespace = "dev.sebastiano.bundel"
         testNamespace = "dev.sebastiano.bundel.test"
 
-        testInstrumentationRunner = "com.karumi.shot.ShotTestRunner"
-        testInstrumentationRunnerArguments += "useTestStorageService" to "true"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunnerArguments += "useTestStorageService" to "true"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
@@ -40,6 +40,7 @@ android {
     }
 
     testOptions {
+        emulatorControl.enable = true
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
@@ -61,12 +62,12 @@ android {
     compileOptions {
         // We likely don't reeeeally need this, but hey — shiny
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     packaging {
@@ -161,6 +162,9 @@ dependencies {
     androidTestImplementation(libs.google.accompanistTestHarness)
     androidTestImplementation(libs.androidx.compose.ui.uiTest.junit4)
     androidTestImplementation(libs.androidx.test.uiAutomator)
+    androidTestImplementation(libs.androidx.test.espresso.device)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.tracing)
 
     androidTestUtil(libs.bundles.androidxTestUtils)
 
@@ -169,6 +173,12 @@ dependencies {
 
 shot {
     applicationId = android.defaultConfig.applicationId
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.tracing:tracing:1.1.0")
+    }
 }
 
 protobuf {

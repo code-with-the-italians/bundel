@@ -7,6 +7,9 @@
             android:required="false" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <queries>
         <package android:name="androidx.test.services" />
     </queries>

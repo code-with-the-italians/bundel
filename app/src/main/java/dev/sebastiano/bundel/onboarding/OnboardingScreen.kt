@@ -58,6 +58,8 @@ import dev.sebastiano.bundel.ui.BundelYouTheme
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 @Preview(name = "Onboarding screen", showSystemUi = true)
@@ -92,9 +94,9 @@ internal fun OnboardingScreen(
     onOnboardingDoneClicked: () -> Unit
 ) {
     BundelYouTheme {
-        val crashReportingEnabled by viewModel.crashReportingEnabledFlowrina.collectAsState(initial = false)
-        val daysSchedule by viewModel.daysScheduleFlow.collectAsState(initial = emptyMap())
-        val timeRangesSchedule by viewModel.timeRangesScheduleFlow.collectAsState(initial = TimeRangesSchedule())
+        val crashReportingEnabled = false
+        val daysSchedule = emptyMap<WeekDay, Boolean>()
+        val timeRangesSchedule = TimeRangesSchedule()
 
         OnboardingScreen(
             needsPermission = needsPermission,
