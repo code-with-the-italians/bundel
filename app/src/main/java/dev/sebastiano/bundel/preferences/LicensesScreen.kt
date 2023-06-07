@@ -228,8 +228,8 @@ private fun LicensesList(licenses: NonEmptyList<LicensesPreferencesViewModel.Lic
                         .padding(8.dp)
                 )
             }
-            items(item.dependencies, key = { it.coordinates }) { item ->
-                Text(text = item.name ?: item.coordinates)
+            items(item.dependencies, key = { it.coordinates }) { dependency ->
+                Text(text = dependency.name ?: dependency.coordinates)
             }
         }
     }
