@@ -2,7 +2,7 @@ package dev.sebastiano.bundel.schedule
 
 import androidx.annotation.IntRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.composables.WeekDay
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit

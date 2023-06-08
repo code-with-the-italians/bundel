@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.protobuf)
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.detekt)
@@ -119,6 +118,8 @@ val dummyGoogleServicesJson: Configuration by configurations.creating {
 }
 
 dependencies {
+    implementation(project(":shared-ui"))
+    implementation(project(":preferences"))
     coreLibraryDesugaring(libs.com.android.tools.desugar)
 
     implementation(libs.bundles.accompanist)
@@ -136,7 +137,6 @@ dependencies {
     implementation(libs.androidx.navigation.navigationCompose)
     implementation(libs.coilKt.coil.compose)
     implementation(libs.jakes.timber.timber)
-    implementation(libs.arrow.core)
 
     // Working around a corrupted Lint rule in fragment 1.5.0 (Hilt transitive dependency)
     implementation(libs.androidx.fragment)
@@ -178,22 +178,6 @@ shot {
 configurations.all {
     resolutionStrategy {
         force("androidx.tracing:tracing:1.1.0")
-    }
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:${project.libs.versions.protobuf.get()}"
-    }
-
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
     }
 }
 

@@ -26,5 +26,7 @@ pluginManagement {
 rootProject.name = "Bundel"
 
 include(":app")
+include(":shared-ui")
+include(":preferences")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

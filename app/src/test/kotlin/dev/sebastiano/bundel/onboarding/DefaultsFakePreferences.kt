@@ -3,7 +3,7 @@ package dev.sebastiano.bundel.onboarding
 import dev.sebastiano.bundel.preferences.DataStorePreferences
 import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.composables.WeekDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

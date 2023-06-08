@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,25 +18,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.composables.MaterialChip
-import dev.sebastiano.bundel.composables.MaterialPillAppearance
-import dev.sebastiano.bundel.composables.checkedMaterialPillAppearance
-import dev.sebastiano.bundel.composables.uncheckedMaterialPillAppearance
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelYouTheme
+import dev.sebastiano.bundel.ui.composables.DaysPicker
+import dev.sebastiano.bundel.ui.composables.WeekDay
+import dev.sebastiano.bundel.ui.composables.onboardingCheckedPillAppearance
+import dev.sebastiano.bundel.ui.composables.onboardingUncheckedPillAppearance
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
-import java.util.Locale
 
 @Preview(backgroundColor = 0xFF4CE062, showBackground = true)
 @Composable
@@ -58,18 +50,6 @@ private fun DaysSchedulePageLandscapePreview() {
         }
     }
 }
-
-@Composable
-internal fun onboardingCheckedPillAppearance() = checkedMaterialPillAppearance(
-    backgroundColor = MaterialTheme.colorScheme.inversePrimary,
-    contentColor = MaterialTheme.colorScheme.primary
-)
-
-@Composable
-internal fun onboardingUncheckedPillAppearance() = uncheckedMaterialPillAppearance(
-    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-)
 
 @Composable
 internal fun DaysSchedulePage(
@@ -162,37 +142,6 @@ private fun DaysPickerOnboardingThemePreview() {
                 },
                 chipsSpacing = singlePadding()
             )
-        }
-    }
-}
-
-@Composable
-internal fun DaysPicker(
-    daysSchedule: Map<WeekDay, Boolean>,
-    onDayCheckedChange: (WeekDay, Boolean) -> Unit,
-    chipsSpacing: Dp,
-    modifier: Modifier = Modifier,
-    checkedAppearance: MaterialPillAppearance = checkedMaterialPillAppearance(),
-    uncheckedAppearance: MaterialPillAppearance = uncheckedMaterialPillAppearance()
-) {
-    FlowRow(
-        modifier = modifier,
-        mainAxisAlignment = MainAxisAlignment.Center,
-        mainAxisSpacing = chipsSpacing,
-        crossAxisSpacing = chipsSpacing
-    ) {
-        for (weekDay in daysSchedule.keys) {
-            MaterialChip(
-                checked = checkNotNull(daysSchedule[weekDay]) { "Checked state missing for day $weekDay" },
-                onCheckedChanged = { checked -> onDayCheckedChange(weekDay, checked) },
-                checkedAppearance = checkedAppearance,
-                uncheckedAppearance = uncheckedAppearance
-            ) {
-                Text(
-                    text = stringResource(id = weekDay.displayResId).uppercase(Locale.getDefault()),
-                    style = MaterialTheme.typography.bodyLarge.plus(TextStyle(fontWeight = FontWeight.Medium))
-                )
-            }
         }
     }
 }

@@ -21,55 +21,10 @@
     <string name="onboarding_all_set">All set!</string>
     <string name="onboarding_all_set_blurb">Bundel is ready to help you stay focused. Dive in!</string>
     <string name="onboarding_schedule_blurb">Set your working hours. Bundel will do the rest to make sure you aren’t interrupted.</string>
-    <string name="day_monday">Mon</string>
-    <string name="day_tuesday">Tue</string>
-    <string name="day_wednesday">Wed</string>
-    <string name="day_thursday">Thu</string>
-    <string name="day_friday">Fri</string>
-    <string name="day_saturday">Sat</string>
-    <string name="day_sunday">Sun</string>
     <string name="onboarding_notifications_permission_title">Notifications access</string>
     <string name="onboarding_welcome_title">Welcome to Bundel</string>
     <string name="onboarding_schedule_title">Work schedule</string>
     <string name="onboarding_schedule_blurb_2">For most, these should be your workdays. But you could also use Bundel to make sure you have your “me time” when you’re not working.</string>
-    <string name="content_description_time_picker_increase">One more!</string>
-    <string name="content_description_time_picker_decrease">One less!</string>
     <string name="onboarding_all_done_image_description">The floor is misaligned.</string>
-    <string name="menu_preferences_content_description">Preferences</string>
-    <string name="menu_back_content_description">Back</string>
-    <string name="app_filter_item_icon_content_description">Icon for %s</string>
-    <string name="label_excluded">EXCLUDED</string>
-    <string name="settings">Preferences</string>
-    <string name="settings_active_days">Active days</string>
-    <string name="settings_time_ranges">Active time ranges</string>
-    <string name="settings_exclude_apps">Exclude apps from filtering</string>
-    <string name="settings_about">About app</string>
-    <string name="settings_app_version">App version: %1$s (%2$s)</string>
-    <string name="settings_about_oss_prefix">"We use open source software: "</string>
-    <string name="settings_about_oss_link">acknowledgements</string>
-    <string name="settings_about_sources_prefix">"This app is open source software: "</string>
-    <string name="settings_about_sources_link">see the sources</string>
-    <string name="settings_active_days_blurb">Choose the days on which Bundel will be active.</string>
-    <string name="settings_exclude_apps_title">Exclude apps</string>
-    <string name="preferences_licenses_title">Open source licenses</string>
 
-    <plurals name="settings_time_ranges_count">
-        <item quantity="one">%d time range</item>
-        <item quantity="other">%d time ranges</item>
-    </plurals>
-
-    <plurals name="settings_excluded_apps_count">
-        <item quantity="one">%d excluded app</item>
-        <item quantity="other">%d excluded apps</item>
-    </plurals>
-
-    <!-- TODO move to debug sourceset -->
-    <string name="channel_test_notifications_name">Test Notifications</string>
-    <string name="channel_test_notifications_description">Dummy notifications used to test Bundel\'s functionality</string>
-    <string name="debug_preference_short_snooze_window">Use short (15\") snooze windows</string>
-    <string name="debug_notification_title">I am a test, hi #%d</string>
-    <string name="debug_notification_text">Just in case it wasn\'t clear</string>
-    <string name="debug_preference_test_notification">Post a test notification</string>
-    <string name="debug_settings_header">Debug settings</string>
-    <string name="debug_preference_test_widgets">Test Glance widget</string>
 </resources>

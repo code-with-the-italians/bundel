@@ -6,9 +6,9 @@ import assertk.assertions.isFailure
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
-import dev.sebastiano.bundel.preferences.schedule.TimeRange
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.composables.TimeRange
+import dev.sebastiano.bundel.ui.composables.WeekDay
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith

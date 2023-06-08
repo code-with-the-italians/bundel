@@ -23,8 +23,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
+import dev.sebastiano.bundel.BuildConfig
 import dev.sebastiano.bundel.MainScreenWithBottomNav
-import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.glance.TestWidgetScreen
 import dev.sebastiano.bundel.onboarding.OnboardingScreen
 import dev.sebastiano.bundel.preferences.AppsListScreen
@@ -33,7 +33,9 @@ import dev.sebastiano.bundel.preferences.Preferences
 import dev.sebastiano.bundel.preferences.PreferencesScreen
 import dev.sebastiano.bundel.preferences.SelectDaysDialog
 import dev.sebastiano.bundel.preferences.SelectTimeRangesDialog
+import dev.sebastiano.bundel.preferences.VersionInfo
 import dev.sebastiano.bundel.storage.DataRepository
+import dev.sebastiano.bundel.ui.SetupTransparentSystemUi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -54,6 +56,7 @@ internal fun NavGraphBuilder.preferencesGraph(
             route = NavigationRoute.PreferencesGraph.PreferencesScreen.route
         ) {
             PreferencesScreen(
+                versionInfo = VersionInfo(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE.toString()),
                 onSelectAppsClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectApps.route) },
                 onSelectDaysClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectDays.route) },
                 onSelectTimeRangesClicked = { navController.navigate(NavigationRoute.PreferencesGraph.SelectTimeRanges.route) },
