@@ -89,6 +89,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
         }
     }
 
+    @Suppress("UnreachableCode") // False positive
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
         Timber.i("Notification removed by ${sbn.packageName}")
         val existing = mutableNotificationsFlow.value.find { it.persistableNotification.key == sbn.key }

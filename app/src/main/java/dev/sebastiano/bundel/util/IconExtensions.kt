@@ -20,5 +20,5 @@ internal fun Icon.asImageBitmap(): ImageBitmap =
 @Composable
 internal fun rememberIconPainter(icon: Icon?): Painter? {
     val bitmap = icon?.asImageBitmap()
-    return remember(icon) { bitmap?.let { BitmapPainter(it) } }
+    return remember(icon) { if (bitmap != null) BitmapPainter(bitmap) else null }
 }
