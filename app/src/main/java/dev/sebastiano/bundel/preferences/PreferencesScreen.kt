@@ -1,5 +1,7 @@
 @file:OptIn(ExperimentalAnimationApi::class)
 
+@file:Suppress("UnusedImports") // False positive
+
 package dev.sebastiano.bundel.preferences
 
 import android.Manifest
@@ -23,7 +25,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.Switch
@@ -60,7 +61,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -440,19 +440,25 @@ private fun NotificationsRowWithPermission(onDebugPreferenceClick: (DebugPrefere
                     .padding(16.dp)
             ) {
                 Text("We need your permission!", style = MaterialTheme.typography.headlineSmall)
-                Text("In order to send notification our awesome app needs access to the Notification permission. This permission simply allows us to send notifications and you can revoke it at any point if you don't like it.\n\nAlthough, in order to perform the send test notification you need to accept it in the next dialog")
+                Text(
+                    "In order to send notification our awesome app needs access to the Notification permission. " +
+                        "This permission simply allows us to send notifications and you can revoke it at any point if you don't like it.\n\n" +
+                        "Although, in order to perform the send test notification you need to accept it in the next dialog"
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         onClick = {
                             showRationale = false
                             notificationsPermission.launchPermissionRequest()
-                        }) {
+                        }
+                    ) {
                         Text("Continue")
                     }
                     Button(
                         onClick = {
                             showRationale = false
-                        }) {
+                        }
+                    ) {
                         Text("No, thanks")
                     }
                 }

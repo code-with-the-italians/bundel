@@ -33,9 +33,8 @@ class RobertoFoldTest {
                 OnboardingScreen(
                     viewModel = OnboardingViewModel(FakePreferences()),
                     needsPermission = true,
-                    onOpenNotificationPreferencesClick = { /*TODO*/ }) {
-
-                }
+                    onOpenNotificationPreferencesClick = { /*TODO*/ }
+                ) { }
             }
         }
 
