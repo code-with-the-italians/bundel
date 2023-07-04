@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Preferences</string>
+    <string name="settings_active_days">Active days</string>
+    <string name="settings_time_ranges">Active time ranges</string>
+    <string name="settings_exclude_apps">Exclude apps from filtering</string>
+    <string name="settings_about">About app</string>
+    <string name="settings_app_version">App version: %1$s (%2$s)</string>
+    <string name="settings_about_oss_prefix">"We use open source software: "</string>
+    <string name="settings_about_oss_link">acknowledgements</string>
+    <string name="settings_about_sources_prefix">"This app is open source software: "</string>
+    <string name="settings_about_sources_link">see the sources</string>
+    <string name="settings_active_days_blurb">Choose the days on which Bundel will be active.</string>
+    <string name="settings_exclude_apps_title">Exclude apps</string>
+    <string name="preferences_licenses_title">Open source licenses</string>
+
+    <string name="menu_preferences_content_description">Preferences</string>
+    <string name="menu_back_content_description">Back</string>
+
+    <string name="app_filter_item_icon_content_description">Icon for %s</string>
+    <string name="label_excluded">EXCLUDED</string>
+
+    <!-- TODO move to debug sourceset -->
+    <string name="channel_test_notifications_name">Test Notifications</string>
+    <string name="channel_test_notifications_description">Dummy notifications used to test Bundel\'s functionality</string>
+    <string name="debug_preference_test_notification">Post a test notification</string>
+    <string name="debug_settings_header">Debug settings</string>
+    <string name="debug_preference_test_widgets">Test Glance widget</string>
+    <string name="debug_preference_short_snooze_window">Use short (15\") snooze windows</string>
+    <string name="debug_notification_title">I am a test, hi #%d</string>
+    <string name="debug_notification_text">Just in case it wasn\'t clear</string>
+
+    <plurals name="settings_time_ranges_count">
+        <item quantity="one">%d time range</item>
+        <item quantity="other">%d time ranges</item>
+    </plurals>
+
+    <plurals name="settings_excluded_apps_count">
+        <item quantity="one">%d excluded app</item>
+        <item quantity="other">%d excluded apps</item>
+    </plurals>
+</resources>

@@ -6,8 +6,8 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sebastiano.bundel.preferences.Preferences
-import dev.sebastiano.bundel.preferences.schedule.TimeRange
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.composables.TimeRange
+import dev.sebastiano.bundel.ui.composables.WeekDay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber

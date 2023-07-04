@@ -1,3 +1,5 @@
+@file:Suppress("UnusedImports") // TODO bug in detekt 1.17.1 flags unused import incorrectly
+
 package dev.sebastiano.bundel
 
 import android.content.Context
@@ -48,8 +50,10 @@ import dev.sebastiano.bundel.notifications.ActiveNotification
 import dev.sebastiano.bundel.notifications.BundelNotificationListenerService
 import dev.sebastiano.bundel.notificationslist.NotificationsListScreen
 import dev.sebastiano.bundel.preferences.Preferences
+import dev.sebastiano.bundel.preferences.R.string
 import dev.sebastiano.bundel.schedule.ScheduleChecker
 import dev.sebastiano.bundel.storage.DataRepository
+import dev.sebastiano.bundel.ui.SetupTransparentSystemUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -197,7 +201,7 @@ private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
         IconButton(onClick = onPreferencesActionClick) {
             Icon(
                 painter = painterResource(R.drawable.ic_round_settings_24),
-                contentDescription = stringResource(id = R.string.menu_preferences_content_description)
+                contentDescription = stringResource(id = string.menu_preferences_content_description)
             )
         }
     }
@@ -206,7 +210,7 @@ private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_bundel_icon),
+                    painter = painterResource(id = dev.sebastiano.bundel.ui.R.drawable.ic_bundel_icon),
                     contentDescription = stringResource(id = R.string.app_name),
                     modifier = Modifier.size(36.dp)
                 )

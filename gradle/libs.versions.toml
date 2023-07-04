@@ -175,6 +175,7 @@ room = [
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
+android-library = { id = "com.android.library", version.ref = "gradlePlugins-agp" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "gradlePlugins-crashlytics" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "gradlePlugins-detekt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gradlePlugins-gms" }

@@ -45,8 +45,8 @@ import dev.sebastiano.bundel.ui.defaultEnterTransition
 import dev.sebastiano.bundel.ui.defaultExitTransition
 import dev.sebastiano.bundel.ui.defaultPopEnterTransition
 import dev.sebastiano.bundel.ui.defaultPopExitTransition
+import dev.sebastiano.bundel.ui.modifiers.appendIf
 import dev.sebastiano.bundel.ui.modifiers.snowfall.snowfall
-import dev.sebastiano.bundel.util.appendIf
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

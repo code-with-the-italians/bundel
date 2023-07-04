@@ -50,10 +50,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import dev.sebastiano.bundel.R
-import dev.sebastiano.bundel.SetupTransparentSystemUi
 import dev.sebastiano.bundel.preferences.schedule.TimeRangesSchedule
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
 import dev.sebastiano.bundel.ui.BundelYouTheme
+import dev.sebastiano.bundel.ui.R.drawable
+import dev.sebastiano.bundel.ui.SetupTransparentSystemUi
+import dev.sebastiano.bundel.ui.composables.WeekDay
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.Orientation
 import dev.sebastiano.bundel.util.currentOrientation
@@ -221,7 +222,7 @@ private fun ColumnScope.OnboardingHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painterResource(R.drawable.ic_bundel_icon),
+                painterResource(drawable.ic_bundel_icon),
                 contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier.size(72.dp)
             )
@@ -238,7 +239,7 @@ private fun ColumnScope.OnboardingHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painterResource(R.drawable.ic_bundel_icon),
+                painterResource(drawable.ic_bundel_icon),
                 contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier.size(48.dp)
             )

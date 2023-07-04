@@ -3,6 +3,11 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 plugins {
     alias(libs.plugins.versionsBenManes)
     alias(libs.plugins.versionCatalogUpdate)
+    alias(libs.plugins.android.application) apply false // https://youtrack.jetbrains.com/issue/KT-31643/Unable-to-load-class-com.android.build.gradle.BaseExtension-with-Kotlin-plugin-applied-to-root-Gradle-project
+    alias(libs.plugins.android.library) apply false // see above url
+    alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.kapt) apply false
+    alias(libs.plugins.hilt) apply false // fun https://github.com/google/dagger/issues/3068
 }
 
 //subprojects { parent!!.path.takeIf { it != rootProject.path }?.let { evaluationDependsOn(it)  } }

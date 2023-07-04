@@ -70,6 +70,7 @@ import dev.sebastiano.bundel.notificationslist.DismissState.Closed
 import dev.sebastiano.bundel.notificationslist.DismissState.Open
 import dev.sebastiano.bundel.storage.ImagesStorage
 import dev.sebastiano.bundel.ui.BundelYouTheme
+import dev.sebastiano.bundel.ui.R.drawable
 import dev.sebastiano.bundel.ui.iconSize
 import dev.sebastiano.bundel.ui.singlePadding
 import dev.sebastiano.bundel.util.asImageBitmap
@@ -102,8 +103,8 @@ private fun previewNotification(context: Context) = ActiveNotification(
         )
     ),
     icons = ActiveNotification.Icons(
-        appIcon = Icon.createWithResource(context, R.drawable.ic_default_icon),
-        large = Icon.createWithResource(context, R.drawable.outline_interests_black_48dp)
+        appIcon = Icon.createWithResource(context, drawable.ic_default_icon),
+        large = Icon.createWithResource(context, drawable.outline_interests_black_48dp)
     ),
     isSnoozed = false
 )

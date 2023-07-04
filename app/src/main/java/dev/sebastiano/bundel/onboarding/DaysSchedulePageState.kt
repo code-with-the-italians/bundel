@@ -1,6 +1,6 @@
 package dev.sebastiano.bundel.onboarding
 
-import dev.sebastiano.bundel.preferences.schedule.WeekDay
+import dev.sebastiano.bundel.ui.composables.WeekDay
 
 internal class DaysSchedulePageState(
     val daysSchedule: Map<WeekDay, Boolean>,
