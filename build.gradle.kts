@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.android.library) apply false // see above url
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.kapt) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt) apply false // fun https://github.com/google/dagger/issues/3068
 }
 

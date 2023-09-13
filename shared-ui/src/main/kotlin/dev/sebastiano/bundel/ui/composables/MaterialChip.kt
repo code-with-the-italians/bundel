@@ -36,7 +36,7 @@ internal fun DefaultChipPreview() {
                 onCheckedChanged = {
                     checked = it
                     println("Click! $checked")
-                }
+                },
             ) {
                 Text("Ciao Ivan")
             }
@@ -58,14 +58,14 @@ internal fun FunkyChipPreview() {
                 },
                 uncheckedAppearance = uncheckedMaterialPillAppearance(
                     borderColor = Color.Green,
-                    borderWidth = 4.dp
+                    borderWidth = 4.dp,
                 ),
                 checkedAppearance = checkedMaterialPillAppearance(
                     backgroundColor = Color.LightGray,
                     contentColor = Color.Yellow,
                     borderColor = Color.Red,
-                    borderWidth = 1.dp
-                )
+                    borderWidth = 1.dp,
+                ),
             ) {
                 Text("Ciao Ivan")
             }
@@ -85,7 +85,7 @@ internal fun MaterialChip(
     elevation: Dp = 0.dp,
     contentPadding: PaddingValues = defaultPillPaddingValues,
     onCheckedChanged: (checked: Boolean) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialPill(
         modifier = Modifier
@@ -94,12 +94,12 @@ internal fun MaterialChip(
                 value = checked,
                 enabled = enabled,
                 role = Role.Checkbox,
-                onValueChange = { onCheckedChanged(!checked) }
+                onValueChange = { onCheckedChanged(!checked) },
             ),
         appearance = if (checked) checkedAppearance else uncheckedAppearance,
         elevation = elevation,
         contentPadding = contentPadding,
-        content = content
+        content = content,
     )
 }
 
@@ -108,7 +108,7 @@ fun checkedMaterialPillAppearance(
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp
+    borderWidth: Dp = 0.dp,
 ) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
 
 @Composable
@@ -116,14 +116,14 @@ fun uncheckedMaterialPillAppearance(
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     borderColor: Color = MaterialTheme.colorScheme.outline,
-    borderWidth: Dp = 1.dp
+    borderWidth: Dp = 1.dp,
 ) = MaterialPillAppearance(backgroundColor, contentColor, borderColor, borderWidth)
 
 data class MaterialPillAppearance(
     val backgroundColor: Color,
     val contentColor: Color,
     val borderColor: Color,
-    val borderWidth: Dp
+    val borderWidth: Dp,
 )
 
 @Composable
@@ -144,7 +144,7 @@ fun MaterialPill(
     appearance: MaterialPillAppearance = uncheckedMaterialPillAppearance(),
     elevation: Dp = 0.dp,
     contentPadding: PaddingValues = defaultPillPaddingValues,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val backgroundColor by animateColorAsState(appearance.backgroundColor)
     val contentColor by animateColorAsState(appearance.contentColor)
@@ -157,7 +157,7 @@ fun MaterialPill(
         contentColor = contentColor,
         border = BorderStroke(borderWidth, borderColor),
         tonalElevation = elevation,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Box(modifier = Modifier.padding(contentPadding)) {
             content()

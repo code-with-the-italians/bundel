@@ -4,7 +4,8 @@ package dev.sebastiano.bundel.onboarding
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.End
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Start
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.spring
@@ -12,7 +13,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -89,7 +90,7 @@ internal fun OnboardingScreen(
     viewModel: OnboardingViewModel,
     needsPermission: Boolean,
     onOpenNotificationPreferencesClick: () -> Unit,
-    onOnboardingDoneClicked: () -> Unit
+    onOnboardingDoneClicked: () -> Unit,
 ) {
     BundelYouTheme {
         val crashReportingEnabled = false
@@ -100,20 +101,20 @@ internal fun OnboardingScreen(
             needsPermission = needsPermission,
             introPageState = IntroPageState(
                 crashReportingEnabled = crashReportingEnabled,
-                onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) }
+                onCrashlyticsEnabledChanged = { viewModel.setCrashReportingEnabled(it) },
             ),
             notificationsAccessPageState = NotificationsAccessPageState(needsPermission, onOpenNotificationPreferencesClick),
             daysSchedulePageState = DaysSchedulePageState(
                 daysSchedule = daysSchedule,
-                onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) }
+                onDayCheckedChange = { weekDay: WeekDay, checked: Boolean -> viewModel.onDaysScheduleChangeWeekDay(weekDay, checked) },
             ),
             hoursSchedulePageState = HoursSchedulePageState(
                 timeRangesSchedule = timeRangesSchedule,
                 onAddTimeRange = { viewModel.onTimeRangesScheduleAddTimeRange() },
                 onRemoveTimeRange = { viewModel.onTimeRangesScheduleRemoveTimeRange(it) },
-                onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) }
+                onChangeTimeRange = { old, new -> viewModel.onTimeRangesScheduleChangeTimeRange(old, new) },
             ),
-            onOnboardingDoneClicked = onOnboardingDoneClicked
+            onOnboardingDoneClicked = onOnboardingDoneClicked,
         )
     }
 }
@@ -126,7 +127,7 @@ private fun OnboardingScreen(
     daysSchedulePageState: DaysSchedulePageState = DaysSchedulePageState(),
     hoursSchedulePageState: HoursSchedulePageState = HoursSchedulePageState(),
     orientation: Orientation = currentOrientation(),
-    onOnboardingDoneClicked: () -> Unit = {}
+    onOnboardingDoneClicked: () -> Unit = {},
 ) {
     SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
 
@@ -134,13 +135,13 @@ private fun OnboardingScreen(
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        modifier = Modifier.systemBarsPadding()
+        modifier = Modifier.systemBarsPadding(),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = verticalScreenPadding)
+                .padding(horizontal = 16.dp, vertical = verticalScreenPadding),
         ) {
             var currentPage by remember { mutableStateOf(OnboardingPage.Intro) }
             val onboardingPagerState = OnboardingPagerState(
@@ -148,7 +149,7 @@ private fun OnboardingScreen(
                 introPageState = introPageState,
                 notificationsAccessPageState = notificationsAccessPageState,
                 daysSchedulePageState = daysSchedulePageState,
-                hoursSchedulePageState = hoursSchedulePageState
+                hoursSchedulePageState = hoursSchedulePageState,
             )
 
             OnboardingHeader(orientation, currentPage)
@@ -163,30 +164,31 @@ private fun OnboardingScreen(
                 needsPermission = needsPermission,
                 onNextButtonClick = { currentPage = currentPage.next() },
                 onPrevButtonClick = { currentPage = currentPage.previous() },
-                onOnboardingDoneClicked = onOnboardingDoneClicked
+                onOnboardingDoneClicked = onOnboardingDoneClicked,
             )
         }
     }
 }
 
 internal enum class OnboardingPage(
-    @StringRes val pageTitle: Int
+    @StringRes val pageTitle: Int,
 ) {
 
     Intro(R.string.onboarding_welcome_title),
     NotificationsPermission(R.string.onboarding_notifications_permission_title),
     DaysSchedule(R.string.onboarding_schedule_title),
     HoursSchedule(R.string.onboarding_schedule_title),
-    AllSet(R.string.onboarding_all_set);
+    AllSet(R.string.onboarding_all_set),
+    ;
 
     fun previous(): OnboardingPage {
-        val values = values()
+        val values = entries.toTypedArray()
         check(this != values.first()) { "This is already the first page" }
         return values[ordinal - 1]
     }
 
     fun next(): OnboardingPage {
-        val values = values()
+        val values = entries.toTypedArray()
         check(this != values.last()) { "This is already the last page" }
         return values[ordinal + 1]
     }
@@ -200,31 +202,30 @@ private fun OnboardingHeaderLandscapePreview() {
             Column(Modifier.fillMaxWidth()) {
                 OnboardingHeader(
                     orientation = Orientation.Landscape,
-                    currentPage = OnboardingPage.Intro
+                    currentPage = OnboardingPage.Intro,
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Suppress("unused") // We rely on being inside a Column
 @Composable
 private fun ColumnScope.OnboardingHeader(
     orientation: Orientation,
-    currentPage: OnboardingPage
+    currentPage: OnboardingPage,
 ) {
     if (orientation == Orientation.Portrait) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painterResource(drawable.ic_bundel_icon),
                 contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier.size(72.dp)
+                modifier = Modifier.size(72.dp),
             )
             Spacer(modifier = Modifier.width(24.dp))
             Text(text = stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge)
@@ -236,12 +237,12 @@ private fun ColumnScope.OnboardingHeader(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(horizontal = 48.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painterResource(drawable.ic_bundel_icon),
                 contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -256,12 +257,13 @@ private fun ColumnScope.OnboardingHeader(
                         slideIn(initialOffset = { IntOffset(direction * it.width / 5, 0) }, animationSpec = spring())
                     val exitTransition = fadeOut(animationSpec = spring()) +
                         slideOut(targetOffset = { IntOffset(-direction * it.width / 5, 0) }, animationSpec = spring())
-                    enterTransition with exitTransition
-                }
+                    enterTransition togetherWith exitTransition
+                },
+                label = "TitlePaging",
             ) { targetPage ->
                 PageTitle(
                     text = stringResource(id = targetPage.pageTitle),
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.End,
                 )
             }
         }
@@ -276,7 +278,7 @@ internal fun PageTitle(text: String, textAlign: TextAlign = TextAlign.Center) {
         text = text,
         textAlign = textAlign,
         style = MaterialTheme.typography.titleLarge,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
@@ -285,10 +287,9 @@ private data class OnboardingPagerState(
     val introPageState: IntroPageState,
     val notificationsAccessPageState: NotificationsAccessPageState,
     val daysSchedulePageState: DaysSchedulePageState,
-    val hoursSchedulePageState: HoursSchedulePageState
+    val hoursSchedulePageState: HoursSchedulePageState,
 )
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
     AnimatedContent(
@@ -296,15 +297,16 @@ private fun ColumnScope.OnboardingPager(state: OnboardingPagerState) {
         modifier = Modifier.weight(1F),
         transitionSpec = {
             if (targetState.ordinal > initialState.ordinal) {
-                val enterTransition = fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start)
-                val exitTransition = fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
-                enterTransition with exitTransition
+                val enterTransition = fadeIn() + slideIntoContainer(Start)
+                val exitTransition = fadeOut() + slideOutOfContainer(Start)
+                enterTransition togetherWith exitTransition
             } else {
-                val enterTransition = fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
-                val exitTransition = fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
-                enterTransition with exitTransition
+                val enterTransition = fadeIn() + slideIntoContainer(End)
+                val exitTransition = fadeOut() + slideOutOfContainer(End)
+                enterTransition togetherWith exitTransition
             }
-        }
+        },
+        label = "Paging",
     ) { targetPage ->
         when (targetPage) {
             OnboardingPage.Intro -> IntroPage(state.introPageState)
@@ -349,7 +351,7 @@ private fun AllSetPage(orientation: Orientation = currentOrientation()) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_all_set))
@@ -358,27 +360,27 @@ private fun AllSetPage(orientation: Orientation = currentOrientation()) {
 
             Image(
                 painter = painterResource(R.drawable.misaligned_floor),
-                contentDescription = stringResource(R.string.onboarding_all_done_image_description)
+                contentDescription = stringResource(R.string.onboarding_all_done_image_description),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = stringResource(id = R.string.onboarding_all_set_blurb),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         } else {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(R.drawable.misaligned_floor),
-                    contentDescription = stringResource(R.string.onboarding_all_done_image_description)
+                    contentDescription = stringResource(R.string.onboarding_all_done_image_description),
                 )
 
                 Spacer(modifier = Modifier.width(24.dp))
 
                 Text(
                     text = stringResource(id = R.string.onboarding_all_set_blurb),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
                 )
             }
         }
@@ -391,46 +393,46 @@ private fun ActionsRow(
     needsPermission: Boolean,
     onPrevButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
-    onOnboardingDoneClicked: () -> Unit
+    onOnboardingDoneClicked: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         val buttonColors = buttonColors(
             containerColor = Color.Transparent,
-            contentColor = LocalContentColor.current
+            contentColor = LocalContentColor.current,
         )
         val buttonElevation = ButtonDefaults.buttonElevation(0.dp, 0.dp, 0.dp)
 
         AnimatedVisibility(
             visible = currentPage.ordinal > 0,
             enter = fadeIn(),
-            exit = fadeOut()
+            exit = fadeOut(),
         ) {
             TextButton(
                 onClick = onPrevButtonClick,
                 modifier = Modifier.align(Alignment.CenterStart),
                 colors = buttonColors,
-                elevation = buttonElevation
+                elevation = buttonElevation,
             ) {
                 Text(text = stringResource(id = R.string.back).uppercase(Locale.getDefault()))
             }
         }
 
-        val indicatorState by remember { mutableStateOf(IndicatorState(OnboardingPage.values().size)) }
+        val indicatorState by remember { mutableStateOf(IndicatorState(OnboardingPage.entries.size)) }
         indicatorState.currentPage = currentPage.ordinal
         SimplePageIndicator(
             state = indicatorState,
             activeColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center),
         )
 
         when {
-            currentPage != OnboardingPage.values().last() -> {
+            currentPage != OnboardingPage.entries.last() -> {
                 TextButton(
                     enabled = if (needsPermission) currentPage != OnboardingPage.NotificationsPermission else true,
                     onClick = onNextButtonClick,
                     modifier = Modifier.align(Alignment.CenterEnd),
                     colors = buttonColors,
-                    elevation = buttonElevation
+                    elevation = buttonElevation,
                 ) {
                     Text(text = stringResource(id = R.string.next).uppercase(Locale.getDefault()))
                 }
@@ -441,7 +443,7 @@ private fun ActionsRow(
                     onClick = { onOnboardingDoneClicked() },
                     modifier = Modifier.align(Alignment.CenterEnd),
                     colors = buttonColors,
-                    elevation = buttonElevation
+                    elevation = buttonElevation,
                 ) {
                     Text(text = stringResource(id = R.string.done).uppercase(Locale.getDefault()))
                 }

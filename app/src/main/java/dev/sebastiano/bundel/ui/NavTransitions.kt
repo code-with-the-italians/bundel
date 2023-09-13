@@ -1,6 +1,8 @@
 package dev.sebastiano.bundel.ui
 
-import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.End
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Start
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -17,9 +19,9 @@ import dev.sebastiano.bundel.navigation.NavigationRoute
 // same you can find in his app Tivi https://github.com/chrisbanes/tivi
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultEnterTransition(
+internal fun AnimatedContentTransitionScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,
-    target: NavBackStackEntry
+    target: NavBackStackEntry,
 ): EnterTransition {
     if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         return fadeIn(tween(durationMillis = 0))
@@ -32,13 +34,13 @@ internal fun AnimatedContentScope<*>.defaultEnterTransition(
         return fadeIn()
     }
     // Otherwise we're in the same nav graph, we can imply a direction
-    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start)
+    return fadeIn() + slideIntoContainer(Start)
 }
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultExitTransition(
+internal fun AnimatedContentTransitionScope<*>.defaultExitTransition(
     initial: NavBackStackEntry,
-    target: NavBackStackEntry
+    target: NavBackStackEntry,
 ): ExitTransition {
     if (initial.destination.route == NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         return fadeOut(tween(durationMillis = 0))
@@ -51,16 +53,16 @@ internal fun AnimatedContentScope<*>.defaultExitTransition(
         return fadeOut()
     }
     // Otherwise we're in the same nav graph, we can imply a direction
-    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
+    return fadeOut() + slideOutOfContainer(Start)
 }
 
 private val NavDestination.hostNavGraph: NavGraph
     get() = hierarchy.first { it is NavGraph } as NavGraph
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultPopEnterTransition(): EnterTransition =
-    fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
+internal fun AnimatedContentTransitionScope<*>.defaultPopEnterTransition(): EnterTransition =
+    fadeIn() + slideIntoContainer(End)
 
 @ExperimentalAnimationApi
-internal fun AnimatedContentScope<*>.defaultPopExitTransition(): ExitTransition =
-    fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
+internal fun AnimatedContentTransitionScope<*>.defaultPopExitTransition(): ExitTransition =
+    fadeOut() + slideOutOfContainer(End)

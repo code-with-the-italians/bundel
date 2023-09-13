@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(
         ExperimentalAnimationApi::class,
         ExperimentalMaterialNavigationApi::class,
-        ExperimentalMaterial3WindowSizeClassApi::class
+        ExperimentalMaterial3WindowSizeClassApi::class,
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         var dismissSplashScreen = false
@@ -102,13 +102,13 @@ class MainActivity : AppCompatActivity() {
             BundelYouTheme {
                 SetupTransparentSystemUi(
                     systemUiController = rememberSystemUiController(),
-                    actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+                    actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer,
                 )
 
                 ModalBottomSheetLayout(
                     bottomSheetNavigator,
                     sheetShape = MaterialTheme2.shapes.small,
-                    modifier = Modifier.appendIf(showWinteryEasterEgg) { snowfall() }
+                    modifier = Modifier.appendIf(showWinteryEasterEgg) { snowfall() },
                 ) {
                     AnimatedNavHost(
                         navController = navController,
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                         enterTransition = { defaultEnterTransition(initialState, targetState) },
                         exitTransition = { defaultExitTransition(initialState, targetState) },
                         popEnterTransition = { defaultPopEnterTransition() },
-                        popExitTransition = { defaultPopExitTransition() }
+                        popExitTransition = { defaultPopExitTransition() },
                     ) {
                         splashScreenGraph(preferences) { navigationRoute ->
                             navController.navigate(navigationRoute.route)
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             needsNotificationsPermissionFlow = needsNotificationsPermission,
                             preferences = preferences,
-                            onOpenNotificationPreferencesClick = { openNotificationsPreferences() }
+                            onOpenNotificationPreferencesClick = { openNotificationsPreferences() },
                         )
                         mainScreenGraph(navController, lifecycle, repository, preferences, windowSizeClass)
                         preferencesGraph(navController, ::onOpenUrlClick)
@@ -154,19 +154,19 @@ private fun Lifecycle.eventsAsFlow(): Flow<Lifecycle.Event> = callbackFlow {
 @Composable
 internal fun SetupTransparentSystemUi(
     systemUiController: SystemUiController = rememberSystemUiController(),
-    actualBackgroundColor: Color
+    actualBackgroundColor: Color,
 ) {
     val minLuminanceForDarkIcons = .5f
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons
+            darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
         )
 
         systemUiController.setNavigationBarColor(
             color = Color.Transparent,
             darkIcons = actualBackgroundColor.luminance() > minLuminanceForDarkIcons,
-            navigationBarContrastEnforced = false
+            navigationBarContrastEnforced = false,
         )
     }
 }

@@ -30,12 +30,12 @@ import dev.sebastiano.bundel.ui.singlePadding
 @Composable
 fun SelectTimeRangesDialog(
     viewModel: ActiveTimeRangesViewModel = hiltViewModel(),
-    onDialogDismiss: () -> Unit
+    onDialogDismiss: () -> Unit,
 ) {
     Card {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(text = "Choose the hours on which Bundel will be active.")
 
@@ -47,7 +47,7 @@ fun SelectTimeRangesDialog(
                     .weight(1f, fill = false),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(singlePadding()),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 RangesListContent(timeRangesSchedule, viewModel)
             }
@@ -62,7 +62,7 @@ fun SelectTimeRangesDialog(
 @Suppress("FunctionName")
 private fun LazyListScope.RangesListContent(
     timeRangesSchedule: TimeRangesSchedule,
-    viewModel: ActiveTimeRangesViewModel
+    viewModel: ActiveTimeRangesViewModel,
 ) {
     val items = timeRangesSchedule.timeRanges.withIndex().toList()
 
@@ -73,11 +73,11 @@ private fun LazyListScope.RangesListContent(
         TimeRangeRow(
             expandedPillAppearance = checkedMaterialPillAppearance(
                 backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
             normalPillAppearance = checkedMaterialPillAppearance(
                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ),
             timeRange = timeRange,
             canBeRemoved = timeRangesSchedule.canRemoveRanges,
@@ -87,7 +87,7 @@ private fun LazyListScope.RangesListContent(
                 { viewModel.onTimeRangesScheduleRemoveTimeRange(timeRange) }
             } else {
                 { }
-            }
+            },
         ) { newTimeRange -> viewModel.onTimeRangesScheduleChangeTimeRange(timeRange, newTimeRange) }
     }
 
@@ -100,10 +100,10 @@ private fun LazyListScope.RangesListContent(
                     .alpha(ContentAlpha.medium),
                 normalPillAppearance = checkedMaterialPillAppearance(
                     backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                 ),
                 timeRange = null,
-                enabled = false
+                enabled = false,
             )
         }
     }
