@@ -1,11 +1,8 @@
-@file:Suppress("UnusedImports") // TODO bug in detekt 1.17.1 flags unused import incorrectly
-
 package dev.sebastiano.bundel
 
 import android.content.Context
 import android.text.format.DateUtils
 import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,21 +12,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltipState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,10 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.rememberNavController
 import dev.sebastiano.bundel.history.NotificationsHistoryScreen
 import dev.sebastiano.bundel.navigation.NavigationRoute
 import dev.sebastiano.bundel.notifications.ActiveNotification
@@ -59,16 +63,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainScreenWithBottomNav(
     lifecycle: Lifecycle,
     repository: DataRepository,
     preferences: Preferences,
     windowSizeClass: WindowSizeClass,
-    onPreferencesClick: () -> Unit
+    onPreferencesClick: () -> Unit,
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
 
     Scaffold(
@@ -76,7 +79,7 @@ internal fun MainScreenWithBottomNav(
             .fillMaxSize()
             .systemBarsPadding(),
         topBar = { NotificationsListTopAppBar(onPreferencesClick) },
-        bottomBar = { MainScreenBottomNavigation(navController) }
+        bottomBar = { MainScreenBottomNavigation(navController) },
     ) { innerPadding ->
         val scope = rememberCoroutineScope()
 
@@ -91,13 +94,13 @@ internal fun MainScreenWithBottomNav(
             start = innerPadding.calculateStartPadding(layoutDirection) + extraHorizontalPadding,
             top = innerPadding.calculateTopPadding(),
             end = innerPadding.calculateEndPadding(layoutDirection) + extraHorizontalPadding,
-            bottom = innerPadding.calculateBottomPadding()
+            bottom = innerPadding.calculateBottomPadding(),
         )
 
         val context = LocalContext.current
-        AnimatedNavHost(
+        NavHost(
             navController,
-            startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route
+            startDestination = NavigationRoute.MainScreenGraph.NotificationsList.route,
         ) {
             mainScreen(
                 lifecycle,
@@ -106,7 +109,7 @@ internal fun MainScreenWithBottomNav(
                 onNotificationClick = { notification ->
                     checkNotNull(notification.interactions.main) { "Notification has no main action, shouldn't be clickable" }
                     notification.interactions.main.send()
-                }
+                },
             ) { notification ->
                 scope.launch { handleNotificationSnooze(scope, preferences, notification, context) }
             }
@@ -114,12 +117,11 @@ internal fun MainScreenWithBottomNav(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 private suspend fun handleNotificationSnooze(
     coroutineScope: CoroutineScope,
     preferences: Preferences,
     notification: ActiveNotification,
-    context: Context
+    context: Context,
 ) {
     val now = LocalDateTime.now()
     val daysSchedule = preferences.getDaysSchedule().first()
@@ -137,7 +139,7 @@ private suspend fun handleNotificationSnooze(
             val formattedDelay = DateUtils.getRelativeTimeSpanString(
                 context,
                 System.currentTimeMillis() + dalekSebDurationMillis,
-                false
+                false,
             )
 
             // TODO use snackbars once they're available to YOU
@@ -170,19 +172,18 @@ private fun MainScreenBottomNavigation(navController: NavController) {
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
             )
         }
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.mainScreen(
     lifecycle: Lifecycle,
     repository: DataRepository,
     innerPadding: PaddingValues,
     onNotificationClick: (notification: ActiveNotification) -> Unit,
-    onNotificationDismiss: (notification: ActiveNotification) -> Unit
+    onNotificationDismiss: (notification: ActiveNotification) -> Unit,
 ) {
     composable(NavigationRoute.MainScreenGraph.NotificationsList.route) {
         NotificationsListScreen(lifecycle, innerPadding, onNotificationClick, onNotificationDismiss)
@@ -198,11 +199,20 @@ private fun NavGraphBuilder.mainScreen(
 private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
     @Composable
     fun ActionsMenu() {
-        IconButton(onClick = onPreferencesActionClick) {
-            Icon(
-                painter = painterResource(R.drawable.ic_round_settings_24),
-                contentDescription = stringResource(id = string.menu_preferences_content_description)
-            )
+        Row {
+            PlainTooltipBox(
+                tooltip = { Text(stringResource(R.string.sebTheDestroyer)) },
+            ) {
+                IconButton(
+                    onClick = onPreferencesActionClick,
+                    modifier = Modifier.tooltipAnchor(),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_round_settings_24),
+                        contentDescription = stringResource(id = string.menu_preferences_content_description),
+                    )
+                }
+            }
         }
     }
 
@@ -212,12 +222,12 @@ private fun NotificationsListTopAppBar(onPreferencesActionClick: () -> Unit) {
                 Icon(
                     painter = painterResource(id = dev.sebastiano.bundel.ui.R.drawable.ic_bundel_icon),
                     contentDescription = stringResource(id = R.string.app_name),
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(36.dp),
                 )
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(stringResource(id = R.string.app_name), style = MaterialTheme.typography.headlineSmall)
             }
         },
-        actions = { ActionsMenu() }
+        actions = { ActionsMenu() },
     )
 }
