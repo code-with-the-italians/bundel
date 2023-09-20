@@ -91,22 +91,22 @@ private fun previewNotification(context: Context) = ActiveNotification(
         title = "Ivan Morgillo",
         appInfo = PersistableNotification.SenderAppInfo(
             "com.yeah",
-            "Yeah! messenger"
-        )
+            "Yeah! messenger",
+        ),
     ),
     interactions = ActiveNotification.Interactions(
         actions = listOf(
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
             ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
-            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia")
-        )
+            ActiveNotification.Interactions.ActionItem(text = "Mai una gioia"),
+        ),
     ),
     icons = ActiveNotification.Icons(
         appIcon = Icon.createWithResource(context, drawable.ic_default_icon),
-        large = Icon.createWithResource(context, drawable.outline_interests_black_48dp)
+        large = Icon.createWithResource(context, drawable.outline_interests_black_48dp),
     ),
-    isSnoozed = false
+    isSnoozed = false,
 )
 
 @Preview
@@ -116,7 +116,7 @@ private fun NotificationItemLightPreview() {
         SnoozeItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -128,7 +128,7 @@ private fun NotificationItemDarkPreview() {
         SnoozeItem(
             activeNotification = previewNotification(LocalContext.current),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -145,7 +145,7 @@ private const val SNOOZE_PREVIEW_TIMEOUT_MILLIS = 5_000L
 internal fun SnoozeItem(
     activeNotification: ActiveNotification,
     onNotificationClick: (ActiveNotification) -> Unit,
-    onNotificationDismiss: (ActiveNotification) -> Unit
+    onNotificationDismiss: (ActiveNotification) -> Unit,
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 
@@ -176,8 +176,8 @@ internal fun SnoozeItem(
                 anchors = anchors,
                 state = state,
                 enabled = isEnabled,
-                reverseDirection = isRtl
-            )
+                reverseDirection = isRtl,
+            ),
     ) {
         // background
         SnoozeBackground(modifier = Modifier.matchParentSize()) {
@@ -193,7 +193,7 @@ internal fun SnoozeItem(
             NotificationItem(
                 activeNotification = activeNotification,
                 onNotificationClick = onNotificationClick,
-                isEnabled = isEnabled
+                isEnabled = isEnabled,
             )
         }
     }
@@ -203,24 +203,24 @@ internal fun SnoozeItem(
 private fun SnoozeBackground(
     modifier: Modifier = Modifier,
     cornerRadiusFactor: State<Float> = remember { mutableStateOf(1f) },
-    onSnoozeClicked: () -> Unit
+    onSnoozeClicked: () -> Unit,
 ) {
     Box(
         modifier = modifier
             .padding(end = 10.dp)
             .background(
                 color = MaterialTheme.colorScheme.tertiary,
-                shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f))
-            )
+                shape = RoundedCornerShape(4.dp * cornerRadiusFactor.value.absoluteValue.coerceAtMost(1f)),
+            ),
     ) {
         IconButton(
             onClick = onSnoozeClicked,
-            modifier = Modifier.align(Alignment.CenterStart)
+            modifier = Modifier.align(Alignment.CenterStart),
         ) {
             Icon(
                 Icons.Default.Timer,
                 contentDescription = "Snooze",
-                tint = MaterialTheme.colorScheme.onTertiary
+                tint = MaterialTheme.colorScheme.onTertiary,
             )
         }
     }
@@ -238,18 +238,18 @@ private fun ActiveNotification.ifClickable(onClick: (ActiveNotification) -> Unit
 internal fun NotificationItem(
     activeNotification: ActiveNotification,
     isEnabled: Boolean = true,
-    onNotificationClick: (ActiveNotification) -> Unit = {}
+    onNotificationClick: (ActiveNotification) -> Unit = {},
 ) {
     val itemAlpha by animateFloatAsState(if (isEnabled) 1f else ContentAlpha.disabled)
     Card(
         modifier = Modifier.fillMaxWidth(),
         enabled = !activeNotification.isSnoozed,
-        onClick = activeNotification.ifClickable { onNotificationClick(activeNotification) }
+        onClick = activeNotification.ifClickable { onNotificationClick(activeNotification) },
     ) {
         Column(
             Modifier
                 .padding(singlePadding())
-                .alpha(itemAlpha)
+                .alpha(itemAlpha),
         ) {
             NotificationMetadata(activeNotification.persistableNotification, activeNotification.icons.appIcon)
 
@@ -257,7 +257,7 @@ internal fun NotificationItem(
                 notification = activeNotification.persistableNotification,
                 iconPainter = rememberIconPainter(activeNotification.icons.large ?: activeNotification.icons.small),
                 interactions = activeNotification.interactions,
-                enabled = !activeNotification.isSnoozed
+                enabled = !activeNotification.isSnoozed,
             )
         }
     }
@@ -267,18 +267,18 @@ internal fun NotificationItem(
 internal fun NotificationItem(
     persistableNotification: PersistableNotification,
     imagesStorage: ImagesStorage,
-    isLastItem: Boolean
+    isLastItem: Boolean,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .run { if (!isLastItem) padding(bottom = singlePadding()) else this }
+            .run { if (!isLastItem) padding(bottom = singlePadding()) else this },
     ) {
         Column(Modifier.padding(singlePadding())) {
             NotificationMetadata(persistableNotification, persistableNotification.appInfo.iconPath)
 
             val iconPainter = rememberAsyncImagePainter(
-                model = getIconFile(imagesStorage, persistableNotification)
+                model = getIconFile(imagesStorage, persistableNotification),
             )
             NotificationContent(persistableNotification, iconPainter, interactions = null)
         }
@@ -288,7 +288,7 @@ internal fun NotificationItem(
 @Composable
 private fun getIconFile(
     imagesStorage: ImagesStorage,
-    persistableNotification: PersistableNotification
+    persistableNotification: PersistableNotification,
 ) =
     File(imagesStorage.getIconPath(persistableNotification.uniqueId, ImagesStorage.NotificationIconSize.LARGE))
         .takeIf { it.exists() }
@@ -300,7 +300,7 @@ private fun NotificationMetadata(notification: PersistableNotification, appIcon:
         Modifier
             .fillMaxWidth()
             .padding(bottom = singlePadding()),
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Bottom,
     ) {
         val appName = notification.appInfo.name ?: notification.appInfo.packageName
 
@@ -318,7 +318,7 @@ private fun AppIcon(appIcon: Any?, appName: String) {
     if (appIcon is String) {
         SubcomposeAsyncImage(
             model = appIcon,
-            contentDescription = stringResource(id = R.string.app_icon_content_description, appName)
+            contentDescription = stringResource(id = R.string.app_icon_content_description, appName),
         ) {
             if (painter.state is AsyncImagePainter.State.Success) {
                 SubcomposeAsyncImageContent(Modifier.size(16.dp))
@@ -339,8 +339,8 @@ private fun Timestamp(notification: PersistableNotification) {
             DateUtils.getRelativeTimeSpanString(
                 notification.timestamp,
                 System.currentTimeMillis(),
-                DateUtils.SECOND_IN_MILLIS
-            ).toString()
+                DateUtils.SECOND_IN_MILLIS,
+            ).toString(),
         )
     }
 }
@@ -350,7 +350,7 @@ private fun NotificationContent(
     notification: PersistableNotification,
     iconPainter: Painter?,
     interactions: ActiveNotification.Interactions?,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Row(Modifier.fillMaxWidth()) {
         if (iconPainter != null) {
@@ -360,7 +360,7 @@ private fun NotificationContent(
                 Icons.Rounded.BrokenImage,
                 stringResource(R.string.notification_no_icon_content_description),
                 modifier = Modifier.size(iconSize()),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
             )
         }
         Column {
@@ -369,7 +369,7 @@ private fun NotificationContent(
                     text = notification.title.trim(),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(start = singlePadding())
+                    modifier = Modifier.padding(start = singlePadding()),
                 )
             }
 
@@ -377,7 +377,7 @@ private fun NotificationContent(
                 Text(
                     text = notification.text.trim(),
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(start = singlePadding())
+                    modifier = Modifier.padding(start = singlePadding()),
                 )
             }
 
@@ -389,7 +389,7 @@ private fun NotificationContent(
 @Composable
 private fun NotificationActions(
     interactions: ActiveNotification.Interactions,
-    enabled: Boolean
+    enabled: Boolean,
 ) {
     if (interactions.actions.isEmpty()) return
 
@@ -400,7 +400,7 @@ private fun NotificationActions(
         for ((index, action) in items.withIndex()) {
             TextButton(
                 onClick = { action.pendingIntent?.send() },
-                enabled = enabled
+                enabled = enabled,
             ) {
                 Text(action.text.trim().toString())
             }

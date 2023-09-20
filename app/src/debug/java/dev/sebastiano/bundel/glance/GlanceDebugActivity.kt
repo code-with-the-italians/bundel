@@ -10,12 +10,12 @@ import com.google.android.glance.tools.viewer.GlanceViewerActivity
 class GlanceDebugActivity : GlanceViewerActivity() {
 
     override suspend fun getGlanceSnapshot(
-        receiver: Class<out GlanceAppWidgetReceiver>
+        receiver: Class<out GlanceAppWidgetReceiver>,
     ): GlanceSnapshot {
         return when (receiver) {
             BundelAppWidgetReceiver::class.java -> GlanceSnapshot(
                 instance = CannoliWidget(null),
-                state = mutablePreferencesOf()
+                state = mutablePreferencesOf(),
             )
             else -> throw IllegalArgumentException()
         }

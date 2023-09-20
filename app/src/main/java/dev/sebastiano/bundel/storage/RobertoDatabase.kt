@@ -10,7 +10,7 @@ import dev.sebastiano.bundel.storage.model.DbNotification
     entities = [DbNotification::class, DbAppInfo::class],
     version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 2, to = 3)]
+    autoMigrations = [AutoMigration(from = 2, to = 3)],
 )
 internal abstract class RobertoDatabase : RoomDatabase() {
 

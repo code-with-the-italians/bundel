@@ -40,7 +40,7 @@ private val persistableNotification = PersistableNotification(
     key = "123",
     timestamp = 12345678L,
     text = "Hello Ivan",
-    appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!")
+    appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!"),
 )
 
 @Preview
@@ -48,7 +48,7 @@ private val persistableNotification = PersistableNotification(
 fun NotificationsHistoryLightPreview() {
     BundelYouTheme {
         NotificationsHistoryScreen(
-            persistableNotifications = listOf(persistableNotification)
+            persistableNotifications = listOf(persistableNotification),
         )
     }
 }
@@ -58,7 +58,7 @@ fun NotificationsHistoryLightPreview() {
 fun NotificationsHistoryDarkPreview() {
     BundelYouTheme(darkTheme = true) {
         NotificationsHistoryScreen(
-            persistableNotifications = listOf(persistableNotification)
+            persistableNotifications = listOf(persistableNotification),
         )
     }
 }
@@ -66,13 +66,13 @@ fun NotificationsHistoryDarkPreview() {
 @Composable
 internal fun NotificationsHistoryScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    persistableNotifications: List<PersistableNotification>
+    persistableNotifications: List<PersistableNotification>,
 ) {
     if (persistableNotifications.isNotEmpty()) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
         ) {
             NotificationsLazyColumn(persistableNotifications)
         }

@@ -14,7 +14,7 @@ internal object ScheduleChecker {
     fun isSnoozeActive(
         now: LocalDateTime,
         daysSchedule: Map<WeekDay, Boolean>,
-        timeRangesSchedule: TimeRangesSchedule
+        timeRangesSchedule: TimeRangesSchedule,
     ): Boolean {
         val dayInSchedule = daysSchedule.entries.find { (day, _) -> day.dayOfWeek == now.dayOfWeek }
             ?: return false
@@ -28,7 +28,7 @@ internal object ScheduleChecker {
     fun calculateSnoozeDelay(
         now: LocalDateTime,
         daysSchedule: Map<WeekDay, Boolean>,
-        timeRangesSchedule: TimeRangesSchedule
+        timeRangesSchedule: TimeRangesSchedule,
     ): Int {
         require(isSnoozeActive(now, daysSchedule, timeRangesSchedule)) { "Snoozing is not active now" }
 

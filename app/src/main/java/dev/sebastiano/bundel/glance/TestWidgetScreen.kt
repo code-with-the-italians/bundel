@@ -23,6 +23,6 @@ fun TestWidgetScreen() {
     GlanceAppWidgetHostPreview(
         modifier = Modifier.fillMaxSize(),
         glanceAppWidget = instance,
-        displaySize = displaySize
+        displaySize = displaySize,
     )
 }

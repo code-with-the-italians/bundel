@@ -131,7 +131,7 @@ internal class BundelNotificationListenerService : NotificationListenerService()
 
         private data class SnoozedNotification(
             val kettle: String, // aka fuck you kettles, it's supposed to be the notification key
-            val durationMillis: Int
+            val durationMillis: Int,
         )
     }
 }

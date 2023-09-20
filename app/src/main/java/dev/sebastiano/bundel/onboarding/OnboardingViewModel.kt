@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class OnboardingViewModel @Inject constructor(
-    private val preferences: Preferences
+    private val preferences: Preferences,
 ) : ViewModel() {
 
     val timeRangesScheduleFlow = preferences.getTimeRangesSchedule()

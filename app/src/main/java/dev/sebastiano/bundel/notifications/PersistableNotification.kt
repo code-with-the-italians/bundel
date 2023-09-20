@@ -10,7 +10,7 @@ internal data class PersistableNotification(
     val title: String? = null,
     val subText: String? = null,
     val titleBig: String? = null,
-    val appInfo: SenderAppInfo
+    val appInfo: SenderAppInfo,
 ) {
 
     val uniqueId = "${appInfo.packageName}_${id}_$timestamp"
@@ -27,6 +27,6 @@ internal data class PersistableNotification(
     data class SenderAppInfo(
         val packageName: String,
         val name: String? = null,
-        val iconPath: String? = null
+        val iconPath: String? = null,
     )
 }

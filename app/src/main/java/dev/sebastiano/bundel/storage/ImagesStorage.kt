@@ -22,6 +22,6 @@ internal interface ImagesStorage {
     enum class NotificationIconSize(val cacheKey: String) {
         SMALL("small"),
         LARGE("large"),
-        EXTRA_LARGE("xlarge")
+        EXTRA_LARGE("xlarge"),
     }
 }

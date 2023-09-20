@@ -47,12 +47,12 @@ internal class OnboardingAndroidUiTest : ScreenshotTest {
         composeTestRule.setContent {
             TestHarness(
                 darkMode = true,
-                size = DpSize(250.dp, 140.dp)
+                size = DpSize(250.dp, 140.dp),
             ) {
                 BundelYouTheme {
                     var crashReportingEnabled by remember { mutableStateOf(false) }
                     IntroPage(
-                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
+                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled },
                     )
                 }
             }
@@ -70,12 +70,12 @@ internal class OnboardingAndroidUiTest : ScreenshotTest {
     fun intro_page_should_toggle_state_correctly() {
         composeTestRule.setContent {
             TestHarness(
-                size = DpSize(1920.dp, 1080.dp)
+                size = DpSize(1920.dp, 1080.dp),
             ) {
                 BundelYouTheme {
                     var crashReportingEnabled by remember { mutableStateOf(false) }
                     IntroPage(
-                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
+                        IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled },
                     )
                 }
             }
@@ -96,7 +96,7 @@ internal class OnboardingAndroidUiTest : ScreenshotTest {
             BundelYouTheme {
                 var crashReportingEnabled by remember { mutableStateOf(true) }
                 IntroPage(
-                    IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled }
+                    IntroPageState(crashReportingEnabled) { crashReportingEnabled = !crashReportingEnabled },
                 )
             }
         }

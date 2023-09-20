@@ -58,26 +58,26 @@ internal class HoursSchedulePageState(
     val timeRangesSchedule: TimeRangesSchedule,
     val onAddTimeRange: () -> Unit,
     val onRemoveTimeRange: (timeRange: TimeRange) -> Unit,
-    val onChangeTimeRange: (old: TimeRange, new: TimeRange) -> Unit
+    val onChangeTimeRange: (old: TimeRange, new: TimeRange) -> Unit,
 ) {
 
     constructor() : this(
         timeRangesSchedule = TimeRangesSchedule(),
         onAddTimeRange = {},
         onRemoveTimeRange = {},
-        onChangeTimeRange = { _, _ -> }
+        onChangeTimeRange = { _, _ -> },
     )
 }
 
 @Composable
 internal fun ScheduleHoursPage(
     hoursSchedulePageState: HoursSchedulePageState,
-    orientation: Orientation = currentOrientation()
+    orientation: Orientation = currentOrientation(),
 ) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
@@ -89,13 +89,13 @@ internal fun ScheduleHoursPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
                 Text(
                     text = stringResource(R.string.onboarding_schedule_blurb),
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -116,7 +116,7 @@ internal fun ScheduleHoursPage(
                         { hoursSchedulePageState.onRemoveTimeRange(timeRange) }
                     } else {
                         { }
-                    }
+                    },
                 ) { newTimeRange -> hoursSchedulePageState.onChangeTimeRange(timeRange, newTimeRange) }
 
                 Spacer(modifier = Modifier.height(singlePadding()))

@@ -54,14 +54,14 @@ private fun DaysSchedulePageLandscapePreview() {
 @Composable
 internal fun DaysSchedulePage(
     pageState: DaysSchedulePageState,
-    orientation: Orientation = currentOrientation()
+    orientation: Orientation = currentOrientation(),
 ) {
     Column(
         modifier = Modifier
             .onboardingPageModifier(orientation)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_schedule_title))
@@ -72,7 +72,7 @@ internal fun DaysSchedulePage(
         Text(
             text = stringResource(R.string.onboarding_schedule_blurb),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         val happyBirthdayMark = if (orientation == Orientation.Portrait) 24.dp else 16.dp
@@ -85,7 +85,7 @@ internal fun DaysSchedulePage(
             chipsSpacing = singlePadding(),
             modifier = Modifier.padding(horizontal = chipsRowHorizontalPadding),
             checkedAppearance = onboardingCheckedPillAppearance(),
-            uncheckedAppearance = onboardingUncheckedPillAppearance()
+            uncheckedAppearance = onboardingUncheckedPillAppearance(),
         )
 
         Spacer(modifier = Modifier.height(happyBirthdayMark))
@@ -93,7 +93,7 @@ internal fun DaysSchedulePage(
         Text(
             text = stringResource(R.string.onboarding_schedule_blurb_2),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -112,7 +112,7 @@ private fun DaysPickerBundelYouThemePreview() {
                 newSchedule[weekDay] = checked
                 daysSchedule = newSchedule
             },
-            chipsSpacing = singlePadding()
+            chipsSpacing = singlePadding(),
 //            checkedAppearance = checkedMaterialPillAppearance(
 //                backgroundColor = MaterialTheme.colorScheme.surface,
 //                contentColor = MaterialTheme.colorScheme.onSurface
@@ -140,7 +140,7 @@ private fun DaysPickerOnboardingThemePreview() {
                     newSchedule[weekDay] = checked
                     daysSchedule = newSchedule
                 },
-                chipsSpacing = singlePadding()
+                chipsSpacing = singlePadding(),
             )
         }
     }

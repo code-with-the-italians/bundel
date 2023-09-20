@@ -55,7 +55,7 @@ fun IntroPageLandscapePreview() {
 
 internal class IntroPageState(
     val crashReportingEnabled: Boolean,
-    val onCrashlyticsEnabledChanged: (Boolean) -> Unit
+    val onCrashlyticsEnabledChanged: (Boolean) -> Unit,
 ) {
 
     constructor() : this(crashReportingEnabled = false, onCrashlyticsEnabledChanged = { })
@@ -64,14 +64,14 @@ internal class IntroPageState(
 @Composable
 internal fun IntroPage(
     pageState: IntroPageState,
-    orientation: Orientation = currentOrientation()
+    orientation: Orientation = currentOrientation(),
 ) {
     Column(
         modifier = Modifier
             .onboardingPageModifier(orientation)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_welcome_title), textAlign = TextAlign.Center)
@@ -81,7 +81,7 @@ internal fun IntroPage(
 
         Text(
             text = stringResource(id = R.string.onboarding_blurb),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         val spacerHeight = if (orientation == Orientation.Portrait) 24.dp else singlePadding()
@@ -91,7 +91,7 @@ internal fun IntroPage(
         CrashlyticsSwitch(
             crashReportingEnabled = pageState.crashReportingEnabled,
             onCrashlyticsEnabledChanged = pageState.onCrashlyticsEnabledChanged,
-            modifier = Modifier.padding(vertical = singlePadding(), horizontal = 16.dp)
+            modifier = Modifier.padding(vertical = singlePadding(), horizontal = 16.dp),
         )
     }
 }
@@ -100,14 +100,14 @@ internal fun IntroPage(
 private fun CrashlyticsSwitch(
     crashReportingEnabled: Boolean,
     onCrashlyticsEnabledChanged: (Boolean) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Row(
         modifier = Modifier
             .clickable { onCrashlyticsEnabledChanged(!crashReportingEnabled) }
             .semantics(properties = { set(SemanticsProperties.ToggleableState, ToggleableState(crashReportingEnabled)) })
             .then(modifier),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Switch(
             checked = crashReportingEnabled,
@@ -116,8 +116,8 @@ private fun CrashlyticsSwitch(
                 uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
                 uncheckedTrackColor = MaterialTheme.colorScheme.onSecondary,
                 checkedThumbColor = MaterialTheme.colorScheme.secondary,
-                checkedTrackColor = MaterialTheme.colorScheme.onSecondary
-            )
+                checkedTrackColor = MaterialTheme.colorScheme.onSecondary,
+            ),
         )
 
         Spacer(modifier = Modifier.width(singlePadding()))

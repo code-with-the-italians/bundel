@@ -28,7 +28,7 @@ fun NotificationsListEmptyLightPreview() {
         NotificationsListScreen(
             activeNotifications = emptyList(),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -40,7 +40,7 @@ fun NotificationsListEmptyDarkPreview() {
         NotificationsListScreen(
             activeNotifications = emptyList(),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -51,9 +51,9 @@ private val activeNotification = ActiveNotification(
         key = "123",
         timestamp = 12345678L,
         text = "Hello Ivan",
-        appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!")
+        appInfo = PersistableNotification.SenderAppInfo("com.yeah", "Yeah!"),
     ),
-    isSnoozed = false
+    isSnoozed = false,
 )
 
 @Preview
@@ -63,7 +63,7 @@ fun NotificationsListLightPreview() {
         NotificationsListScreen(
             activeNotifications = listOf(activeNotification),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -75,7 +75,7 @@ fun NotificationsListDarkPreview() {
         NotificationsListScreen(
             activeNotifications = listOf(activeNotification),
             onNotificationClick = {},
-            onNotificationDismiss = {}
+            onNotificationDismiss = {},
         )
     }
 }
@@ -85,7 +85,7 @@ internal fun NotificationsListScreen(
     lifecycle: Lifecycle,
     innerPadding: PaddingValues,
     onNotificationClick: (notification: ActiveNotification) -> Unit,
-    onNotificationDismiss: (notification: ActiveNotification) -> Unit
+    onNotificationDismiss: (notification: ActiveNotification) -> Unit,
 ) {
     val notifications by remember(lifecycle) { BundelNotificationListenerService.activeNotificationsFlow.flowWithLifecycle(lifecycle) }
         .collectAsState(emptyList())
@@ -97,14 +97,14 @@ private fun NotificationsListScreen(
     activeNotifications: List<ActiveNotification>,
     onNotificationClick: (notification: ActiveNotification) -> Unit,
     onNotificationDismiss: (notification: ActiveNotification) -> Unit,
-    innerPadding: PaddingValues = PaddingValues(0.dp)
+    innerPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     if (activeNotifications.isNotEmpty()) {
         NotificationsLazyColumn(
             activeNotifications,
             Modifier.padding(innerPadding),
             onNotificationClick,
-            onNotificationDismiss
+            onNotificationDismiss,
         )
     } else {
         NotificationsListEmptyState()
@@ -116,14 +116,14 @@ private fun NotificationsLazyColumn(
     activeNotifications: List<ActiveNotification>,
     modifier: Modifier = Modifier,
     onNotificationClick: (ActiveNotification) -> Unit,
-    onNotificationDismiss: (ActiveNotification) -> Unit
+    onNotificationDismiss: (ActiveNotification) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .then(modifier),
         contentPadding = PaddingValues(singlePadding()),
-        verticalArrangement = Arrangement.spacedBy(singlePadding())
+        verticalArrangement = Arrangement.spacedBy(singlePadding()),
     ) {
         val items = activeNotifications.filterNot { it.persistableNotification.isGroup }
         items(items = items, key = { item -> item.persistableNotification.uniqueId }) { notification ->

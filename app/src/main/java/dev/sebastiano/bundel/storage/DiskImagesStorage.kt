@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @Singleton
 internal class DiskImagesStorage @Inject constructor(
     private val application: Application,
-    @IoDispatcher private val workDispatcher: CoroutineDispatcher = Dispatchers.IO
+    @IoDispatcher private val workDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ImagesStorage {
 
     private val cacheFolder = application.cacheDir
@@ -116,12 +116,12 @@ internal class DiskImagesStorage @Inject constructor(
 
     private enum class ImageFormat(
         val format: () -> Bitmap.CompressFormat,
-        val extension: String
+        val extension: String,
     ) {
 
         PNG({ Bitmap.CompressFormat.PNG }, "png"),
 
         @RequiresApi(Build.VERSION_CODES.R)
-        WEBP({ Bitmap.CompressFormat.WEBP_LOSSLESS }, "webp")
+        WEBP({ Bitmap.CompressFormat.WEBP_LOSSLESS }, "webp"),
     }
 }

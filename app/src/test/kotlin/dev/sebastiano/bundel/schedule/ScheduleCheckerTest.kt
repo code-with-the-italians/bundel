@@ -29,11 +29,11 @@ internal class ScheduleCheckerTest {
         WeekDay.THURSDAY to true,
         WeekDay.FRIDAY to true,
         WeekDay.SATURDAY to false,
-        WeekDay.SUNDAY to false
+        WeekDay.SUNDAY to false,
     )
 
     private val timeRangesSchedule = TimeRangesSchedule.of(
-        TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0))
+        TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0)),
     )
 
     inner class IsSnoozeActive {
@@ -96,7 +96,7 @@ internal class ScheduleCheckerTest {
         internal fun `should return false when now is on a good day between two time ranges`() {
             val timeRangesSchedule = TimeRangesSchedule.of(
                 TimeRange(from = LocalTime.of(9, 0), to = LocalTime.of(12, 0)),
-                TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0))
+                TimeRange(from = LocalTime.of(14, 0), to = LocalTime.of(18, 0)),
             )
             val dateTime = weekdayDateTime.withHour(13)
                 .withMinute(31)

@@ -7,7 +7,7 @@ internal data class ActiveNotification(
     val persistableNotification: PersistableNotification,
     val icons: Icons = Icons(),
     val interactions: Interactions = Interactions(),
-    val isSnoozed: Boolean
+    val isSnoozed: Boolean,
 ) {
 
     val isNotEmpty: Boolean =
@@ -19,7 +19,7 @@ internal data class ActiveNotification(
         val appIcon: Icon? = null,
         val small: Icon? = null,
         val large: Icon? = null,
-        val extraLarge: Icon? = null
+        val extraLarge: Icon? = null,
     ) {
 
         val isNotEmpty: Boolean = appIcon != null || small != null || large != null || extraLarge != null
@@ -28,13 +28,13 @@ internal data class ActiveNotification(
     data class Interactions(
         val main: PendingIntent? = null,
         val dismiss: PendingIntent? = null,
-        val actions: List<ActionItem> = emptyList()
+        val actions: List<ActionItem> = emptyList(),
     ) {
 
         data class ActionItem(
             val text: CharSequence,
             val icon: Icon? = null,
-            val pendingIntent: PendingIntent? = null
+            val pendingIntent: PendingIntent? = null,
         )
     }
 }

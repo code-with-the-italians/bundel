@@ -42,18 +42,18 @@ import kotlinx.coroutines.launch
 @OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterialNavigationApi::class,
-    ExperimentalAnimationApi::class
+    ExperimentalAnimationApi::class,
 )
 internal fun NavGraphBuilder.preferencesGraph(
     navController: NavHostController,
-    onUrlClick: (String) -> Unit
+    onUrlClick: (String) -> Unit,
 ) {
     navigation(
         route = NavigationRoute.PreferencesGraph.route,
-        startDestination = NavigationRoute.PreferencesGraph.PreferencesScreen.route
+        startDestination = NavigationRoute.PreferencesGraph.PreferencesScreen.route,
     ) {
         composable(
-            route = NavigationRoute.PreferencesGraph.PreferencesScreen.route
+            route = NavigationRoute.PreferencesGraph.PreferencesScreen.route,
         ) {
             PreferencesScreen(
                 versionInfo = VersionInfo(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE.toString()),
@@ -63,24 +63,24 @@ internal fun NavGraphBuilder.preferencesGraph(
                 onLicensesLinkClick = { navController.navigate(NavigationRoute.PreferencesGraph.Licenses.route) },
                 onSourcesLinkClick = { onUrlClick("https://github.com/rock3r/bundel") },
                 onTestWidgetClick = { navController.navigate(NavigationRoute.PreferencesGraph.TestWidget.route) },
-                onBackPress = { navController.popBackStack() }
+                onBackPress = { navController.popBackStack() },
             )
         }
 
         composable(
-            route = NavigationRoute.PreferencesGraph.SelectApps.route
+            route = NavigationRoute.PreferencesGraph.SelectApps.route,
         ) {
             AppsListScreen(onBackPress = { navController.popBackStack() })
         }
 
         composable(
-            route = NavigationRoute.PreferencesGraph.Licenses.route
+            route = NavigationRoute.PreferencesGraph.Licenses.route,
         ) {
             LicensesScreen(onBackPress = { navController.popBackStack() })
         }
 
         composable(
-            route = NavigationRoute.PreferencesGraph.TestWidget.route
+            route = NavigationRoute.PreferencesGraph.TestWidget.route,
         ) {
             TestWidgetScreen()
         }
@@ -91,7 +91,7 @@ internal fun NavGraphBuilder.preferencesGraph(
 
         dialog(
             route = NavigationRoute.PreferencesGraph.SelectTimeRanges.route,
-            dialogProperties = DialogProperties(usePlatformDefaultWidth = false)
+            dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
         ) {
             SelectTimeRangesDialog(onDialogDismiss = { navController.popBackStack() })
         }
@@ -104,11 +104,11 @@ internal fun NavGraphBuilder.mainScreenGraph(
     lifecycle: Lifecycle,
     repository: DataRepository,
     preferences: Preferences,
-    windowSizeClass: WindowSizeClass
+    windowSizeClass: WindowSizeClass,
 ) {
     navigation(
         route = NavigationRoute.MainScreenGraph.route,
-        startDestination = NavigationRoute.MainScreenGraph.MainScreen.route
+        startDestination = NavigationRoute.MainScreenGraph.MainScreen.route,
     ) {
         composable(route = NavigationRoute.MainScreenGraph.MainScreen.route) {
             MainScreenWithBottomNav(lifecycle, repository, preferences, windowSizeClass) {
@@ -123,11 +123,11 @@ internal fun NavGraphBuilder.onboardingGraph(
     navController: NavHostController,
     needsNotificationsPermissionFlow: Flow<Boolean>,
     preferences: Preferences,
-    onOpenNotificationPreferencesClick: () -> Unit
+    onOpenNotificationPreferencesClick: () -> Unit,
 ) {
     navigation(
         route = NavigationRoute.OnboardingGraph.route,
-        startDestination = NavigationRoute.OnboardingGraph.OnboardingScreen.route
+        startDestination = NavigationRoute.OnboardingGraph.OnboardingScreen.route,
     ) {
         composable(NavigationRoute.OnboardingGraph.OnboardingScreen.route) {
             val needsNotificationsPermission by needsNotificationsPermissionFlow.collectAsState(true)
@@ -140,13 +140,13 @@ internal fun NavGraphBuilder.onboardingGraph(
                 onOnboardingDoneClicked = {
                     scope.launch { preferences.setIsOnboardingSeen(true) }
                     navController.navigate(
-                        route = NavigationRoute.MainScreenGraph.MainScreen.route
+                        route = NavigationRoute.MainScreenGraph.MainScreen.route,
                     ) {
                         popUpTo(NavigationRoute.OnboardingGraph.route) {
                             inclusive = true
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -155,14 +155,14 @@ internal fun NavGraphBuilder.onboardingGraph(
 @ExperimentalAnimationApi
 internal fun NavGraphBuilder.splashScreenGraph(
     preferences: Preferences,
-    onPizzaReady: (NavigationRoute) -> Unit
+    onPizzaReady: (NavigationRoute) -> Unit,
 ) {
     composable(NavigationRoute.SplashoScreenButWithAWeirdNameNotToTriggerLint.route) {
         SetupTransparentSystemUi(actualBackgroundColor = MaterialTheme.colorScheme.primaryContainer)
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator()
         }

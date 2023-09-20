@@ -24,7 +24,7 @@ import dev.sebastiano.bundel.util.currentOrientation
 
 internal class NotificationsAccessPageState(
     val needsPermission: Boolean,
-    val onSettingsIntentClick: () -> Unit
+    val onSettingsIntentClick: () -> Unit,
 ) {
 
     constructor() : this(needsPermission = true, onSettingsIntentClick = {})
@@ -33,12 +33,12 @@ internal class NotificationsAccessPageState(
 @Composable
 internal fun NotificationsAccessPage(
     pageState: NotificationsAccessPageState,
-    orientation: Orientation = currentOrientation()
+    orientation: Orientation = currentOrientation(),
 ) {
     Column(
         modifier = Modifier.onboardingPageModifier(orientation),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         if (orientation == Orientation.Portrait) {
             PageTitle(text = stringResource(id = R.string.onboarding_notifications_permission_title))
@@ -50,7 +50,7 @@ internal fun NotificationsAccessPage(
             Text(
                 text = stringResource(R.string.notifications_permission_explanation),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
 
             Spacer(Modifier.height(24.dp))
@@ -64,7 +64,7 @@ internal fun NotificationsAccessPage(
                 contentDescription = stringResource(R.string.notifications_permission_done_image_content_description),
                 tint = LocalContentColor.current,
                 modifier = Modifier
-                    .size(72.dp)
+                    .size(72.dp),
             )
 
             Spacer(Modifier.height(16.dp))
@@ -72,7 +72,7 @@ internal fun NotificationsAccessPage(
             Text(
                 text = stringResource(R.string.notifications_permission_all_done),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }

@@ -34,18 +34,18 @@ internal fun SimplePageIndicator(
     indicatorWidth: Dp = 8.dp,
     indicatorHeight: Dp = indicatorWidth,
     spacing: Dp = indicatorWidth,
-    indicatorShape: Shape = CircleShape
+    indicatorShape: Shape = CircleShape,
 ) {
     val indicatorWidthPx = LocalDensity.current.run { indicatorWidth.roundToPx() }
     val spacingPx = LocalDensity.current.run { spacing.roundToPx() }
 
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.CenterStart
+        contentAlignment = Alignment.CenterStart,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(spacing),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             val indicatorModifier = Modifier
                 .size(width = indicatorWidth, height = indicatorHeight)
@@ -62,18 +62,18 @@ internal fun SimplePageIndicator(
                 .offset {
                     IntOffset(
                         x = ((spacingPx + indicatorWidthPx) * scrollPosition).toInt(),
-                        y = 0
+                        y = 0,
                     )
                 }
                 .size(width = indicatorWidth, height = indicatorHeight)
-                .background(color = activeColor, shape = indicatorShape)
+                .background(color = activeColor, shape = indicatorShape),
         )
     }
 }
 
 @Stable
 class IndicatorState(
-    val pageCount: Int
+    val pageCount: Int,
 ) {
 
     var currentPage by mutableStateOf(0)

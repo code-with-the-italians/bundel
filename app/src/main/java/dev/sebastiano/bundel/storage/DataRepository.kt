@@ -10,7 +10,7 @@ import javax.inject.Singleton
 @Singleton
 internal class DataRepository @Inject constructor(
     private val database: RobertoDatabase,
-    private val imagesStorage: ImagesStorage
+    private val imagesStorage: ImagesStorage,
 ) {
 
     suspend fun saveNotification(activeNotification: ActiveNotification) {

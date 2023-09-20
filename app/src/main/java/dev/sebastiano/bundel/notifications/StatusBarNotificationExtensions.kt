@@ -30,11 +30,11 @@ internal fun StatusBarNotification.toActiveNotification(context: Context): Activ
             title = title,
             subText = subText,
             titleBig = titleBig,
-            appInfo = extractAppInfo(applicationInfo, packageManager)
+            appInfo = extractAppInfo(applicationInfo, packageManager),
         ),
         icons = extractIcons(applicationInfo),
         interactions = extractInteractions(),
-        isSnoozed = false
+        isSnoozed = false,
     )
 }
 
@@ -43,12 +43,12 @@ private fun StatusBarNotification.extractIcons(applicationInfo: ApplicationInfo)
     appIcon = Icon.createWithResource(packageName, applicationInfo.icon),
     small = notification.smallIcon,
     large = notification.getLargeIcon(),
-    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG)
+    extraLarge = notification.extras.getParcelable(Notification.EXTRA_LARGE_ICON_BIG),
 )
 
 private fun StatusBarNotification.extractAppInfo(
     applicationInfo: ApplicationInfo,
-    packageManager: PackageManager
+    packageManager: PackageManager,
 ): PersistableNotification.SenderAppInfo =
     PersistableNotification.SenderAppInfo(
         packageName = packageName,
@@ -58,7 +58,7 @@ private fun StatusBarNotification.extractAppInfo(
             Firebase.crashlytics.log("Application ${applicationInfo.packageName} has no label")
             applicationInfo.packageName
         },
-        iconPath = null
+        iconPath = null,
     )
 
 private fun StatusBarNotification.extractInteractions() = ActiveNotification.Interactions(
@@ -66,7 +66,7 @@ private fun StatusBarNotification.extractInteractions() = ActiveNotification.Int
     dismiss = notification.deleteIntent,
     actions = notification.actions
         ?.map { ActiveNotification.Interactions.ActionItem(it.title, it.getIcon(), it.actionIntent) }
-        .orEmpty()
+        .orEmpty(),
 )
 
 internal val StatusBarNotification.text: String?

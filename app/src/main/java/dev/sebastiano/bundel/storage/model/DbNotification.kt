@@ -10,14 +10,14 @@ import dev.sebastiano.bundel.notifications.PersistableNotification
 @Entity(tableName = "apps")
 internal data class DbAppInfo(
     @ColumnInfo("package_name") @PrimaryKey val packageName: String,
-    val name: String?
+    val name: String?,
 ) {
 
     companion object Factory {
 
         fun from(appInfo: PersistableNotification.SenderAppInfo) = DbAppInfo(
             packageName = appInfo.packageName,
-            name = appInfo.name
+            name = appInfo.name,
         )
     }
 }
@@ -34,7 +34,7 @@ internal data class DbNotification(
     val title: String? = null,
     val subText: String? = null,
     val titleBig: String? = null,
-    @ColumnInfo(name = "app_package") val appPackageName: String
+    @ColumnInfo(name = "app_package") val appPackageName: String,
 ) {
 
     fun toPersistableNotification(appInfo: DbAppInfo?, appIconPath: String?) = PersistableNotification(
@@ -50,8 +50,8 @@ internal data class DbNotification(
         appInfo = PersistableNotification.SenderAppInfo(
             packageName = appPackageName,
             name = appInfo?.name,
-            iconPath = appIconPath
-        )
+            iconPath = appIconPath,
+        ),
     )
 
     companion object Factory {
@@ -67,7 +67,7 @@ internal data class DbNotification(
             title = notification.title,
             subText = notification.subText,
             titleBig = notification.titleBig,
-            appPackageName = notification.appInfo.packageName
+            appPackageName = notification.appInfo.packageName,
         )
     }
 }
@@ -75,5 +75,5 @@ internal data class DbNotification(
 @Entity
 internal data class DbNotificationWithAppInfo(
     @Relation(parentColumn = "app_package", entityColumn = "package_name") val appInfo: DbAppInfo?,
-    @Embedded val notification: DbNotification
+    @Embedded val notification: DbNotification,
 )

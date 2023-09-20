@@ -26,7 +26,7 @@ internal fun NotificationsListEmptyState(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .then(modifier),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(stringResource(R.string.sad_face), fontSize = 72.sp)
             Spacer(modifier = Modifier.height(8.dp))
