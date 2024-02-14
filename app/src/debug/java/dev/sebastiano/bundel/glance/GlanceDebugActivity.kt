@@ -17,7 +17,7 @@ class GlanceDebugActivity : GlanceViewerActivity() {
                 instance = CannoliWidget(null),
                 state = mutablePreferencesOf(),
             )
-            else -> throw IllegalArgumentException()
+            else -> throw IllegalArgumentException("Unknown receiver")
         }
     }
 

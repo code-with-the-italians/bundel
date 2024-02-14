@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "dev.sebastiano.bundel"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -196,7 +196,7 @@ open class GenerateGoogleServicesJson : DefaultTask() {
 }
 
 tasks {
-    withType<Detekt> {
+    val detekt = withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"
         reports {
@@ -212,36 +212,38 @@ tasks {
         named<AndroidLintTask>("lintReportRelease") {
             sarifReportOutputFile.set(lintReportReleaseSarifOutput)
         }
-    }
 
-    val staticAnalysis by registering {
-        val detektRelease by getting(Detekt::class)
-        val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
+        val staticAnalysis by registering {
+            val detektRelease by getting(Detekt::class)
+            val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-        dependsOn(detekt, detektRelease, androidLintReportRelease, lintKotlin)
-    }
-
-    register<Sync>("collectSarifReports") {
-        val detektRelease by getting(Detekt::class)
-        val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
-
-        mustRunAfter(detekt, detektRelease, androidLintReportRelease, lintKotlin, staticAnalysis)
-
-        from(detektRelease.sarifReportFile) {
-            rename { "detekt-release.sarif" }
-        }
-        from(detekt.get().sarifReportFile) {
-            rename { "detekt.sarif" }
-        }
-        from(lintReportReleaseSarifOutput) {
-            rename { "android-lint.sarif" }
+            dependsOn(detekt, detektRelease, androidLintReportRelease, lintKotlin)
         }
 
-        into("$buildDir/reports/sarif")
+        register<Sync>("collectSarifReports") {
+            val detektRelease by getting(Detekt::class)
+            val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-        doLast {
-            logger.info("Copied ${inputs.files.files.filter { it.exists() }} into ${outputs.files.files}")
-            logger.info("Output dir contents:\n${outputs.files.files.first().listFiles()?.joinToString()}")
+            mustRunAfter(detekt, detektRelease, androidLintReportRelease, lintKotlin, staticAnalysis)
+
+            from(detektRelease.sarifReportFile) {
+                rename { "detekt-release.sarif" }
+            }
+            detekt.forEach {
+                from(it.sarifReportFile) {
+                    rename { "detekt.sarif" }
+                }
+            }
+            from(lintReportReleaseSarifOutput) {
+                rename { "android-lint.sarif" }
+            }
+
+            into("${layout.buildDirectory}/reports/sarif")
+
+            doLast {
+                logger.info("Copied ${inputs.files.files.filter { it.exists() }} into ${outputs.files.files}")
+                logger.info("Output dir contents:\n${outputs.files.files.first().listFiles()?.joinToString()}")
+            }
         }
     }
 
@@ -264,7 +266,7 @@ tasks {
 
     // This copies the Licensee json file to the app assets folder
     register<Copy>("scaryEyes") {
-        from("$buildDir/reports/licensee/release/artifacts.json") {
+        from("${layout.buildDirectory}/reports/licensee/release/artifacts.json") {
             rename { "licences.json" }
         }
         into("$projectDir/src/main/assets")

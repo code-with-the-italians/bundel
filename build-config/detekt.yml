@@ -102,7 +102,7 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: true
-    values: [ 'STOPSHIP' ]
+    comments: [ 'STOPSHIP' ]
     allowedPatterns: ''
   LoopWithTooManyJumpStatements:
     active: true

@@ -6,6 +6,7 @@ import dev.sebastiano.bundel.ui.composables.WeekDay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@Suppress("NotImplementedDeclaration")
 internal class FakePreferences : Preferences {
 
     val crashlyticsEnabled = MutableStateFlow(false)
