@@ -103,8 +103,8 @@ kotlin {
 }
 
 detekt {
-    source = files("src/main/java", "src/main/kotlin")
-    config = rootProject.files("build-config/detekt.yml")
+    source.setFrom(files("src/main/java", "src/main/kotlin"))
+    config.setFrom(files("build-config/detekt.yml"))
     buildUponDefaultConfig = true
 }
 
