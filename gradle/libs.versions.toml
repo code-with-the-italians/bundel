@@ -1,55 +1,54 @@
 [versions]
-accompanist = "0.32.0"
-activityCompose = "1.7.2"
-androidxFragment = "1.6.1"
-androidxTest = "1.5.0"
+accompanist = "0.34.0"
+activityCompose = "1.8.2"
+androidxFragment = "1.6.2"
+androidxTest = "1.6.0-alpha05"
 androidxTestExtJUnit = "1.1.5"
 androidxTestOrchestrator = "1.4.2"
-androidxTestRules = "1.6.0-alpha01"
+androidxTestRules = "1.6.0-alpha03"
 androidxTestServices = "1.4.2"
 appCompat = "1.6.1"
-arrow = "1.1.2"
-assertk = "0.25"
-coil = "2.2.2"
-compose = "1.5.1"
-composeCompiler = "1.5.3"
-composeMaterial3 = "1.1.1"
-composeUiTestJUnit4 = "1.5.1"
-daggerHilt = "2.48"
+arrow = "1.2.3"
+assertk = "0.28.0"
+coil = "2.6.0"
+compose = "1.6.4"
+composeMaterial3 = "1.2.1"
+composeUiTestJUnit4 = "1.6.4"
+daggerHilt = "2.51"
 datastore = "1.0.0"
-desugar = "2.0.3"
-espresso-core = "3.5.1"
-espresso-device = "1.0.0-alpha05"
-espresso-runner = "1.5.2"
-firebaseBom = "32.2.3"
+desugar = "2.0.4"
+espresso-core = "3.6.0-alpha03"
+espresso-device = "1.0.0-alpha08"
+espresso-runner = "1.6.0-alpha06"
+firebaseBom = "32.8.0"
 glance = "1.0.0"
 glance-tools = "0.2.2"
-gradlePlugins-agp = "8.4.0-alpha09"
+gradlePlugins-agp = "8.5.0-alpha02"
 gradlePlugins-crashlytics = "2.9.9"
-gradlePlugins-detekt = "1.23.1"
-gradlePlugins-gms = "4.3.15"
-gradlePlugins-hilt = "2.48"
-gradlePlugins-kotlinter = "3.16.0"
-gradlePlugins-kotlinxSerialization = "1.8.21"
+gradlePlugins-detekt = "1.23.6"
+gradlePlugins-gms = "4.4.1"
+gradlePlugins-hilt = "2.51"
+gradlePlugins-kotlinter = "4.3.0"
+gradlePlugins-kotlinxSerialization = "1.9.23"
 gradlePlugins-ksp = "1.9.10-1.0.13"
-gradlePlugins-licensee = "1.7.0"
+gradlePlugins-licensee = "1.9.1"
 gradlePlugins-protobuf = "0.9.4"
-gradlePlugins-shot = "5.14.1"
-gradlePlugins-versionCatalog = "0.7.0"
-gradlePlugins-versionsBenManes = "0.47.0"
-hilt = "1.0.0"
-hiltNavigationCompose = "1.0.0"
+gradlePlugins-shot = "6.1.0"
+gradlePlugins-versionCatalog = "0.8.4"
+gradlePlugins-versionsBenManes = "0.51.0"
+hilt = "1.2.0"
+hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
-kotlin = "1.9.10"
-kotlinxCoroutinesTest = "1.7.1"
-kotlinxSerialization = "1.5.0"
-lifecycle = "2.6.2"
-navigationCompose = "2.7.2"
-protobuf = "3.21.9"
-room = "2.5.2"
+kotlin = "1.9.23"
+kotlinxCoroutinesTest = "1.8.0"
+kotlinxSerialization = "1.6.3"
+lifecycle = "2.7.0"
+navigationCompose = "2.7.7"
+protobuf = "4.26.1"
+room = "2.6.1"
 splashscreen = "1.0.1"
 timber = "5.0.1"
-uiAutomator = "2.2.0"
+uiAutomator = "2.3.0"
 
 [libraries]
 androidx-activity-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -67,8 +66,8 @@ androidx-compose-ui-uiTooling = { module = "androidx.compose.ui:ui-tooling", ver
 androidx-compose-ui-uiTooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
-androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "androidxFragment" }
+androidx-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 androidx-hilt-hiltCommon = { module = "androidx.hilt:hilt-common", version.ref = "hilt" }
 androidx-hilt-hiltCompiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt" }
 androidx-hilt-hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -78,7 +77,6 @@ androidx-navigation-navigationCompose = { module = "androidx.navigation:navigati
 androidx-room-roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-roomRuntime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-tracing = { module = "androidx.tracing:tracing", version = "1.1.0" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 androidx-test-espresso-device = { module = "androidx.test.espresso:espresso-device", version.ref = "espresso-device" }
@@ -88,6 +86,7 @@ androidx-test-rules = { module = "androidx.test:rules", version.ref = "androidxT
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "espresso-runner" }
 androidx-test-services = { module = "androidx.test.services:test-services", version.ref = "androidxTestServices" }
 androidx-test-uiAutomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiAutomator" }
+androidx-tracing = "androidx.tracing:tracing:1.1.0"
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 coilKt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
@@ -96,14 +95,14 @@ google-accompanistFlowLayout = { module = "com.google.accompanist:accompanist-fl
 google-accompanistNavAnimations = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 google-accompanistNavMaterial = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanist" }
 google-accompanistPermissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-google-accompanistTestHarness = { module = "com.google.accompanist:accompanist-testharness", version.ref = "accompanist" }
 google-accompanistSystemUIController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+google-accompanistTestHarness = { module = "com.google.accompanist:accompanist-testharness", version.ref = "accompanist" }
+google-android-glanceTools-host = { module = "com.google.android.glance.tools:appwidget-host", version.ref = "glance-tools" }
+google-android-glanceTools-viewer = { module = "com.google.android.glance.tools:appwidget-viewer", version.ref = "glance-tools" }
 google-dagger-dagger = { module = "com.google.dagger:dagger", version.ref = "daggerHilt" }
 google-dagger-daggerCompiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerHilt" }
 google-dagger-hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "daggerHilt" }
 google-dagger-hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerHilt" }
-google-android-glanceTools-host = { module = "com.google.android.glance.tools:appwidget-host", version.ref = "glance-tools" }
-google-android-glanceTools-viewer = { module = "com.google.android.glance.tools:appwidget-viewer", version.ref = "glance-tools" }
 google-firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 google-firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
@@ -182,8 +181,8 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "gradleP
 hilt = { id = "dagger.hilt.android.plugin", version.ref = "gradlePlugins-hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "gradlePlugins-kotlinxSerialization" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "gradlePlugins-kotlinter" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "gradlePlugins-kotlinxSerialization" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "gradlePlugins-ksp" }
 licensee = { id = "app.cash.licensee", version.ref = "gradlePlugins-licensee" }
 protobuf = { id = "com.google.protobuf", version.ref = "gradlePlugins-protobuf" }
