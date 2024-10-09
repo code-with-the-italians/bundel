@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.paparazzi)
 }
 
 android {
     namespace = "dev.sebastiano.bundel.ui"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
