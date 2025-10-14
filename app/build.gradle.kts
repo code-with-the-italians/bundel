@@ -1,8 +1,10 @@
 import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinxSerialization)
@@ -18,7 +20,7 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.sebastiano.bundel"
@@ -44,18 +46,7 @@ android {
     }
 
     buildFeatures {
-        compose = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
-
-    lint {
-        lintConfig = rootProject.file("build-config/lint.xml")
-        //isWarningsAsErrors = true
-        sarifReport = true
     }
 
     compileOptions {
@@ -65,8 +56,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 
     packaging {
@@ -104,7 +97,7 @@ kotlin {
 
 detekt {
     source.setFrom(files("src/main/java", "src/main/kotlin"))
-    config.setFrom(files("build-config/detekt.yml"))
+    config.setFrom(files(rootProject.file("build-config/detekt.yml")))
     buildUponDefaultConfig = true
 }
 
@@ -217,14 +210,14 @@ tasks {
             val detektRelease by getting(Detekt::class)
             val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-            dependsOn(detekt, detektRelease, androidLintReportRelease, lintKotlin)
+            dependsOn(detekt, detektRelease, androidLintReportRelease, tasks.named("lintKotlinMain"), tasks.named("lintKotlinAndroidTest"), tasks.named("lintKotlinTest"), tasks.named("lintKotlinDebug"))
         }
 
         register<Sync>("collectSarifReports") {
             val detektRelease by getting(Detekt::class)
             val androidLintReportRelease = named<AndroidLintTask>("lintReportRelease")
 
-            mustRunAfter(detekt, detektRelease, androidLintReportRelease, lintKotlin, staticAnalysis)
+            mustRunAfter(detekt, detektRelease, androidLintReportRelease, tasks.named("lintKotlinMain"), tasks.named("lintKotlinAndroidTest"), tasks.named("lintKotlinTest"), tasks.named("lintKotlinDebug"), staticAnalysis)
 
             from(detektRelease.sarifReportFile) {
                 rename { "detekt-release.sarif" }

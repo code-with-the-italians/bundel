@@ -1,4 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinxSerialization)
@@ -9,7 +12,7 @@ plugins {
 
 android {
     namespace = "dev.sebastiano.bundel.preferences"
-    compileSdk = 33
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 26
@@ -18,20 +21,17 @@ android {
     }
 
     buildFeatures {
-        compose = true
         buildConfig = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 }
 

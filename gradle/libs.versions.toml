@@ -12,10 +12,9 @@ arrow = "1.1.2"
 assertk = "0.25"
 coil = "2.2.2"
 compose = "1.5.1"
-composeCompiler = "1.5.3"
 composeMaterial3 = "1.1.1"
 composeUiTestJUnit4 = "1.5.1"
-daggerHilt = "2.48"
+daggerHilt = "2.57.2"
 datastore = "1.0.0"
 desugar = "2.0.3"
 espresso-core = "3.5.1"
@@ -24,29 +23,29 @@ espresso-runner = "1.5.2"
 firebaseBom = "32.2.3"
 glance = "1.0.0"
 glance-tools = "0.2.2"
-gradlePlugins-agp = "8.4.2"
-gradlePlugins-crashlytics = "2.9.9"
-gradlePlugins-detekt = "1.23.1"
-gradlePlugins-gms = "4.3.15"
-gradlePlugins-hilt = "2.48"
-gradlePlugins-kotlinter = "3.16.0"
+gradlePlugins-agp = "8.13.0"
+gradlePlugins-crashlytics = "3.0.6"
+gradlePlugins-detekt = "1.23.8"
+gradlePlugins-gms = "4.4.4"
+gradlePlugins-hilt = "2.57.2"
+gradlePlugins-kotlinter = "5.2.0"
 gradlePlugins-kotlinxSerialization = "1.8.21"
-gradlePlugins-ksp = "1.9.10-1.0.13"
+gradlePlugins-ksp = "2.1.21-2.0.2"
 gradlePlugins-licensee = "1.7.0"
-gradlePlugins-protobuf = "0.9.4"
+gradlePlugins-protobuf = "0.9.5"
 gradlePlugins-shot = "5.14.1"
-gradlePlugins-versionCatalog = "0.7.0"
-gradlePlugins-versionsBenManes = "0.47.0"
+gradlePlugins-versionCatalog = "1.0.1"
+gradlePlugins-versionsBenManes = "0.53.0"
 hilt = "1.0.0"
 hiltNavigationCompose = "1.0.0"
 junit = "4.13.2"
-kotlin = "1.9.10"
+kotlin = "2.1.21"
 kotlinxCoroutinesTest = "1.7.1"
 kotlinxSerialization = "1.5.0"
 lifecycle = "2.6.2"
 navigationCompose = "2.7.2"
 protobuf = "3.21.9"
-room = "2.5.2"
+room = "2.8.2"
 splashscreen = "1.0.1"
 timber = "5.0.1"
 uiAutomator = "2.2.0"
@@ -139,7 +138,7 @@ composeTest = [
     "androidx-compose-ui-uiTest-manifest",
     "androidx-test-core",
     "androidx-test-espresso-core",
-    "androidx-test-ext-junit",
+    "androidx.test-ext-junit",
     "androidx-test-rules",
 ]
 composeUiTooling = [
@@ -174,6 +173,7 @@ room = [
 ]
 
 [plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
 android-library = { id = "com.android.library", version.ref = "gradlePlugins-agp" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "gradlePlugins-crashlytics" }

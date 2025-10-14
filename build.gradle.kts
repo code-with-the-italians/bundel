@@ -1,6 +1,5 @@
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.versionsBenManes)
     alias(libs.plugins.versionCatalogUpdate)
     alias(libs.plugins.android.application) apply false // https://youtrack.jetbrains.com/issue/KT-31643/Unable-to-load-class-com.android.build.gradle.BaseExtension-with-Kotlin-plugin-applied-to-root-Gradle-project
@@ -47,25 +46,4 @@ val dummyGoogleServices: Configuration by configurations.creating {
 
 dependencies {
     dummyGoogleServices(files(rootProject.file("build-config/dummy-data/dummy-google-services.json")))
-}
-
-tasks.withType<DependencyUpdatesTask> {
-    resolutionStrategy {
-        componentSelection {
-            all {
-                when {
-                    isNonStable(candidate.version) && !isNonStable(currentVersion) -> {
-                        reject("Updating stable to non stable is not allowed")
-                    }
-                    candidate.module == "kotlin-gradle-plugin" && candidate.version != libs.versions.kotlin.get() -> {
-                        reject("Keep Kotlin version on the version specified in libs.versions.toml")
-                    }
-                    // KSP versions are compound versions, starting with the kotlin version
-                    candidate.group == "com.google.devtools.ksp" && !candidate.version.startsWith(libs.versions.kotlin.get()) -> {
-                        reject("KSP needs to stick to Kotlin version")
-                    }
-                }
-            }
-        }
-    }
 }
