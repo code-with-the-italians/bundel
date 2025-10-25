@@ -189,6 +189,15 @@ open class GenerateGoogleServicesJson : DefaultTask() {
 }
 
 tasks {
+    // This copies the Licensee json file to the app assets folder
+    val scaryEyesTask = register<Copy>("scaryEyes") {
+        from("${layout.buildDirectory}/reports/licensee/androidRelease/artifacts.json") {
+            rename { "licences.json" }
+        }
+        into("$projectDir/src/main/assets")
+        dependsOn("licenseeAndroidRelease")
+    }
+
     val detekt = withType<Detekt> {
         // Required for type resolution
         jvmTarget = "1.8"
@@ -200,10 +209,19 @@ tasks {
     }
 
     val lintReportReleaseSarifOutput = project.layout.buildDirectory.file("reports/sarif/lint-results-release.sarif")
+
     afterEvaluate {
         // Needs to be in afterEvaluate because it's not created yet otherwise
         named<AndroidLintTask>("lintReportRelease") {
             sarifReportOutputFile.set(lintReportReleaseSarifOutput)
+        }
+
+        // Ensure lint tasks depend on scaryEyes to avoid implicit dependency warnings
+        named("lintVitalAnalyzeRelease").configure {
+            dependsOn(scaryEyesTask)
+        }
+        named("generateReleaseLintVitalReportModel").configure {
+            dependsOn(scaryEyesTask)
         }
 
         val staticAnalysis by registering {
@@ -255,15 +273,6 @@ tasks {
                 )
             }
         }
-    }
-
-    // This copies the Licensee json file to the app assets folder
-    register<Copy>("scaryEyes") {
-        from("${layout.buildDirectory}/reports/licensee/release/artifacts.json") {
-            rename { "licences.json" }
-        }
-        into("$projectDir/src/main/assets")
-        dependsOn("licenseeRelease")
     }
 
     afterEvaluate {
